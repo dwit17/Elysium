@@ -1,0 +1,29 @@
+# Elysium Home Decor — Complete Digital Showroom Specification
+
+## Overview
+Elysium is an artisan minimalist home decor atelier headquartered in Rajkot, Gujarat, operating a 4,500 sq. ft. Display Atelier. The brand crafts earth-bound home objects in unrefined travertine stone, organic stoneware clay, slow-grown white oak, and hand-troweled lime plaster.
+
+## Business Model
+Elysium operates strictly on an enquiry-based digital showroom model. There is no online shopping cart or automated checkout. Collectors, interior designers, and architects enquire about pieces directly through WhatsApp (+91 8799587361) or custom enquiry forms.
+
+## Philosophy & Design System
+- Purity of Origin: Omitting synthetic coatings, fillers, and chemical glues.
+- Wabi-Sabi Aesthetics: Celebrating geomorphic voids, natural fissures, and firing speckles.
+- Silent Geometry: Low proportions, continuous physical cuts, and soft light absorption.
+- Color Palette: Pure Ink (#000000), Soft Mist (#ECECEC), Pure Paper (#FFFFFF).
+
+## Collection & Products
+1. Solis Travertine Console: Super fine Italian travertine stone carved by Sandro Moretti.
+2. Caelum Vessel: Unglazed organic stoneware clay hand-turned by Matteo Ghiberti.
+3. Estia Pendant Light: Textured lime plaster finish dome light by Eleni Kora.
+4. Monolith Lounge Chair: Sculptural white oak timber chair carved by Kenji Yoshino.
+5. Terra Plaster Relief: Mineral plaster & volcanic silicate wall sculpture.
+6. Aura Alabaster Bowl: Translucent travertine shallow stone bowl by Lorenzo Vane.
+7. Chronos Storage Jar: Unglazed organic clay tall storage jar by Dimitris Vance.
+8. Nidus Block Stool: Sculptural white oak block stool by Stefan Meyer.
+
+## Atelier Coordinates
+- Address: Shree Bhaichand Mehta Ind. Area, Plot no. 29, Behind Hotel Krishna Park, Opposite KICH INDUSTRIES, Vavdi, Rajkot, Gujarat 360004
+- Phone / WhatsApp: +91 8799587361
+- Email: enquire@elysiumhomedecor.in
+- Hours: Monday to Sunday, 9:30 AM – 7:30 PM

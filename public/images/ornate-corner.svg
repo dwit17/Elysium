@@ -1,0 +1,41 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" fill="none">
+  <!-- Exact Reference Baroque Corner Frame (Self-Contained Inward Arc & Foliage) -->
+  <g stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" fill="none">
+    <!-- Inward Indented Corner Arc (Starts at 100,22, ends at 22,100) -->
+    <path d="M 100,22 C 55,22 22,55 22,100" />
+
+    <!-- Top Terminal Spiral at (100, 22) -->
+    <path d="M 100,22 C 92,22 86,14 90,7 C 94,0 104,2 105,9 C 106,16 98,20 92,16" />
+    
+    <!-- Left Terminal Spiral at (22, 100) -->
+    <path d="M 22,100 C 22,92 14,86 7,90 C 0,94 2,104 9,105 C 16,106 20,98 16,92" />
+
+    <!-- Top Flourish Loops (matching reference image) -->
+    <path d="M 78,22 C 82,12 90,6 98,11 C 104,16 98,26 90,26 C 84,26 80,18 84,12" />
+    <path d="M 60,24 C 64,14 74,10 80,16 C 86,22 80,30 72,28" />
+    <path d="M 44,28 C 48,18 56,16 62,22 C 66,28 60,34 54,32" />
+
+    <!-- Left Flourish Loops (matching reference image) -->
+    <path d="M 22,78 C 12,82 6,90 11,98 C 16,104 26,98 26,90 C 26,84 18,80 12,84" />
+    <path d="M 24,60 C 14,64 10,74 16,80 C 22,86 30,80 28,72" />
+    <path d="M 28,44 C 18,48 16,56 22,62 C 28,66 34,60 32,54" />
+
+    <!-- Corner Outer Apex & Acanthus Foliage (toward 0,0) -->
+    <path d="M 32,32 C 24,24 16,16 6,6" />
+    <path d="M 6,6 C 16,4 26,10 24,20 C 22,28 12,28 10,20 C 8,14 16,10 20,14" />
+    <path d="M 6,6 C 4,16 10,26 20,24 C 28,22 28,12 20,10 C 14,8 10,16 14,20" />
+    <path d="M 24,14 C 32,10 40,14 42,22 C 44,30 36,34 30,30" />
+    <path d="M 14,24 C 10,32 14,40 22,42 C 30,44 34,36 30,30" />
+
+    <!-- Inner Rosette Accent -->
+    <path d="M 42,42 C 48,36 56,38 58,44 C 60,50 52,56 46,52 C 42,50 40,46 44,42 Z" fill="currentColor" fill-opacity="0.2" />
+
+    <!-- Pearl Accents -->
+    <circle cx="6" cy="6" r="2.5" fill="currentColor" />
+    <circle cx="50" cy="50" r="2" fill="currentColor" />
+    <circle cx="94" cy="8" r="1.8" fill="currentColor" />
+    <circle cx="8" cy="94" r="1.8" fill="currentColor" />
+    <circle cx="76" cy="14" r="1.5" fill="currentColor" />
+    <circle cx="14" cy="76" r="1.5" fill="currentColor" />
+  </g>
+</svg>
