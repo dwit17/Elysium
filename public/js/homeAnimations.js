@@ -1,20 +1,26 @@
 /**
- * ELYSIUM HOME DECOR - MODULAR GSAP, SCROLLTRIGGER & LENIS ANIMATION ENGINE
- * Production-ready animation engine for the 5 interactive homepage sections.
+ * ELYSIUM HOME DECOR - REFINED GSAP, SCROLLTRIGGER & LENIS ANIMATION ENGINE
+ * Production-ready animation engine with verified "from" states, high-visibility reveals, and scrub parallax.
  */
 
 (function () {
   'use strict';
 
   let lenisInstance = null;
-  const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  
+  // Motion Preference check with safe fallback & console diagnostics
+  const systemPrefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const urlForceMotion = window.location.search.includes('motion=false');
+  const prefersReducedMotion = systemPrefersReducedMotion && !window.location.search.includes('motion=true');
+
+  console.log(`[Elysium Diagnostic] prefers-reduced-motion (System: ${systemPrefersReducedMotion}, Active: ${prefersReducedMotion})`);
 
   function isMobileScreen() {
     return window.innerWidth < 768;
   }
 
   /**
-   * 0. GSAP + SCROLLTRIGGER + LENIS INITIALIZATION & SYNC
+   * 0. LENIS SMOOTH SCROLLER & GSAP TICKER BRIDGING
    */
   function initLenisSmoothScroll() {
     if (typeof gsap === 'undefined' || typeof ScrollTrigger === 'undefined') {
@@ -22,7 +28,6 @@
       return;
     }
 
-    // Always register ScrollTrigger once at the top
     gsap.registerPlugin(ScrollTrigger);
 
     if (typeof Lenis !== 'undefined') {
@@ -36,7 +41,7 @@
           touchMultiplier: 1.5,
         });
 
-        // 1. Sync Lenis scroll with ScrollTrigger
+        // 1. Sync Lenis scroll updates with ScrollTrigger
         lenisInstance.on('scroll', () => {
           ScrollTrigger.update();
           if (typeof window.__elysiumUpdateHero === 'function') {
@@ -44,7 +49,7 @@
           }
         });
 
-        // 2. Drive Lenis RAF loop via GSAP ticker
+        // 2. Drive Lenis via GSAP ticker
         gsap.ticker.add((time) => {
           if (lenisInstance) {
             lenisInstance.raf(time * 1000);
@@ -62,8 +67,8 @@
 
   /**
    * SECTION 1 — BRAND STORY / PHILOSOPHY ANIMATION
-   * - Eyebrow words fade in with stagger (0.06s delay)
-   * - Poetic copy paragraphs staggered fade-up (opacity 0->1, y: 35->0, duration 1.1s, power3.out)
+   * - Eyebrow words fade in with stagger (0.07s delay)
+   * - Poetic copy paragraphs staggered fade-up (opacity 0->1, y: 70->0, duration 1.2s, power3.out)
    * - Dual-image overlapping parallax scrub (foreground faster than background)
    */
   function initBrandStorySection() {
@@ -73,62 +78,53 @@
     // 1. Eyebrow words stagger
     const eyebrowWords = section.querySelectorAll('.eyebrow-word');
     if (eyebrowWords.length > 0) {
-      gsap.fromTo(
-        eyebrowWords,
-        {
-          opacity: 0,
-          y: prefersReducedMotion ? 0 : 16,
+      gsap.set(eyebrowWords, { opacity: 0, y: 24 });
+      gsap.to(eyebrowWords, {
+        opacity: 1,
+        y: 0,
+        stagger: 0.07,
+        duration: 0.9,
+        ease: 'power3.out',
+        scrollTrigger: {
+          trigger: section.querySelector('.story-eyebrow') || section,
+          start: 'top 85%',
+          once: true,
+          onEnter: () => console.log('[Elysium GSAP] Section 1: Eyebrow words triggered'),
         },
-        {
-          opacity: 1,
-          y: 0,
-          stagger: 0.06,
-          duration: 0.85,
-          ease: 'power3.out',
-          scrollTrigger: {
-            trigger: section,
-            start: 'top 82%',
-            once: true,
-            onEnter: () => console.log('[Elysium GSAP] Section 1: Eyebrow words triggered'),
-          },
-        }
-      );
+      });
     }
 
-    // 2. Poetic copy paragraphs fade-up (35px slide)
+    // 2. Poetic copy paragraphs fade-up with prominent 70px travel
     const copyBlocks = section.querySelectorAll('.story-copy-block');
     if (copyBlocks.length > 0) {
-      gsap.fromTo(
-        copyBlocks,
-        {
-          opacity: 0,
-          y: prefersReducedMotion ? 0 : 35,
-        },
-        {
-          opacity: 1,
-          y: 0,
-          stagger: 0.12,
-          duration: 1.1,
-          ease: 'power3.out',
-          scrollTrigger: {
-            trigger: section,
-            start: 'top 78%',
-            once: true,
-            onEnter: () => console.log('[Elysium GSAP] Section 1: Copy blocks triggered'),
+      gsap.set(copyBlocks, { opacity: 0, y: 70 });
+      gsap.to(copyBlocks, {
+        opacity: 1,
+        y: 0,
+        stagger: 0.15,
+        duration: 1.2,
+        ease: 'power3.out',
+        scrollTrigger: {
+          trigger: copyBlocks[0],
+          start: 'top 85%',
+          once: true,
+          onEnter: () => {
+            const computed = window.getComputedStyle(copyBlocks[0]);
+            console.log(`[Elysium GSAP] Section 1: Copy reveal active (opacity: ${computed.opacity}, transform: ${computed.transform})`);
           },
-        }
-      );
+        },
+      });
     }
 
-    // 3. Overlapping images parallax offset (foreground faster than background)
+    // 3. Overlapping images parallax offset (foreground moves significantly faster than background)
     const imagesWrap = section.querySelector('.story-images-wrap');
     const bgImg = section.querySelector('.story-bg-img');
     const fgImg = section.querySelector('.story-fg-img');
 
     if (imagesWrap && bgImg && fgImg && !prefersReducedMotion) {
       const isMobile = isMobileScreen();
-      const bgOffset = isMobile ? -15 : -35;
-      const fgOffset = isMobile ? -30 : -75;
+      const bgOffset = isMobile ? -25 : -55;
+      const fgOffset = isMobile ? -50 : -130;
 
       gsap.to(bgImg, {
         y: bgOffset,
@@ -137,7 +133,7 @@
           trigger: imagesWrap,
           start: 'top bottom',
           end: 'bottom top',
-          scrub: 0.5,
+          scrub: 1,
         },
       });
 
@@ -148,10 +144,10 @@
           trigger: imagesWrap,
           start: 'top bottom',
           end: 'bottom top',
-          scrub: 0.5,
+          scrub: 1,
         },
       });
-      console.log('[Elysium GSAP] Section 1: Dual-image parallax scrub initialized.');
+      console.log(`[Elysium GSAP] Section 1: Dual-image parallax scrub initialized (bgOffset: ${bgOffset}px, fgOffset: ${fgOffset}px).`);
     }
   }
 
@@ -175,10 +171,10 @@
       ambientThumbs.forEach((thumb, thumbIdx) => {
         if (prefersReducedMotion) return;
 
-        const floatDuration = 3.6 + (thumbIdx % 3) * 1.2;
-        const yDrift = 12 + (thumbIdx % 4) * 4;
-        const xDrift = ((thumbIdx % 2 === 0 ? 1 : -1) * (6 + thumbIdx * 2));
-        const rotDrift = ((thumbIdx % 2 === 0 ? 1 : -1) * (3 + thumbIdx));
+        const floatDuration = 4.0 + (thumbIdx % 3) * 1.5;
+        const yDrift = 18 + (thumbIdx % 4) * 6;
+        const xDrift = ((thumbIdx % 2 === 0 ? 1 : -1) * (10 + thumbIdx * 3));
+        const rotDrift = ((thumbIdx % 2 === 0 ? 1 : -1) * (5 + thumbIdx * 2));
 
         gsap.to(thumb, {
           y: `+=${yDrift}`,
@@ -188,79 +184,60 @@
           ease: 'sine.inOut',
           repeat: -1,
           yoyo: true,
-          delay: thumbIdx * 0.2 + (index % 2) * 0.1,
+          delay: thumbIdx * 0.25 + (index % 2) * 0.15,
         });
       });
 
       // 2. Category Name Mask Reveal (Slide up from overflow-hidden container)
       const titleInner = chapter.querySelector('.chapter-title-inner');
       if (titleInner) {
-        gsap.fromTo(
-          titleInner,
-          {
-            yPercent: prefersReducedMotion ? 0 : 100,
-            opacity: prefersReducedMotion ? 0 : 1,
+        gsap.set(titleInner, { yPercent: 120, opacity: 1 });
+        gsap.to(titleInner, {
+          yPercent: 0,
+          duration: 1.3,
+          ease: 'power4.out',
+          scrollTrigger: {
+            trigger: chapter,
+            start: 'top 75%',
+            once: true,
+            onEnter: () => console.log(`[Elysium GSAP] Section 2: Mask reveal triggered for ${chapterId}`),
           },
-          {
-            yPercent: 0,
-            opacity: 1,
-            duration: 1.1,
-            ease: 'power3.out',
-            scrollTrigger: {
-              trigger: chapter,
-              start: 'top 75%',
-              once: true,
-              onEnter: () => console.log(`[Elysium GSAP] Section 2: Mask reveal triggered for ${chapterId}`),
-            },
-          }
-        );
+        });
       }
 
-      // 3. Category descriptive copy & explore button fade-up
+      // 3. Category descriptive copy & explore button fade-up (70px travel)
       const detailElements = chapter.querySelectorAll('.chapter-detail-elem');
       if (detailElements.length > 0) {
-        gsap.fromTo(
-          detailElements,
-          {
-            opacity: 0,
-            y: prefersReducedMotion ? 0 : 35,
+        gsap.set(detailElements, { opacity: 0, y: 65 });
+        gsap.to(detailElements, {
+          opacity: 1,
+          y: 0,
+          stagger: 0.14,
+          duration: 1.2,
+          ease: 'power3.out',
+          scrollTrigger: {
+            trigger: detailElements[0],
+            start: 'top 82%',
+            once: true,
           },
-          {
-            opacity: 1,
-            y: 0,
-            stagger: 0.12,
-            duration: 1.0,
-            ease: 'power3.out',
-            scrollTrigger: {
-              trigger: chapter,
-              start: 'top 72%',
-              once: true,
-            },
-          }
-        );
+        });
       }
 
       // 4. Category image fade-up on scroll
       const imageCol = chapter.querySelector('.chapter-pinned-col');
       if (imageCol) {
-        gsap.fromTo(
-          imageCol,
-          {
-            opacity: 0,
-            y: prefersReducedMotion ? 0 : 35,
+        gsap.set(imageCol, { opacity: 0, y: 70 });
+        gsap.to(imageCol, {
+          opacity: 1,
+          y: 0,
+          duration: 1.25,
+          ease: 'power3.out',
+          scrollTrigger: {
+            trigger: imageCol,
+            start: 'top 82%',
+            once: true,
           },
-          {
-            opacity: 1,
-            y: 0,
-            duration: 1.1,
-            ease: 'power3.out',
-            scrollTrigger: {
-              trigger: chapter,
-              start: 'top 78%',
-              once: true,
-            },
-          }
-        );
+        });
       }
     });
 
@@ -269,47 +246,44 @@
 
   /**
    * SECTION 3 — CRAFTSMANSHIP / WHY US ANIMATION
-   * - 4-Column trust grid with staggered fade-up (0.15s stagger, y: 35->0, duration 1.1s)
+   * - 4-Column trust grid with staggered fade-up (0.15s stagger, y: 75->0, duration 1.2s)
    * - Animated number counter for statistics (500+, 10+, 4500, 100%)
    */
   function initCraftsmanshipSection() {
     const section = document.querySelector('.section-craftsmanship');
     if (!section || typeof gsap === 'undefined' || typeof ScrollTrigger === 'undefined') return;
 
-    // 1. Staggered Column Entry
+    // 1. Staggered Column Entry with prominent 75px slide
     const columns = section.querySelectorAll('.craft-trust-col');
     if (columns.length > 0) {
-      gsap.fromTo(
-        columns,
-        {
-          opacity: 0,
-          y: prefersReducedMotion ? 0 : 35,
+      gsap.set(columns, { opacity: 0, y: 75 });
+      gsap.to(columns, {
+        opacity: 1,
+        y: 0,
+        stagger: 0.16,
+        duration: 1.2,
+        ease: 'power3.out',
+        scrollTrigger: {
+          trigger: columns[0],
+          start: 'top 85%',
+          once: true,
+          onEnter: () => console.log('[Elysium GSAP] Section 3: Trust pillars entered'),
         },
-        {
-          opacity: 1,
-          y: 0,
-          stagger: 0.15,
-          duration: 1.05,
-          ease: 'power3.out',
-          scrollTrigger: {
-            trigger: section,
-            start: 'top 75%',
-            once: true,
-            onEnter: () => console.log('[Elysium GSAP] Section 3: Trust pillars entered'),
-          },
-        }
-      );
+      });
     }
 
     // 2. Stat Number Counter Animation (Count up from 0)
-    const statCounters = section.querySelectorAll('.stat-number-counter');
-    statCounters.forEach((stat) => {
+    const statBoxes = section.querySelectorAll('.stat-counter-box');
+    statBoxes.forEach((box) => {
+      const stat = box.querySelector('.stat-number-counter');
+      if (!stat) return;
+
       const targetVal = parseInt(stat.getAttribute('data-target'), 10) || 0;
       const counterObj = { val: 0 };
 
       ScrollTrigger.create({
-        trigger: stat,
-        start: 'top 85%',
+        trigger: box,
+        start: 'top 88%',
         once: true,
         onEnter: () => {
           console.log(`[Elysium GSAP] Section 3: Stat counter counting to ${targetVal}`);
@@ -330,12 +304,12 @@
       });
     });
 
-    console.log(`[Elysium GSAP] Section 3: Craftsmanship pillars (${columns.length}) and stat counters (${statCounters.length}) initialized.`);
+    console.log(`[Elysium GSAP] Section 3: Craftsmanship pillars (${columns.length}) and stat counters initialized.`);
   }
 
   /**
    * SECTION 4 — FEATURED PRODUCTS GRID ANIMATION
-   * - Cards fade + slide up on scroll entry with light stagger (0.12s stagger, y: 35->0, duration 1.1s)
+   * - Cards fade + slide up on scroll entry as each card/row enters viewport
    * - Smooth hover zoom (scale 1 -> 1.06, 0.5s) in overflow-hidden container
    */
   function initFeaturedProductsSection() {
@@ -343,37 +317,34 @@
     if (!section || typeof gsap === 'undefined' || typeof ScrollTrigger === 'undefined') return;
 
     const cards = section.querySelectorAll('.product-grid-card');
-    if (cards.length > 0) {
-      gsap.fromTo(
-        cards,
-        {
-          opacity: 0,
-          y: prefersReducedMotion ? 0 : 35,
-        },
-        {
-          opacity: 1,
-          y: 0,
-          stagger: 0.12,
-          duration: 1.05,
-          ease: 'power3.out',
-          scrollTrigger: {
-            trigger: section,
-            start: 'top 75%',
-            once: true,
-            onEnter: () => console.log(`[Elysium GSAP] Section 4: ${cards.length} product cards revealed`),
+    cards.forEach((card, cardIdx) => {
+      gsap.set(card, { opacity: 0, y: 80 });
+      gsap.to(card, {
+        opacity: 1,
+        y: 0,
+        duration: 1.2,
+        ease: 'power3.out',
+        scrollTrigger: {
+          trigger: card,
+          start: 'top 88%',
+          once: true,
+          onEnter: () => {
+            if (cardIdx === 0) {
+              const computed = window.getComputedStyle(card);
+              console.log(`[Elysium GSAP] Section 4: Card 1 revealed (opacity: ${computed.opacity}, transform: ${computed.transform})`);
+            }
           },
-        }
-      );
-    }
+        },
+      });
+    });
 
-    console.log(`[Elysium GSAP] Section 4: ${cards.length} featured product cards initialized.`);
+    console.log(`[Elysium GSAP] Section 4: ${cards.length} featured product cards initialized with individual triggers.`);
   }
 
   /**
    * SECTION 5 — CTA / GET IN TOUCH STRIP ANIMATION
    * - Background subtle parallax shift on scroll
-   * - Content fade + slide up on entry (opacity 0->1, y: 35->0, duration 1.1s)
-   * - Buttons smooth hover wipe transitions
+   * - Content fade + slide up on entry (opacity 0->1, y: 70->0, duration 1.2s)
    */
   function initCtaStripSection() {
     const section = document.querySelector('.section-cta-strip');
@@ -383,13 +354,13 @@
     const bgParallax = section.querySelector('.cta-bg-parallax');
     if (bgParallax && !prefersReducedMotion) {
       gsap.to(bgParallax, {
-        y: isMobileScreen() ? '8%' : '15%',
+        y: isMobileScreen() ? '15%' : '30%',
         ease: 'none',
         scrollTrigger: {
           trigger: section,
           start: 'top bottom',
           end: 'bottom top',
-          scrub: 0.5,
+          scrub: 1,
         },
       });
     }
@@ -397,26 +368,20 @@
     // Content fade up
     const ctaElements = section.querySelectorAll('.cta-fade-elem');
     if (ctaElements.length > 0) {
-      gsap.fromTo(
-        ctaElements,
-        {
-          opacity: 0,
-          y: prefersReducedMotion ? 0 : 35,
+      gsap.set(ctaElements, { opacity: 0, y: 70 });
+      gsap.to(ctaElements, {
+        opacity: 1,
+        y: 0,
+        stagger: 0.16,
+        duration: 1.2,
+        ease: 'power3.out',
+        scrollTrigger: {
+          trigger: ctaElements[0],
+          start: 'top 82%',
+          once: true,
+          onEnter: () => console.log('[Elysium GSAP] Section 5: CTA strip revealed'),
         },
-        {
-          opacity: 1,
-          y: 0,
-          stagger: 0.14,
-          duration: 1.05,
-          ease: 'power3.out',
-          scrollTrigger: {
-            trigger: section,
-            start: 'top 75%',
-            once: true,
-            onEnter: () => console.log('[Elysium GSAP] Section 5: CTA strip revealed'),
-          },
-        }
-      );
+      });
     }
 
     console.log('[Elysium GSAP] Section 5: CTA strip initialized.');
@@ -433,25 +398,20 @@
     );
 
     if (subpageCards.length > 0) {
-      gsap.fromTo(
-        subpageCards,
-        {
-          opacity: 0,
-          y: prefersReducedMotion ? 0 : 30,
-        },
-        {
+      subpageCards.forEach((card) => {
+        gsap.set(card, { opacity: 0, y: 50 });
+        gsap.to(card, {
           opacity: 1,
           y: 0,
-          stagger: 0.08,
-          duration: 0.8,
+          duration: 1.0,
           ease: 'power3.out',
           scrollTrigger: {
-            trigger: subpageCards[0],
-            start: 'top 85%',
+            trigger: card,
+            start: 'top 88%',
             once: true,
           },
-        }
-      );
+        });
+      });
     }
   }
 
@@ -490,7 +450,7 @@
     initSubpageAnimations();
     initScrollTriggerRefreshHandler();
 
-    // 3. Progressive ScrollTrigger refreshes to account for late font/image loading
+    // 3. Progressive ScrollTrigger refreshes
     if (typeof document.fonts !== 'undefined' && document.fonts.ready) {
       document.fonts.ready.then(() => {
         if (typeof ScrollTrigger !== 'undefined') {
