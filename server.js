@@ -1577,18 +1577,23 @@ app.use((err, req, res, next) => {
   }));
 });
 
-const server = app.listen(PORT, () => {
-  console.log(`[Elysium Node Server] Listening on http://localhost:${PORT}`);
-});
+if (process.env.VERCEL !== '1') {
+  const server = app.listen(PORT, () => {
+    console.log(`[Elysium Node Server] Listening on http://localhost:${PORT}`);
+  });
 
-server.on('error', (err) => {
-  if (err.code === 'EADDRINUSE') {
-    const nextPort = Number(PORT) + 1;
-    console.warn(`[Elysium] Port ${PORT} is in use, falling back to port ${nextPort}...`);
-    app.listen(nextPort, () => {
-      console.log(`[Elysium Node Server] Listening on http://localhost:${nextPort}`);
-    });
-  } else {
-    console.error('[Elysium Server Error]', err);
-  }
-});
+  server.on('error', (err) => {
+    if (err.code === 'EADDRINUSE') {
+      const nextPort = Number(PORT) + 1;
+      console.warn(`[Elysium] Port ${PORT} is in use, falling back to port ${nextPort}...`);
+      app.listen(nextPort, () => {
+        console.log(`[Elysium Node Server] Listening on http://localhost:${nextPort}`);
+      });
+    } else {
+      console.error('[Elysium Server Error]', err);
+    }
+  });
+}
+
+module.exports = app;
+
