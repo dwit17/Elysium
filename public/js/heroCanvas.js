@@ -1,4 +1,6 @@
 (function () {
+  'use strict';
+
   const TOTAL_FRAMES = 181;
   const PRIORITY_FRAME_COUNT = 15;
 
@@ -21,13 +23,10 @@
     const container = document.getElementById('hero-scroll-container');
     const canvas = document.getElementById('hero-canvas');
     const preloader = document.getElementById('hero-preloader');
-    const progressBar = document.getElementById('preloader-progress-bar');
-    const progressText = document.getElementById('preloader-progress-text');
     const storyTextEl = document.getElementById('story-overlay-text');
     const scrollProgressTextEl = document.getElementById('scroll-progress-text');
 
     if (!container || !canvas) {
-      console.warn('[HeroCanvas] Container or canvas element not found.');
       return;
     }
 
@@ -40,6 +39,7 @@
     const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
     function resizeCanvas() {
+      if (!canvas) return;
       const dpr = Math.min(window.devicePixelRatio || 1, 2);
       canvas.width = window.innerWidth * dpr;
       canvas.height = window.innerHeight * dpr;
@@ -113,6 +113,9 @@
       }
     }
 
+    // Expose for external smooth scrollers (Lenis / GSAP)
+    window.__elysiumUpdateHero = updateScroll;
+
     function loadSingleFrame(index) {
       return new Promise((resolve) => {
         if (images[index] && loadedMap[index]) {
@@ -131,15 +134,15 @@
 
         img.onload = () => done(true);
         img.onerror = () => done(false);
-        // 1.5s timeout per frame to never stall
-        setTimeout(() => done(false), 1500);
+        setTimeout(() => done(false), 1200);
         img.src = getFramePath(index);
       });
     }
 
     let isDisposed = false;
     function dismissPreloader() {
-      if (preloader && preloader.style.display !== 'none') {
+      if (preloader) {
+        preloader.style.pointerEvents = 'none';
         preloader.style.opacity = '0';
         setTimeout(() => {
           if (preloader) preloader.style.display = 'none';
@@ -148,14 +151,14 @@
     }
 
     async function startLoading() {
-      // Hard fallback timer: preloader disappears after 600ms no matter what
+      // Safety fallback: preloader dismisses after 500ms max
       const safetyTimer = setTimeout(() => {
         dismissPreloader();
         resizeCanvas();
         drawFrame(0);
-      }, 600);
+      }, 500);
 
-      // Load priority frames in parallel
+      // Priority initial frames
       const priorityPromises = [];
       for (let i = 0; i < PRIORITY_FRAME_COUNT; i++) {
         priorityPromises.push(loadSingleFrame(i));

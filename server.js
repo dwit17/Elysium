@@ -74,6 +74,7 @@ const PRODUCTS = [
     slug: 'caelum-vessel',
     name: 'Caelum Vessel',
     category: 'Vessels',
+    price: '₹18,500',
     material: 'Organic Stoneware Clay',
     artisan: 'Matteo Ghiberti',
     description: 'A hand-turned vessel formed from raw iron-dense silicate clay, unglazed to preserve earthy tactility.',
@@ -88,6 +89,7 @@ const PRODUCTS = [
     slug: 'solis-travertine-console',
     name: 'Solis Travertine Console',
     category: 'Furniture',
+    price: '₹64,000',
     material: 'Super Fine Travertine Stone',
     artisan: 'Sandro Moretti',
     description: 'Architectural console carved from solid Italian travertine slabs with natural geomorphic veining.',
@@ -102,6 +104,7 @@ const PRODUCTS = [
     slug: 'estia-pendant-light',
     name: 'Estia Pendant Light',
     category: 'Lighting',
+    price: '₹22,000',
     material: 'Textured Lime Plaster Finish',
     artisan: 'Eleni Kora',
     description: 'Minimalist dome pendant emitting a warm downlight through hand-troweled lime plaster.',
@@ -116,6 +119,7 @@ const PRODUCTS = [
     slug: 'monolith-lounge-chair',
     name: 'Monolith Lounge Chair',
     category: 'Furniture',
+    price: '₹48,000',
     material: 'Sculptural White Oak',
     artisan: 'Kenji Yoshino',
     description: 'Low-slung, solid timber chair carved from slow-grown northern white oak.',
@@ -130,6 +134,7 @@ const PRODUCTS = [
     slug: 'terra-plaster-relief',
     name: 'Terra Plaster Relief',
     category: 'Sculpture',
+    price: '₹32,000',
     material: 'Mineral Plaster & Ash',
     artisan: 'Elysium Collective',
     description: 'Monochromatic wall sculpture exploring light, depth, and shadow through natural plaster planes.',
@@ -144,6 +149,7 @@ const PRODUCTS = [
     slug: 'aura-alabaster-bowl',
     name: 'Aura Alabaster Bowl',
     category: 'Vessels',
+    price: '₹14,000',
     material: 'Translucent Travertine Stone',
     artisan: 'Lorenzo Vane',
     description: 'Shallow stone bowl hollowed by hand from select dense travertine.',
@@ -152,12 +158,13 @@ const PRODUCTS = [
     weight: '6.2 kg',
     origin: 'Tuscany / Rajkot Atelier',
     image: '/images/photo-1578749556568-bc2c40e68b61',
-    featured: false,
+    featured: true,
   },
   {
     slug: 'chronos-storage-jar',
     name: 'Chronos Storage Jar',
     category: 'Vessels',
+    price: '₹16,500',
     material: 'Unglazed Organic Clay',
     artisan: 'Dimitris Vance',
     description: 'Tall storage vessel with raw tactile exterior and hand-fitted ceramic stopper.',
@@ -172,6 +179,7 @@ const PRODUCTS = [
     slug: 'nidus-block-stool',
     name: 'Nidus Block Stool',
     category: 'Furniture',
+    price: '₹26,000',
     material: 'Sculptural White Oak',
     artisan: 'Stefan Meyer',
     description: 'Solid timber block carved with subtle concave seat ergonomics.',
@@ -548,8 +556,14 @@ function renderPage({ title, description, path, content, isHeroPage = false }) {
     })();
   </script>
 
+  <!-- GSAP, ScrollTrigger & Lenis (Local Vendor Bundles) -->
+  <script src="/js/vendor/gsap.min.js"></script>
+  <script src="/js/vendor/ScrollTrigger.min.js"></script>
+  <script src="/js/vendor/lenis.min.js"></script>
+
   <script src="/js/main.js"></script>
   ${isHeroPage ? '<script src="/js/heroCanvas.js"></script>' : ''}
+  <script src="/js/homeAnimations.js"></script>
   <script>
     (function() {
       if (location.hostname === 'localhost' || location.hostname === '127.0.0.1') {
@@ -578,11 +592,97 @@ function renderPage({ title, description, path, content, isHeroPage = false }) {
 </html>`;
 }
 
-// 1. Home Page Route
+// 1. Home Page Route with 5 Core Interactive Sections
 app.get('/', (req, res) => {
   const whatsappUrl = createWhatsAppLink();
-  const featured = PRODUCTS.filter(p => p.featured).slice(0, 4);
+  const featuredProducts = PRODUCTS.filter(p => p.featured).slice(0, 6);
 
+  // Categories for Section 2 (Collections Showcase)
+  const collectionCategories = [
+    {
+      id: 'living-room',
+      title: 'Living Room',
+      eyebrow: 'CHAPTER 01',
+      description: 'Architectural consoles in natural Italian travertine, low-slung lounge chairs, and hand-carved stone plinths anchoring the central home with quiet dignity.',
+      linkText: 'Explore Living Room',
+      linkHref: '/artisan-pieces',
+      image: '/images/photo-1616486338812-3dadae4b4ace',
+      imageAlt: 'Living Room Travertine Console & Minimalist Decor',
+      ambientThumbs: [
+        { src: '/images/photo-1612196808214-b8e1d6145a8c', top: '12%', left: '8%', size: 'w-16 h-16' },
+        { src: '/images/photo-1578749556568-bc2c40e68b61', top: '72%', left: '14%', size: 'w-20 h-20' },
+        { src: '/images/photo-1592078615290-033ee584e267', top: '20%', right: '10%', size: 'w-16 h-16' },
+        { src: '/images/photo-1507473885765-e6ed057f782c', top: '78%', right: '15%', size: 'w-18 h-18' },
+        { src: '/images/photo-1600121848594-d8644e57abab', top: '45%', left: '4%', size: 'w-14 h-14' },
+      ],
+    },
+    {
+      id: 'bedroom',
+      title: 'Bedroom',
+      eyebrow: 'CHAPTER 02',
+      description: 'Serene minimalist silhouettes and tactile bedside forms crafted from solid seasoned oak and matte mineral plaster for restorative rest.',
+      linkText: 'Explore Bedroom',
+      linkHref: '/artisan-pieces',
+      image: '/images/photo-1592078615290-033ee584e267',
+      imageAlt: 'Sculptural White Oak Bedroom Seating and Plaster Relief',
+      ambientThumbs: [
+        { src: '/images/photo-1615529182904-14819c35db37', top: '15%', left: '10%', size: 'w-20 h-20' },
+        { src: '/images/photo-1616486338812-3dadae4b4ace', top: '68%', left: '7%', size: 'w-16 h-16' },
+        { src: '/images/photo-1567538096630-e0c55bd6374c', top: '22%', right: '8%', size: 'w-18 h-18' },
+        { src: '/images/photo-1612196808214-b8e1d6145a8c', top: '75%', right: '12%', size: 'w-16 h-16' },
+      ],
+    },
+    {
+      id: 'dining',
+      title: 'Dining',
+      eyebrow: 'CHAPTER 03',
+      description: 'Monolithic block tables, hand-turned vessel centerpieces, and seating with authentic wabi-sabi timber joins.',
+      linkText: 'Explore Dining',
+      linkHref: '/artisan-pieces',
+      image: '/images/photo-1567538096630-e0c55bd6374c',
+      imageAlt: 'Sculptural Oak Block Stool and Handcrafted Dining Decor',
+      ambientThumbs: [
+        { src: '/images/photo-1578749556568-bc2c40e68b61', top: '18%', left: '12%', size: 'w-16 h-16' },
+        { src: '/images/photo-1600121848594-d8644e57abab', top: '65%', left: '8%', size: 'w-20 h-20' },
+        { src: '/images/photo-1616486338812-3dadae4b4ace', top: '15%', right: '14%', size: 'w-16 h-16' },
+        { src: '/images/photo-1507473885765-e6ed057f782c', top: '80%', right: '9%', size: 'w-18 h-18' },
+      ],
+    },
+    {
+      id: 'lighting',
+      title: 'Lighting',
+      eyebrow: 'CHAPTER 04',
+      description: 'Pendant domes hand-troweled in pulverized pumice and lime plaster, diffusing incident room lighting with soft ambient warmth.',
+      linkText: 'Explore Lighting',
+      linkHref: '/artisan-pieces',
+      image: '/images/photo-1507473885765-e6ed057f782c',
+      imageAlt: 'Estia Textured Lime Plaster Pendant Light',
+      ambientThumbs: [
+        { src: '/images/photo-1612196808214-b8e1d6145a8c', top: '14%', left: '9%', size: 'w-16 h-16' },
+        { src: '/images/photo-1615529182904-14819c35db37', top: '70%', left: '15%', size: 'w-18 h-18' },
+        { src: '/images/photo-1592078615290-033ee584e267', top: '25%', right: '11%', size: 'w-20 h-20' },
+        { src: '/images/photo-1578749556568-bc2c40e68b61', top: '75%', right: '6%', size: 'w-16 h-16' },
+      ],
+    },
+    {
+      id: 'decor-accents',
+      title: 'Decor Accents',
+      eyebrow: 'CHAPTER 05',
+      description: 'Tactile stoneware vessels, relief sculptures, and raw alabaster bowls shaped by the patient touch of master craftsmen.',
+      linkText: 'Explore Decor Accents',
+      linkHref: '/artisan-pieces',
+      image: '/images/photo-1612196808214-b8e1d6145a8c',
+      imageAlt: 'Caelum Unglazed Stoneware Clay Vessel',
+      ambientThumbs: [
+        { src: '/images/photo-1615529182904-14819c35db37', top: '10%', left: '14%', size: 'w-20 h-20' },
+        { src: '/images/photo-1600121848594-d8644e57abab', top: '65%', left: '8%', size: 'w-16 h-16' },
+        { src: '/images/photo-1578749556568-bc2c40e68b61', top: '20%', right: '8%', size: 'w-18 h-18' },
+        { src: '/images/photo-1616486338812-3dadae4b4ace', top: '78%', right: '12%', size: 'w-16 h-16' },
+      ],
+    },
+  ];
+
+  // HERO: Brand Opening Canvas
   const heroSection = `
   <div id="hero-scroll-container">
     <div class="hero-sticky-viewport">
@@ -615,80 +715,386 @@ app.get('/', (req, res) => {
 
         <div class="flex justify-between items-end border-t border-white border-opacity-10 pt-4 interactive-element">
           <div id="scroll-progress-text" class="text-[9px] font-mono tracking-widest text-stone-400 uppercase">SCROLL PROGRESS: 0%</div>
-          <div class="flex items-center gap-2 text-[10px] uppercase tracking-[0.3em] font-mono text-stone-300">SCROLL TO BUILD ↓</div>
+          <div class="flex items-center gap-2 text-[10px] uppercase tracking-[0.3em] font-mono text-stone-300">SCROLL TO DISCOVER ↓</div>
         </div>
       </div>
     </div>
   </div>`;
 
-  const philosophyTeaser = `
-  <!-- Philosophy Teaser -->
-  <section class="py-28 bg-black text-white border-t border-stone-800 px-6 md:px-12 lg:px-24">
+  // SECTION 1: Brand Story / Philosophy
+  const sectionBrandStory = `
+  <section class="section-brand-story py-28 sm:py-36 px-6 md:px-12 lg:px-24 border-t border-stone-800">
     <div class="max-w-7xl mx-auto">
-      <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
-        <div class="lg:col-span-5 space-y-6">
-          <span class="text-[10px] tracking-[0.45em] uppercase text-stone-400 font-mono block">Philosophical Foundation</span>
-          <h2 class="text-3xl sm:text-4xl lg:text-5xl font-light tracking-wide text-white leading-tight font-sans">Designed for silence. Built for generations.</h2>
-          <div class="w-12 h-0.5 bg-stone-600 my-6"></div>
-          <p class="text-sm text-stone-400 leading-relaxed font-light max-w-md">At Elysium, we believe a home is a sanctuary where objects shouldn’t compete for attention. Our pieces are formed slowly with deep respect for raw earth mediums.</p>
-          <div class="pt-4"><a href="/philosophy" class="text-xs uppercase tracking-[0.25em] text-white hover:text-amber-200 font-medium transition-colors">Read Full Philosophy &rarr;</a></div>
-        </div>
-        <div class="lg:col-span-7 space-y-8">
-          ${renderBaroqueBox({
-            content: `
-              <p class="text-lg md:text-xl font-light italic text-stone-200 leading-relaxed">
-                “The hand of the artisan creates a conversation with raw geological history. When you hold a vessel or rest on a carved console, you interact with limestone that lay quiet for five epochs.”
-              </p>
-              <span class="text-[10px] font-mono text-amber-500 uppercase tracking-widest block pt-4">— Atelier Master Sculptor</span>
-            `,
-            className: 'p-8 md:p-12'
-          })}
-        </div>
-      </div>
-    </div>
-  </section>
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16 items-center">
+        
+        <!-- Left: Poetic Brand Copy -->
+        <div class="lg:col-span-6 space-y-8">
+          <div class="story-eyebrow text-amber-500 font-mono text-[10px] sm:text-xs tracking-[0.4em] uppercase">
+            <span class="eyebrow-word">THE</span>
+            <span class="eyebrow-word">ELYSIUM</span>
+            <span class="eyebrow-word">DESIGN</span>
+            <span class="eyebrow-word">PHILOSOPHY</span>
+          </div>
 
-  <!-- Featured Pieces -->
-  <section class="py-28 bg-black text-white border-t border-stone-800 px-6 md:px-12 lg:px-24">
-    <div class="max-w-7xl mx-auto">
-      <div class="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-16 border-b border-stone-800 pb-8">
-        <div>
-          <span class="text-[10px] tracking-[0.45em] uppercase text-amber-500 font-mono block">Artisan Collection</span>
-          <h2 class="text-3xl lg:text-5xl font-light tracking-wide text-white uppercase font-sans">Selected Pieces</h2>
+          <h2 class="text-3xl sm:text-4xl lg:text-5xl font-light tracking-wide text-white uppercase font-sans leading-tight">
+            Global Design Sensibility, <br>
+            <span class="italic font-serif text-stone-300">Rooted in Rajkot Craftsmanship</span>
+          </h2>
+
+          <div class="w-16 h-px bg-stone-700"></div>
+
+          <div class="space-y-5 text-sm sm:text-base text-stone-300 font-light leading-relaxed">
+            <p class="story-copy-block">
+              We believe a home should never compete for attention. In a world saturated with synthetic gloss and mass replication, Elysium creates tactile sanctuaries anchored by the raw quiet of organic earth mediums.
+            </p>
+            <p class="story-copy-block">
+              Our collection harmonizes historic Mediterranean restraint—honed limestone, pit-fired stoneware, and unsealed white oak—with the precision and generational artistry of our master sculptors at our Rajkot atelier.
+            </p>
+            <p class="story-copy-block">
+              Every curve, fissure, and shadow line is intentional. Crafted without synthetic lacquers or chemical adhesives, each piece celebrates the natural wabi-sabi spirit of timeless living spaces.
+            </p>
+          </div>
+
+          <div class="pt-4 story-copy-block">
+            <a href="/philosophy" class="inline-flex items-center gap-3 text-xs uppercase tracking-[0.25em] text-white hover:text-amber-400 font-medium transition-colors border-b border-white/40 pb-1 hover:border-amber-400">
+              Read Our Full Design Philosophy &rarr;
+            </a>
+          </div>
         </div>
-        <a href="/artisan-pieces" class="text-xs uppercase tracking-[0.2em] px-6 py-3 border border-stone-700 text-stone-200 hover:text-black hover:bg-white transition-all">View Full Collection &rarr;</a>
-      </div>
-      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
-        ${featured.map(p => `
-          <div class="group cursor-pointer flex flex-col justify-between space-y-4 h-full">
-            <div class="space-y-4">
-              ${renderProductImage({
-                src: p.image,
-                alt: p.name,
-                href: `/artisan-pieces/${p.slug}`,
-                imgClassName: 'absolute inset-0 w-full h-full object-cover object-center grayscale group-hover:grayscale-0 transition-all duration-700',
-                aspect: 'w-full aspect-[3/4] relative overflow-hidden'
-              })}
-              <div class="space-y-1">
-                <a href="/artisan-pieces/${p.slug}"><h3 class="text-sm font-medium text-white hover:text-amber-200 transition-colors">${p.name}</h3></a>
-                <p class="text-[11px] font-mono text-stone-400 uppercase tracking-wider">${p.material} • By ${p.artisan}</p>
+
+        <!-- Right: Stacked Overlapping Parallax Images -->
+        <div class="lg:col-span-6">
+          <div class="story-images-wrap">
+            <!-- Background Image (Moves slower on scroll) -->
+            <div class="story-bg-frame story-bg-img">
+              <div class="aspect-[4/5] relative overflow-hidden">
+                <img
+                  src="/images/photo-1615529182904-14819c35db37"
+                  alt="Terra Plaster Wall Relief by Elysium Artisans"
+                  class="w-full h-full object-cover object-center filter grayscale contrast-105"
+                  loading="lazy"
+                />
+              </div>
+              <div class="p-4 bg-stone-950 border-t border-stone-800 flex justify-between items-center text-[10px] font-mono tracking-widest text-stone-400 uppercase">
+                <span>01 • Wall Relief</span>
+                <span>Mineral Plaster</span>
               </div>
             </div>
-            <div class="pt-2 flex items-center justify-between border-t border-stone-800/50">
-              <a href="${createWhatsAppLink(p.name)}" target="_blank" rel="noopener noreferrer" class="text-[10px] uppercase tracking-[0.2em] text-stone-400 hover:text-amber-300 transition-colors">Enquire &rarr;</a>
-              <a href="/artisan-pieces/${p.slug}" class="text-[10px] font-mono uppercase tracking-widest text-stone-500 hover:text-stone-300">Specs &rarr;</a>
+
+            <!-- Foreground Overlapping Image (Moves faster on scroll) -->
+            <div class="story-fg-frame story-fg-img">
+              <div class="aspect-[3/4] relative overflow-hidden">
+                <img
+                  src="/images/photo-1612196808214-b8e1d6145a8c"
+                  alt="Caelum Handcrafted Stoneware Vessel"
+                  class="w-full h-full object-cover object-center filter contrast-110"
+                  loading="lazy"
+                />
+              </div>
+              <div class="p-4 bg-stone-900 border-t border-stone-700 flex justify-between items-center text-[10px] font-mono tracking-widest text-stone-300 uppercase">
+                <span>02 • Caelum Vessel</span>
+                <span>Organic Clay</span>
+              </div>
             </div>
           </div>
-        `).join('')}
+        </div>
+
       </div>
     </div>
   </section>`;
 
+  // SECTION 2: Collections Showcase (The Chapter Feature)
+  const sectionCollectionsShowcase = `
+  <section class="section-collections-showcase bg-black">
+    ${collectionCategories.map((cat, idx) => `
+      <div id="${cat.id}" class="collection-chapter min-h-screen py-24 sm:py-32 px-6 md:px-12 lg:px-24 border-t border-stone-800/80 relative flex items-center">
+        
+        <!-- Ambient Floating Decorative Thumbnails (Continuous Gentle Drift) -->
+        ${cat.ambientThumbs.map(t => `
+          <div class="ambient-thumb ${t.size} overflow-hidden" style="top: ${t.top}; ${t.left ? `left: ${t.left};` : ''} ${t.right ? `right: ${t.right};` : ''} opacity: 0.22;">
+            <img src="${t.src}" alt="Elysium Ambient Detail" class="w-full h-full object-cover grayscale" loading="lazy" />
+          </div>
+        `).join('')}
+
+        <div class="max-w-7xl mx-auto w-full relative z-10">
+          <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16 items-center">
+            
+            <!-- Category Image Column (Pinned during scroll on Desktop) -->
+            <div class="lg:col-span-7 ${idx % 2 === 1 ? 'lg:order-2' : 'lg:order-1'}">
+              <div class="chapter-pinned-col relative">
+                <div class="relative overflow-hidden aspect-[4/3] sm:aspect-[16/10] border border-stone-800 bg-stone-950 shadow-2xl group">
+                  <img
+                    src="${cat.image}"
+                    alt="${cat.imageAlt}"
+                    class="w-full h-full object-cover object-center filter contrast-[1.05] transition-transform duration-700 group-hover:scale-105"
+                    loading="lazy"
+                  />
+                  <div class="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent"></div>
+                  <div class="absolute bottom-6 left-6 right-6 flex justify-between items-center text-[10px] font-mono tracking-widest uppercase text-stone-300">
+                    <span>${cat.eyebrow} • COLLECTION</span>
+                    <span>ATELIER RAJKOT</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Category Descriptive Content Column -->
+            <div class="lg:col-span-5 ${idx % 2 === 1 ? 'lg:order-1' : 'lg:order-2'} space-y-6">
+              <span class="chapter-detail-elem text-[10px] font-mono tracking-[0.45em] uppercase text-amber-500 block">${cat.eyebrow}</span>
+              
+              <!-- Masked Oversized Category Name Reveal -->
+              <div class="chapter-title-mask">
+                <h2 class="chapter-title-inner text-4xl sm:text-5xl lg:text-6xl font-light tracking-wide text-white uppercase font-sans leading-tight">
+                  ${cat.title}
+                </h2>
+              </div>
+
+              <div class="w-12 h-px bg-stone-700 chapter-detail-elem"></div>
+
+              <p class="chapter-detail-elem text-sm sm:text-base text-stone-300 font-light leading-relaxed max-w-md">
+                ${cat.description}
+              </p>
+
+              <div class="pt-4 chapter-detail-elem">
+                <a href="${cat.linkHref}" class="btn-wipe-secondary inline-flex items-center gap-3 px-7 py-3.5 text-xs font-semibold uppercase tracking-[0.25em]">
+                  ${cat.linkText} &rarr;
+                </a>
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+      </div>
+    `).join('')}
+  </section>`;
+
+  // SECTION 3: Craftsmanship / Why Us
+  const sectionCraftsmanship = `
+  <section class="section-craftsmanship py-28 sm:py-36 px-6 md:px-12 lg:px-24 border-t border-stone-800">
+    <div class="max-w-7xl mx-auto space-y-20">
+      
+      <!-- Section Header -->
+      <div class="max-w-3xl space-y-4">
+        <span class="text-[10px] tracking-[0.45em] uppercase text-amber-500 font-mono block">THE ELYSIUM STANDARD</span>
+        <h2 class="text-3xl sm:text-5xl font-light tracking-wide text-white uppercase font-sans">
+          Purity in Sourcing. <br>
+          <span class="italic font-serif text-stone-300">Mastery in Execution.</span>
+        </h2>
+        <p class="text-sm text-stone-400 font-light leading-relaxed max-w-2xl">
+          Every piece in the Elysium collection is an uncompromising dialogue between raw geological medium and centuries-old artisan techniques.
+        </p>
+      </div>
+
+      <!-- 4-Column Trust Grid -->
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
+        
+        <!-- Pillar 01 -->
+        <div class="craft-trust-col craft-trust-card p-8 bg-stone-950/80 border border-stone-800 flex flex-col justify-between space-y-6">
+          <div class="space-y-4">
+            <div class="w-10 h-10 rounded-full border border-stone-700 flex items-center justify-center text-amber-400 font-mono text-xs">
+              01
+            </div>
+            <h3 class="text-lg font-light tracking-wider text-white uppercase font-sans">Handpicked Materials</h3>
+            <p class="text-xs text-stone-400 font-light leading-relaxed">
+              Zero artificial resins, chemical glues, or faux veneers. We harvest unrefined travertine, iron-rich clays, and aged white oak with organic certification.
+            </p>
+          </div>
+          <span class="text-[10px] font-mono text-stone-500 uppercase tracking-widest">100% RAW MEDIUMS</span>
+        </div>
+
+        <!-- Pillar 02 -->
+        <div class="craft-trust-col craft-trust-card p-8 bg-stone-950/80 border border-stone-800 flex flex-col justify-between space-y-6">
+          <div class="space-y-4">
+            <div class="w-10 h-10 rounded-full border border-stone-700 flex items-center justify-center text-amber-400 font-mono text-xs">
+              02
+            </div>
+            <h3 class="text-lg font-light tracking-wider text-white uppercase font-sans">Assembled in Rajkot</h3>
+            <p class="text-xs text-stone-400 font-light leading-relaxed">
+              Our dedicated 4,500 sq. ft. atelier in Rajkot serves as the physical home where raw blocks are hand-cut, joined, and buffed with natural mountain beeswax.
+            </p>
+          </div>
+          <span class="text-[10px] font-mono text-stone-500 uppercase tracking-widest">LOCAL MASTER ATELIER</span>
+        </div>
+
+        <!-- Pillar 03 -->
+        <div class="craft-trust-col craft-trust-card p-8 bg-stone-950/80 border border-stone-800 flex flex-col justify-between space-y-6">
+          <div class="space-y-4">
+            <div class="w-10 h-10 rounded-full border border-stone-700 flex items-center justify-center text-amber-400 font-mono text-xs">
+              03
+            </div>
+            <h3 class="text-lg font-light tracking-wider text-white uppercase font-sans">Multi-Point Curation</h3>
+            <p class="text-xs text-stone-400 font-light leading-relaxed">
+              Every individual piece undergoes rigorous tactile balance, weight distribution, and fissure integrity evaluations before leaving our workshop.
+            </p>
+          </div>
+          <span class="text-[10px] font-mono text-stone-500 uppercase tracking-widest">LIFETIME STRUCTURAL INTEGRITY</span>
+        </div>
+
+        <!-- Pillar 04 -->
+        <div class="craft-trust-col craft-trust-card p-8 bg-stone-950/80 border border-stone-800 flex flex-col justify-between space-y-6">
+          <div class="space-y-4">
+            <div class="w-10 h-10 rounded-full border border-stone-700 flex items-center justify-center text-amber-400 font-mono text-xs">
+              04
+            </div>
+            <h3 class="text-lg font-light tracking-wider text-white uppercase font-sans">Direct From Artisans</h3>
+            <p class="text-xs text-stone-400 font-light leading-relaxed">
+              We maintain direct, transparent partnerships with generational stone-carvers and ceramicists, ensuring genuine provenance and ethical value.
+            </p>
+          </div>
+          <span class="text-[10px] font-mono text-stone-500 uppercase tracking-widest">FAIR ARTISAN TRADE</span>
+        </div>
+
+      </div>
+
+      <!-- Stat Counter Bar (Scrolled into view counter animation) -->
+      <div class="grid grid-cols-2 lg:grid-cols-4 gap-6 pt-6 border-t border-stone-800/80">
+        
+        <div class="stat-counter-box p-6 text-center space-y-2">
+          <div class="text-3xl sm:text-4xl lg:text-5xl font-light text-white font-sans tracking-tight">
+            <span class="stat-number-counter text-amber-400" data-target="500">0</span>+
+          </div>
+          <span class="text-[10px] sm:text-xs font-mono tracking-widest text-stone-400 uppercase block">Residences Transformed</span>
+        </div>
+
+        <div class="stat-counter-box p-6 text-center space-y-2">
+          <div class="text-3xl sm:text-4xl lg:text-5xl font-light text-white font-sans tracking-tight">
+            <span class="stat-number-counter text-amber-400" data-target="10">0</span>+
+          </div>
+          <span class="text-[10px] sm:text-xs font-mono tracking-widest text-stone-400 uppercase block">Years Sourcing Antiquities</span>
+        </div>
+
+        <div class="stat-counter-box p-6 text-center space-y-2">
+          <div class="text-3xl sm:text-4xl lg:text-5xl font-light text-white font-sans tracking-tight">
+            <span class="stat-number-counter text-amber-400" data-target="4500">0</span>
+          </div>
+          <span class="text-[10px] sm:text-xs font-mono tracking-widest text-stone-400 uppercase block">Sq. Ft. Atelier in Rajkot</span>
+        </div>
+
+        <div class="stat-counter-box p-6 text-center space-y-2">
+          <div class="text-3xl sm:text-4xl lg:text-5xl font-light text-white font-sans tracking-tight">
+            <span class="stat-number-counter text-amber-400" data-target="100">0</span>%
+          </div>
+          <span class="text-[10px] sm:text-xs font-mono tracking-widest text-stone-400 uppercase block">Chemical-Free Handcraft</span>
+        </div>
+
+      </div>
+
+    </div>
+  </section>`;
+
+  // SECTION 4: Featured Products Grid
+  const sectionFeaturedProducts = `
+  <section class="section-featured-products py-28 sm:py-36 px-6 md:px-12 lg:px-24 border-t border-stone-800">
+    <div class="max-w-7xl mx-auto space-y-16">
+      
+      <div class="flex flex-col md:flex-row md:items-end justify-between gap-6 border-b border-stone-800 pb-8">
+        <div class="space-y-3">
+          <span class="text-[10px] tracking-[0.45em] uppercase text-amber-500 font-mono block">BESTSELLING ATELIER PIECES</span>
+          <h2 class="text-3xl sm:text-4xl lg:text-5xl font-light tracking-wide text-white uppercase font-sans">Featured Collection</h2>
+        </div>
+        <a href="/artisan-pieces" class="btn-wipe-secondary inline-flex items-center gap-3 px-6 py-3.5 text-xs font-semibold uppercase tracking-[0.2em] self-start md:self-auto">
+          View Complete Catalogue &rarr;
+        </a>
+      </div>
+
+      <!-- Responsive Product Grid (3 col desktop, 2 col tablet, 1 col mobile) -->
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 sm:gap-10">
+        ${featuredProducts.map(p => `
+          <div class="product-grid-card product-card-hover group flex flex-col justify-between h-full p-4">
+            
+            <div class="space-y-4">
+              <!-- Image with Hover Zoom Container -->
+              <div class="product-card-img-wrap">
+                <img
+                  src="${p.image}"
+                  alt="${p.name} - Handcrafted by ${p.artisan}"
+                  class="product-card-img"
+                  loading="lazy"
+                />
+                
+                <!-- Quick Hover Action Overlay -->
+                <div class="product-card-overlay">
+                  <a href="/artisan-pieces/${p.slug}" class="px-6 py-3 bg-white text-black text-xs font-semibold uppercase tracking-[0.2em] hover:bg-stone-200 transition-colors shadow-lg">
+                    View Product Details &rarr;
+                  </a>
+                </div>
+              </div>
+
+              <!-- Product Details -->
+              <div class="space-y-2 pt-2">
+                <div class="flex justify-between items-baseline gap-2">
+                  <a href="/artisan-pieces/${p.slug}">
+                    <h3 class="text-base font-medium text-white group-hover:text-amber-300 transition-colors uppercase tracking-wider">${p.name}</h3>
+                  </a>
+                  <span class="text-xs font-mono text-amber-400 font-semibold tracking-wider">${p.price}</span>
+                </div>
+                <p class="text-xs text-stone-400 font-light line-clamp-2">${p.description}</p>
+                <div class="text-[10px] font-mono text-stone-500 uppercase tracking-widest">
+                  ${p.material} • By ${p.artisan}
+                </div>
+              </div>
+            </div>
+
+            <!-- Footer Card Links -->
+            <div class="pt-4 mt-4 flex items-center justify-between border-t border-stone-800/80">
+              <a href="${createWhatsAppLink(p.name)}" target="_blank" rel="noopener noreferrer" class="text-[10px] uppercase tracking-[0.2em] text-stone-300 hover:text-amber-400 transition-colors inline-flex items-center gap-1 font-medium">
+                Enquire via WhatsApp &rarr;
+              </a>
+              <a href="/artisan-pieces/${p.slug}" class="text-[10px] font-mono uppercase tracking-widest text-stone-500 hover:text-white transition-colors">
+                Specs &rarr;
+              </a>
+            </div>
+
+          </div>
+        `).join('')}
+      </div>
+
+    </div>
+  </section>`;
+
+  // SECTION 5: CTA / Get in Touch Strip
+  const sectionCtaStrip = `
+  <section class="section-cta-strip py-32 sm:py-44 px-6 md:px-12 lg:px-24 border-t border-stone-800 text-center relative flex items-center justify-center">
+    
+    <!-- Background Subtle Parallax Image & Radial Vignette -->
+    <div class="cta-bg-parallax"></div>
+
+    <div class="max-w-4xl mx-auto space-y-8 relative z-10 cta-content">
+      <span class="cta-fade-elem text-[10px] sm:text-xs tracking-[0.5em] uppercase text-amber-400 font-mono block">
+        FROM FIVE, EVERYTHING BEGINS
+      </span>
+
+      <h2 class="cta-fade-elem text-4xl sm:text-6xl lg:text-7xl font-light tracking-wide text-white uppercase font-sans leading-tight">
+        Bring This Home.
+      </h2>
+
+      <p class="cta-fade-elem text-sm sm:text-base text-stone-300 font-light max-w-xl mx-auto leading-relaxed">
+        Experience raw tactile grandeur in person at our 4,500 sq. ft. display atelier in Rajkot, or connect directly with our curators for custom residential and bespoke sourcing consultations.
+      </p>
+
+      <div class="cta-fade-elem flex flex-col sm:flex-row items-center justify-center gap-5 pt-4">
+        <a href="${whatsappUrl}" target="_blank" rel="noopener noreferrer" class="btn-wipe-primary w-full sm:w-auto px-9 py-4 font-semibold text-xs uppercase tracking-[0.25em] shadow-xl inline-flex items-center justify-center gap-2">
+          Consult on WhatsApp &rarr;
+        </a>
+        <a href="/artisan-pieces" class="btn-wipe-secondary w-full sm:w-auto px-9 py-4 font-semibold text-xs uppercase tracking-[0.25em] inline-flex items-center justify-center gap-2">
+          Browse Full Catalogue
+        </a>
+      </div>
+
+      <div class="cta-fade-elem pt-6 text-[10px] font-mono tracking-widest text-stone-500 uppercase">
+        SHOWROOM VISITS BY APPOINTMENT & DIRECT ATELIER CONSULTATIONS
+      </div>
+    </div>
+
+  </section>`;
+
+  // Render combined page with the 5 sections between Hero and Footer
   res.send(renderPage({
     title: 'Elysium | Artisan Minimalist Home Decor, Handcrafted in India',
     description: BRAND.heroStatement,
     path: '/',
-    content: heroSection + philosophyTeaser,
+    content: heroSection + sectionBrandStory + sectionCollectionsShowcase + sectionCraftsmanship + sectionFeaturedProducts + sectionCtaStrip,
     isHeroPage: true,
   }));
 });
@@ -1171,6 +1577,18 @@ app.use((err, req, res, next) => {
   }));
 });
 
-app.listen(PORT, () => {
+const server = app.listen(PORT, () => {
   console.log(`[Elysium Node Server] Listening on http://localhost:${PORT}`);
+});
+
+server.on('error', (err) => {
+  if (err.code === 'EADDRINUSE') {
+    const nextPort = Number(PORT) + 1;
+    console.warn(`[Elysium] Port ${PORT} is in use, falling back to port ${nextPort}...`);
+    app.listen(nextPort, () => {
+      console.log(`[Elysium Node Server] Listening on http://localhost:${nextPort}`);
+    });
+  } else {
+    console.error('[Elysium Server Error]', err);
+  }
 });
