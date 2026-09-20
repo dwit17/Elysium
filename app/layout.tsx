@@ -4,7 +4,6 @@ import 'lenis/dist/lenis.css';
 import Navbar from '@/components/navigation/Navbar';
 import Footer from '@/components/layout/Footer';
 import SmoothScrollProvider from '@/components/providers/SmoothScrollProvider';
-import CustomCursor from '@/components/ui/CustomCursor';
 import { generatePageMetadata, getOrganizationSchema } from '@/lib/seo';
 
 export const metadata: Metadata = generatePageMetadata(
@@ -29,7 +28,6 @@ export default function RootLayout({
         />
       </head>
       <body className="bg-black text-white selection:bg-white selection:text-black font-sans min-h-screen flex flex-col justify-between antialiased">
-        <CustomCursor />
         <SmoothScrollProvider>
           <Navbar />
           <main className="flex-grow">{children}</main>
