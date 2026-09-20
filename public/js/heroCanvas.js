@@ -1,3 +1,8 @@
+/**
+ * ELYSIUM HERO CANVAS RENDERING ENGINE
+ * Direct Pipeline: Scroll -> ScrollTrigger -> GSAP Progress -> Canvas Frame
+ * Zero React state, zero layout thrash, precomputed aspect geometry, GPU-accelerated.
+ */
 (function () {
   'use strict';
 
@@ -31,43 +36,83 @@
       return;
     }
 
-    const ctx = canvas.getContext('2d', { alpha: false });
+    const ctx = canvas.getContext('2d', { alpha: false, desynchronized: true });
+    if (!ctx) return;
+
     const images = new Array(TOTAL_FRAMES).fill(null);
     const loadedMap = new Array(TOTAL_FRAMES).fill(false);
     let loadedCount = 0;
-    let currentFrameIndex = 0;
+    let currentFrameIndex = -1;
     let isDisposed = false;
     let hasRenderedAny = false;
     let heroScrollTrigger = null;
 
+    let lastProgressPct = -1;
+    let lastStoryText = '';
+
+    // Precomputed render metrics (zero layout recalculation during scroll)
+    const metrics = {
+      drawWidth: 0,
+      drawHeight: 0,
+      offsetX: 0,
+      offsetY: 0,
+      aspectRatio: 16 / 9, // default fallback until frame 0 loads
+      hasAspect: false,
+    };
+
     const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
-    function resizeCanvas() {
+    function updateRenderMetrics() {
       if (!canvas || isDisposed) return;
       const dpr = Math.min(window.devicePixelRatio || 1, 2);
       const w = window.innerWidth;
       const h = window.innerHeight;
 
-      canvas.width = Math.round(w * dpr);
-      canvas.height = Math.round(h * dpr);
+      const physicalWidth = Math.round(w * dpr);
+      const physicalHeight = Math.round(h * dpr);
+
+      canvas.width = physicalWidth;
+      canvas.height = physicalHeight;
       canvas.style.width = w + 'px';
       canvas.style.height = h + 'px';
 
-      drawFrame(currentFrameIndex);
+      const canvasAspect = physicalWidth / physicalHeight;
+      const imageAspect = metrics.aspectRatio;
+
+      if (canvasAspect > imageAspect) {
+        metrics.drawWidth = physicalWidth;
+        metrics.drawHeight = physicalWidth / imageAspect;
+        metrics.offsetX = 0;
+        metrics.offsetY = (physicalHeight - metrics.drawHeight) * 0.5;
+      } else {
+        metrics.drawHeight = physicalHeight;
+        metrics.drawWidth = physicalHeight * imageAspect;
+        metrics.offsetX = (physicalWidth - metrics.drawWidth) * 0.5;
+        metrics.offsetY = 0;
+      }
+    }
+
+    function resizeCanvas() {
+      updateRenderMetrics();
+      if (currentFrameIndex >= 0) {
+        drawFrame(currentFrameIndex);
+      }
     }
 
     function getFrameImage(index) {
       if (images[index] && loadedMap[index]) return images[index];
-      // Search nearest loaded frame
-      for (let offset = 1; offset < 35; offset++) {
-        if (index - offset >= 0 && images[index - offset] && loadedMap[index - offset]) {
-          return images[index - offset];
+      // Search nearest loaded frame (bidirectional)
+      for (let offset = 1; offset < 40; offset++) {
+        const prev = index - offset;
+        if (prev >= 0 && images[prev] && loadedMap[prev]) {
+          return images[prev];
         }
-        if (index + offset < TOTAL_FRAMES && images[index + offset] && loadedMap[index + offset]) {
-          return images[index + offset];
+        const next = index + offset;
+        if (next < TOTAL_FRAMES && images[next] && loadedMap[next]) {
+          return images[next];
         }
       }
-      // Return first available loaded frame
+      // Fallback: return first available loaded frame
       for (let i = 0; i < TOTAL_FRAMES; i++) {
         if (images[i] && loadedMap[i]) return images[i];
       }
@@ -75,54 +120,59 @@
     }
 
     function drawFrame(index) {
-      if (!ctx || !canvas) return;
+      if (!ctx || !canvas || isDisposed) return;
       const img = getFrameImage(index);
       if (!img || !img.complete || img.naturalWidth === 0) return;
 
-      const canvasWidth = canvas.width;
-      const canvasHeight = canvas.height;
-      if (canvasWidth === 0 || canvasHeight === 0) return;
-
-      const imageAspect = img.naturalWidth / img.naturalHeight;
-      const canvasAspect = canvasWidth / canvasHeight;
-
-      let drawWidth, drawHeight, offsetX, offsetY;
-
-      if (canvasAspect > imageAspect) {
-        drawWidth = canvasWidth;
-        drawHeight = canvasWidth / imageAspect;
-        offsetX = 0;
-        offsetY = (canvasHeight - drawHeight) / 2;
-      } else {
-        drawHeight = canvasHeight;
-        drawWidth = canvasHeight * imageAspect;
-        offsetX = (canvasWidth - drawWidth) / 2;
-        offsetY = 0;
+      if (!metrics.hasAspect && img.naturalHeight > 0) {
+        metrics.aspectRatio = img.naturalWidth / img.naturalHeight;
+        metrics.hasAspect = true;
+        updateRenderMetrics();
       }
 
-      ctx.drawImage(img, offsetX, offsetY, drawWidth, drawHeight);
+      ctx.drawImage(
+        img,
+        metrics.offsetX,
+        metrics.offsetY,
+        metrics.drawWidth,
+        metrics.drawHeight
+      );
       hasRenderedAny = true;
     }
 
-    function handleProgress(progress) {
+    /**
+     * Direct pipeline update handler called by GSAP ScrollTrigger
+     * Scroll -> ScrollTrigger -> GSAP progress -> canvas frame
+     */
+    function renderFrameByProgress(progress) {
       if (isDisposed) return;
 
-      if (scrollProgressTextEl) {
-        scrollProgressTextEl.innerText = `SCROLL PROGRESS: ${Math.round(progress * 100)}%`;
-      }
-
-      const activeStep = STORY_STEPS.find((s) => progress >= s.start && progress <= s.end);
-      if (activeStep && storyTextEl && storyTextEl.innerText !== activeStep.text) {
-        storyTextEl.innerText = activeStep.text;
-      }
-
+      // 1. Calculate target frame index
       const targetFrame = prefersReducedMotion
         ? 0
-        : Math.min(Math.round(progress * (TOTAL_FRAMES - 1)), TOTAL_FRAMES - 1);
+        : Math.min(Math.floor(progress * TOTAL_FRAMES), TOTAL_FRAMES - 1);
 
+      // 2. Direct canvas paint on frame change
       if (targetFrame !== currentFrameIndex || !hasRenderedAny) {
         currentFrameIndex = targetFrame;
         drawFrame(targetFrame);
+      }
+
+      // 3. String diff checks to avoid layout thrash on scroll
+      if (scrollProgressTextEl) {
+        const pct = Math.round(progress * 100);
+        if (lastProgressPct !== pct) {
+          lastProgressPct = pct;
+          scrollProgressTextEl.textContent = `SCROLL PROGRESS: ${pct}%`;
+        }
+      }
+
+      if (storyTextEl) {
+        const activeStep = STORY_STEPS.find((s) => progress >= s.start && progress <= s.end);
+        if (activeStep && activeStep.text !== lastStoryText) {
+          lastStoryText = activeStep.text;
+          storyTextEl.textContent = activeStep.text;
+        }
       }
     }
 
@@ -139,15 +189,15 @@
           start: 'top top',
           end: '+=2000',
           pin: true,
-          scrub: 0.5,
+          scrub: 0.1,
           anticipatePin: 1,
           invalidateOnRefresh: true,
           onUpdate: (self) => {
-            handleProgress(self.progress);
+            renderFrameByProgress(self.progress);
           },
         });
 
-        console.log('[Elysium Hero] GSAP ScrollTrigger pinning initialized.');
+        console.log('[Elysium Hero] Direct GSAP ScrollTrigger -> Canvas pipeline initialized.');
       }
     }
 
@@ -156,7 +206,7 @@
         progressBar.style.width = pct + '%';
       }
       if (progressText) {
-        progressText.innerText = `INITIALIZING SPACE ${pct}%`;
+        progressText.textContent = `INITIALIZING SPACE ${pct}%`;
       }
     }
 
@@ -185,10 +235,10 @@
           if (success) {
             images[index] = img;
             loadedCount++;
-            const pct = Math.min(Math.round((loadedCount / 10) * 100), 100);
+            const pct = Math.min(Math.round((loadedCount / 12) * 100), 100);
             updatePreloaderProgress(pct);
             if (!hasRenderedAny || index === currentFrameIndex) {
-              drawFrame(currentFrameIndex);
+              drawFrame(currentFrameIndex >= 0 ? currentFrameIndex : 0);
             }
           }
           resolve();
@@ -196,22 +246,25 @@
 
         img.onload = () => done(true);
         img.onerror = () => done(false);
-        setTimeout(() => done(false), 5000);
+        setTimeout(() => done(false), 6000);
         img.src = getFramePath(index);
       });
     }
 
     async function startLoading() {
-      // 1. Establish initial canvas coordinate buffer
+      // 1. Establish initial canvas buffer geometry
       resizeCanvas();
 
       // 2. Setup ScrollTrigger pinning immediately
       setupScrollTrigger();
 
-      // 3. Safety timer: dismiss preloader after 800ms max so space is never blocked
+      // 3. Safety timer: dismiss preloader after 800ms max so visitor is never blocked
       const safetyTimer = setTimeout(() => {
         dismissPreloader();
-        drawFrame(0);
+        if (currentFrameIndex < 0) {
+          currentFrameIndex = 0;
+          drawFrame(0);
+        }
         if (typeof ScrollTrigger !== 'undefined') ScrollTrigger.refresh();
       }, 800);
 
@@ -222,30 +275,32 @@
       if (isDisposed) return;
 
       dismissPreloader();
+      currentFrameIndex = 0;
       drawFrame(0);
 
       if (typeof ScrollTrigger !== 'undefined') {
         ScrollTrigger.refresh();
       }
 
-      // 5. Quickly load initial 10 frames in parallel for instant smooth scrub
+      // 5. Load first 12 frames in parallel for instant smooth scrub
       const earlyBatch = [];
-      for (let i = 1; i < 10; i++) {
+      for (let i = 1; i < 12; i++) {
         earlyBatch.push(loadSingleFrame(i));
       }
       await Promise.all(earlyBatch);
 
       if (isDisposed) return;
 
-      // 6. Progressive background loading of all remaining frames
-      for (let i = 10; i < TOTAL_FRAMES; i += 10) {
+      // 6. Progressive streaming of remaining frames in chunks
+      for (let i = 12; i < TOTAL_FRAMES; i += 10) {
         if (isDisposed) break;
         const batch = [];
         for (let j = i; j < Math.min(i + 10, TOTAL_FRAMES); j++) {
           batch.push(loadSingleFrame(j));
         }
         await Promise.all(batch);
-        await new Promise((r) => setTimeout(r, 15));
+        // Micro-yield to keep main thread completely unblocked
+        await new Promise((r) => setTimeout(r, 16));
       }
     }
 

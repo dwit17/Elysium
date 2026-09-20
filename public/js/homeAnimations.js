@@ -46,12 +46,9 @@
           touchMultiplier: 1.0,
         });
 
-        // Sync Lenis scroll updates with ScrollTrigger & Hero canvas
-        lenisInstance.on('scroll', (e) => {
+        // Sync Lenis scroll updates with ScrollTrigger
+        lenisInstance.on('scroll', () => {
           ScrollTrigger.update();
-          if (typeof window.__elysiumUpdateHero === 'function') {
-            window.__elysiumUpdateHero(e.scroll);
-          }
         });
 
         // Drive Lenis via GSAP ticker
