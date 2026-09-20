@@ -4,11 +4,14 @@ const fs = require('fs');
 const app = express();
 const PORT = process.env.PORT || 3000;
 
-app.use(express.static(path.join(__dirname, 'public')));
+app.use(express.static(path.join(__dirname, 'public'), {
+  maxAge: process.env.NODE_ENV === 'production' ? '1d' : 0,
+  etag: true,
+}));
 
-// Development Live Reload via SSE
+// Development Live Reload via SSE (Local environment only)
 const liveReloadClients = new Set();
-if (process.env.NODE_ENV !== 'production') {
+if (process.env.NODE_ENV !== 'production' && process.env.VERCEL !== '1') {
   app.get('/dev/live-reload', (req, res) => {
     res.setHeader('Content-Type', 'text/event-stream');
     res.setHeader('Cache-Control', 'no-cache');
@@ -35,11 +38,15 @@ if (process.env.NODE_ENV !== 'production') {
 
   const publicDir = path.join(__dirname, 'public');
   if (fs.existsSync(publicDir)) {
-    fs.watch(publicDir, { recursive: true }, (eventType, filename) => {
-      if (filename && /\.(css|js|html)$/i.test(filename)) {
-        broadcastReload();
-      }
-    });
+    try {
+      fs.watch(publicDir, { recursive: true }, (eventType, filename) => {
+        if (filename && /\.(css|js|html)$/i.test(filename)) {
+          broadcastReload();
+        }
+      });
+    } catch (e) {
+      console.warn('[Elysium Dev] Watcher init skipped:', e.message);
+    }
   }
 }
 
@@ -311,7 +318,7 @@ function renderPage({ title, description, path, content, isHeroPage = false }) {
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
   <title>${title}</title>
   <meta name="description" content="${description}">
   <link rel="canonical" href="${canonical}">
@@ -327,7 +334,7 @@ function renderPage({ title, description, path, content, isHeroPage = false }) {
   <link rel="stylesheet" href="/css/elysium.css">
   <script type="application/ld+json">${JSON.stringify(orgSchema)}</script>
 </head>
-<body class="bg-black text-white selection:bg-white selection:text-black">
+<body class="bg-black text-white selection:bg-white selection:text-black antialiased overflow-x-hidden">
   <!-- Master Wood & Brass Inlay Vector Definition -->
   <svg style="display: none;" xmlns="http://www.w3.org/2000/svg">
     <symbol id="wood-brass-inlay-symbol" viewBox="0 0 60 60">
@@ -369,7 +376,7 @@ function renderPage({ title, description, path, content, isHeroPage = false }) {
       </nav>
 
       <div class="flex lg:hidden items-center space-x-3">
-        <button id="mobile-menu-btn" class="lg:hidden text-white p-2" aria-label="Toggle Menu">
+        <button id="mobile-menu-btn" class="lg:hidden text-white p-2" aria-label="Toggle Menu" aria-expanded="false" aria-controls="mobile-menu-drawer">
           <svg width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M4 6h16M4 12h16M4 18h16"></path></svg>
         </button>
       </div>
@@ -686,7 +693,7 @@ app.get('/', (req, res) => {
     },
   ];
 
-  // HERO: Brand Opening Canvas (retained untouched)
+  // HERO: Brand Opening Canvas
   const heroSection = `
   <div id="hero-scroll-container">
     <div class="hero-sticky-viewport">
@@ -716,20 +723,15 @@ app.get('/', (req, res) => {
             <a href="/artisan-pieces" class="px-6 py-3.5 border border-white border-opacity-30 text-white text-xs uppercase tracking-[0.25em] hover:bg-white hover:bg-opacity-10 transition-colors" data-magnetic="true">EXPLORE</a>
           </div>
         </div>
-
-        <div class="flex justify-between items-end border-t border-white border-opacity-10 pt-4 interactive-element">
-          <div id="scroll-progress-text" class="text-[9px] font-mono tracking-widest text-stone-400 uppercase">SCROLL PROGRESS: 0%</div>
-          <div class="flex items-center gap-2 text-[10px] uppercase tracking-[0.3em] font-mono text-stone-300">SCROLL TO DISCOVER ↓</div>
-        </div>
       </div>
     </div>
   </div>`;
 
   // SECTION 1: THE ATELIER MANIFESTO & 3D INTERACTIVE TILT SCULPTURE
-  // Calibrated for full 100vh viewport framing (Zainab Kabira & Palmo inspired)
+  // Calibrated for responsive viewports (Zainab Kabira & Palmo inspired)
   const manifestoHeadingWords = "Every Piece Begins With a Name.".split(" ");
   const sectionManifesto = `
-  <section class="section-manifesto h-screen min-h-screen flex items-center justify-center pt-20 sm:pt-24 pb-6 sm:pb-8 px-6 md:px-12 lg:px-20 bg-[#030303] border-t border-stone-800 text-white relative z-10 overflow-hidden">
+  <section class="section-manifesto min-h-screen lg:h-screen flex items-center justify-center pt-24 pb-14 sm:pb-16 lg:py-0 px-6 md:px-12 lg:px-20 bg-[#030303] border-t border-stone-800 text-white relative z-10 overflow-hidden">
     
     <!-- Ambient Radial Glow Accent -->
     <div class="absolute -top-40 -left-40 w-96 h-96 bg-amber-500/10 rounded-full blur-3xl pointer-events-none"></div>
@@ -737,28 +739,13 @@ app.get('/', (req, res) => {
     <div class="max-w-7xl mx-auto w-full my-auto">
       <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-16 items-center">
         
-        <!-- Left 7 Cols: Split-Text Manifesto & Rotating Circular Atelier Stamp -->
+        <!-- Left 7 Cols: Split-Text Manifesto -->
         <div class="lg:col-span-7 space-y-5 sm:space-y-6 relative">
           
           <div class="flex items-center justify-between">
             <span class="manifesto-eyebrow text-[10px] font-mono tracking-[0.45em] uppercase text-amber-500 block">
               THE ATELIER PHILOSOPHY • RAJKOT
             </span>
-            
-            <!-- Rotating Circular Gold Stamp Badge (Zainab Kabira inspired) -->
-            <div class="rotating-seal-badge w-14 h-14 sm:w-18 sm:h-18 relative flex items-center justify-center flex-shrink-0 cursor-pointer" data-magnetic="true" title="Elysium Artisan Seal">
-              <svg class="w-full h-full animate-spin-slow text-amber-400/80" viewBox="0 0 100 100">
-                <path id="seal-text-path" d="M 50, 50 m -37, 0 a 37,37 0 1,1 74,0 a 37,37 0 1,1 -74,0" fill="none" />
-                <text class="text-[8.5px] font-mono tracking-[0.22em] uppercase fill-current">
-                  <textPath href="#seal-text-path" startOffset="0%">
-                    * ELYSIUM ATELIER * RAJKOT * 2026 *
-                  </textPath>
-                </text>
-              </svg>
-              <div class="absolute w-5 h-5 rounded-full bg-amber-500/20 border border-amber-400/60 flex items-center justify-center">
-                <span class="text-[9px] text-amber-300 font-serif">✦</span>
-              </div>
-            </div>
           </div>
 
           <h2 class="manifesto-heading text-2xl sm:text-4xl lg:text-5xl font-light tracking-wide text-white uppercase font-serif leading-tight">
@@ -802,7 +789,7 @@ app.get('/', (req, res) => {
         <!-- Right 5 Cols: Interactive 3D Perspective Tilt Card with Specular Glare -->
         <div class="lg:col-span-5 relative flex justify-center">
           <div class="manifesto-tilt-container relative w-full max-w-sm perspective-[1200px]" id="manifesto-tilt-card">
-            <div class="manifesto-portrait-wrap relative overflow-hidden bg-stone-950 border border-stone-800 shadow-2xl transition-transform duration-200 ease-out will-change-transform rounded-sm">
+            <div class="manifesto-portrait-wrap relative overflow-hidden bg-stone-950 shadow-2xl transition-transform duration-200 ease-out will-change-transform rounded-sm">
               
               <div class="manifesto-portrait-clip aspect-[4/5] sm:aspect-[3/4] relative overflow-hidden max-h-[50vh]">
                 <img
@@ -816,15 +803,6 @@ app.get('/', (req, res) => {
                 <div class="tilt-glare absolute inset-0 pointer-events-none opacity-0 transition-opacity duration-300"></div>
                 <!-- Initial clip-path overlay mask -->
                 <div class="manifesto-portrait-mask absolute inset-0 bg-[#030303] z-10" style="clip-path: inset(0 100% 0 0);"></div>
-              </div>
-
-              <!-- Spec Capsule Overlay -->
-              <div class="p-3.5 bg-stone-950/95 border-t border-stone-800 flex justify-between items-center text-[9px] font-mono tracking-widest text-stone-400 uppercase">
-                <div class="flex items-center gap-2">
-                  <span class="w-1.5 h-1.5 rounded-full bg-amber-400 animate-pulse"></span>
-                  <span>ATELIER RAJKOT</span>
-                </div>
-                <span>4,500 SQ. FT. WORKSHOP</span>
               </div>
 
             </div>
@@ -886,41 +864,18 @@ app.get('/', (req, res) => {
   const sectionHorizontalGallery = `
   <section class="section-horizontal-gallery relative bg-black border-t border-stone-800 overflow-hidden" id="horizontal-suite-container">
     
-    <!-- Pinned Viewport Container (100vh) -->
-    <div class="horizontal-pinned-track w-full h-screen sticky top-0 flex flex-col justify-between overflow-hidden">
-      
-      <!-- Top Navigation Header with Scrubber Bar (Proper Navbar Clearance Padding) -->
-      <div class="horizontal-top-bar relative z-30 px-6 sm:px-12 md:px-16 pt-20 sm:pt-24 pb-3 sm:pb-4 flex justify-between items-center border-b border-white/10 bg-black/90 backdrop-blur-md">
-        <div class="flex items-center gap-4">
-          <span class="text-[10px] font-mono tracking-[0.4em] uppercase text-amber-400">
-            HORIZONTAL EXPEDITION
-          </span>
-          <span class="text-stone-600">/</span>
-          <span class="text-[10px] font-mono uppercase tracking-widest text-stone-400" id="horizontal-active-indicator">
-            CHAPTER 01 OF 04
-          </span>
-        </div>
+    <!-- Pinned Viewport Container (100vh on desktop, natural stack on compact) -->
+    <div class="horizontal-pinned-track w-full min-h-screen lg:h-screen flex flex-col justify-center overflow-hidden">
 
-        <!-- Live Horizontal Scrub Line -->
-        <div class="w-36 sm:w-64 h-1 bg-stone-800 rounded-full overflow-hidden relative">
-          <div id="horizontal-progress-fill" class="h-full bg-gradient-to-r from-amber-500 to-amber-300 w-1/4 rounded-full transition-all duration-150"></div>
-        </div>
-      </div>
-
-      <!-- Horizontal Slides Track (GSAP translates x smoothly based on scrollWidth) -->
+      <!-- Horizontal Slides Track (GSAP translates x smoothly on desktop, stacks responsively on mobile) -->
       <div class="horizontal-slides-wrapper flex h-full flex-nowrap will-change-transform" id="horizontal-track">
         ${horizontalChapters.map((ch, idx) => `
-          <div class="horizontal-slide-panel flex-shrink-0 w-screen min-w-[100vw] max-w-[100vw] h-full flex items-center px-6 sm:px-12 md:px-16 lg:px-20 py-4 sm:py-6 relative" data-panel="${idx}">
+          <div class="horizontal-slide-panel flex-shrink-0 w-full lg:w-screen lg:min-w-[100vw] lg:max-w-[100vw] h-full flex items-center px-6 sm:px-12 md:px-16 lg:px-20 py-8 lg:py-6 relative" data-panel="${idx}">
             
             <div class="max-w-7xl mx-auto w-full grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-16 items-center">
               
               <!-- Left Column: Chapter Description & Telemetry -->
               <div class="lg:col-span-5 space-y-4">
-                <div class="flex items-baseline gap-3">
-                  <span class="text-2xl sm:text-3xl font-mono text-amber-500 font-light">${ch.index}</span>
-                  <span class="text-[10px] font-mono tracking-[0.35em] text-stone-400 uppercase">${ch.tag}</span>
-                </div>
-
                 <h3 class="text-2xl sm:text-4xl font-light text-white uppercase font-serif tracking-wide leading-tight">
                   ${ch.title}
                 </h3>
@@ -950,7 +905,7 @@ app.get('/', (req, res) => {
 
               <!-- Right Column: Widescreen Architectural Frame -->
               <div class="lg:col-span-7 flex justify-center">
-                <div class="horizontal-img-frame relative aspect-[16/10] max-h-[50vh] overflow-hidden bg-stone-950 border border-stone-800 shadow-2xl rounded-sm group">
+                <div class="horizontal-img-frame relative aspect-[16/10] max-h-[50vh] overflow-hidden bg-stone-950 shadow-2xl rounded-sm group">
                   <img
                     src="${ch.image}"
                     alt="${ch.title} - Elysium Atelier Handcrafted Decor"
@@ -967,69 +922,70 @@ app.get('/', (req, res) => {
         `).join('')}
       </div>
 
-      <!-- Bottom Status Strip -->
-      <div class="px-6 sm:px-12 md:px-16 py-3 flex justify-between items-center text-[9px] font-mono tracking-widest text-stone-500 uppercase border-t border-white/10 bg-black/90">
-        <span>SCROLL DOWN TO ADVANCE THROUGH CHAPTERS</span>
-        <span>ELYSIUM SPATIAL ATELIER • 2026</span>
-      </div>
-
     </div>
   </section>`;
 
-  // SECTION 3: THE TACTILE MATERIALITY LAB (100vh Sticky Viewport)
+  // SECTION 3: THE TACTILE MATERIALITY LAB (Sticky Viewport on desktop, interactive switcher on mobile)
   const sectionMaterialityInterlude = `
-  <section class="section-materiality-interlude relative bg-black border-t border-stone-800" style="height: 380vh;">
-    <div class="materiality-pinned sticky top-0 w-full h-screen overflow-hidden flex flex-col justify-between pt-20 sm:pt-24 pb-8 sm:pb-10 px-6 sm:px-10 lg:px-16">
+  <section class="section-materiality-interlude relative bg-black border-t border-stone-800" id="materiality-suite-container">
+    <div class="materiality-pinned w-full min-h-screen lg:h-screen overflow-hidden flex flex-col justify-between pt-20 sm:pt-24 pb-8 sm:pb-10 px-6 sm:px-10 lg:px-16 relative">
       
-      <!-- Macro Material Images (4 slices, scaling 1->1.12 during active window) -->
-      <div class="materiality-images absolute inset-0 z-0">
-        <div class="mat-slide mat-slide-0 absolute inset-0 overflow-hidden">
+      <!-- Macro Material Images (4 slices, scaling during active window) -->
+      <div class="materiality-images absolute inset-0 z-0 pointer-events-none">
+        <div class="mat-slide mat-slide-0 absolute inset-0 overflow-hidden transition-opacity duration-500">
           <img src="/images/atelier_materials.jpg" alt="Raw Italian Travertine Stone Macro" class="mat-img w-full h-full object-cover object-center filter brightness-90 contrast-110" />
         </div>
-        <div class="mat-slide mat-slide-1 absolute inset-0 overflow-hidden opacity-0">
+        <div class="mat-slide mat-slide-1 absolute inset-0 overflow-hidden opacity-0 transition-opacity duration-500">
           <img src="/images/story_clay_vessel.jpg" alt="Organic Stoneware Clay Macro" class="mat-img w-full h-full object-cover object-center filter brightness-90 contrast-110" />
         </div>
-        <div class="mat-slide mat-slide-2 absolute inset-0 overflow-hidden opacity-0">
+        <div class="mat-slide mat-slide-2 absolute inset-0 overflow-hidden opacity-0 transition-opacity duration-500">
           <img src="/images/maker_tools.jpg" alt="Crafted Oak Timber Macro" class="mat-img w-full h-full object-cover object-center filter brightness-90 contrast-110" />
         </div>
-        <div class="mat-slide mat-slide-3 absolute inset-0 overflow-hidden opacity-0">
+        <div class="mat-slide mat-slide-3 absolute inset-0 overflow-hidden opacity-0 transition-opacity duration-500">
           <img src="/images/story_plaster_relief.jpg" alt="Textured Lime Plaster Finish Macro" class="mat-img w-full h-full object-cover object-center filter brightness-90 contrast-110" />
         </div>
       </div>
 
       <!-- Vignette and Darkening Gradients -->
-      <div class="absolute inset-0 bg-gradient-to-t from-black/90 via-black/30 to-black/80 pointer-events-none z-10"></div>
+      <div class="absolute inset-0 bg-gradient-to-t from-black/90 via-black/40 to-black/80 pointer-events-none z-10"></div>
+
+      <!-- Spacer Top -->
+      <div class="relative z-20"></div>
 
       <!-- Center: Synchronized Material Title Reveals in Geist Mono & Cormorant -->
       <div class="relative z-20 my-auto text-center space-y-3 pointer-events-none">
-        <div class="mat-label-stack relative min-h-[110px] flex items-center justify-center">
-          <div class="mat-label mat-label-0 text-center">
+        <div class="mat-label-stack relative min-h-[140px] flex items-center justify-center">
+          <div class="mat-label mat-label-0 text-center transition-all duration-400">
             <span class="text-[10.5px] font-mono uppercase tracking-[0.4em] text-amber-400 block mb-1">MEDIUM 01</span>
-            <h3 class="text-4xl sm:text-6xl lg:text-7xl font-light tracking-wide text-white uppercase font-serif">Travertine Stone</h3>
-            <p class="text-xs font-mono text-stone-400 tracking-widest uppercase mt-2">Unfilled Geomorphic Pores • Zero Synthetic Resin</p>
+            <h3 class="text-3xl sm:text-5xl lg:text-7xl font-light tracking-wide text-white uppercase font-serif">Travertine Stone</h3>
+            <p class="text-xs sm:text-sm font-mono text-stone-300 tracking-widest uppercase mt-2">Unfilled Geomorphic Pores • Zero Synthetic Resin</p>
+            <p class="text-xs text-stone-400 font-light max-w-lg mx-auto mt-2 hidden sm:block">Cool, porous geomorphic surface with deep stratified mineral veins hand-chiseled from raw limestone blocks.</p>
           </div>
-          <div class="mat-label mat-label-1 text-center absolute opacity-0">
+          <div class="mat-label mat-label-1 text-center absolute opacity-0 transition-all duration-400">
             <span class="text-[10.5px] font-mono uppercase tracking-[0.4em] text-amber-400 block mb-1">MEDIUM 02</span>
-            <h3 class="text-4xl sm:text-6xl lg:text-7xl font-light tracking-wide text-white uppercase font-serif">Organic Clay</h3>
-            <p class="text-xs font-mono text-stone-400 tracking-widest uppercase mt-2">Pit-Fired Silicate Stoneware • Breathable Porosity</p>
+            <h3 class="text-3xl sm:text-5xl lg:text-7xl font-light tracking-wide text-white uppercase font-serif">Organic Clay</h3>
+            <p class="text-xs sm:text-sm font-mono text-stone-300 tracking-widest uppercase mt-2">Pit-Fired Silicate Stoneware • Breathable Porosity</p>
+            <p class="text-xs text-stone-400 font-light max-w-lg mx-auto mt-2 hidden sm:block">Iron-dense riverbed clay thrown on manual kickwheels and wood-pit fired for raw fire-speckled texture.</p>
           </div>
-          <div class="mat-label mat-label-2 text-center absolute opacity-0">
+          <div class="mat-label mat-label-2 text-center absolute opacity-0 transition-all duration-400">
             <span class="text-[10.5px] font-mono uppercase tracking-[0.4em] text-amber-400 block mb-1">MEDIUM 03</span>
-            <h3 class="text-4xl sm:text-6xl lg:text-7xl font-light tracking-wide text-white uppercase font-serif">Crafted Oak</h3>
-            <p class="text-xs font-mono text-stone-400 tracking-widest uppercase mt-2">Aged White Timber • Beeswax &amp; Linseed Buffing</p>
+            <h3 class="text-3xl sm:text-5xl lg:text-7xl font-light tracking-wide text-white uppercase font-serif">Crafted Oak</h3>
+            <p class="text-xs sm:text-sm font-mono text-stone-300 tracking-widest uppercase mt-2">Aged White Timber • Beeswax &amp; Linseed Buffing</p>
+            <p class="text-xs text-stone-400 font-light max-w-lg mx-auto mt-2 hidden sm:block">Slow-grown northern white oak celebrating dense fibrous annual rings, buffed with organic desert wax.</p>
           </div>
-          <div class="mat-label mat-label-3 text-center absolute opacity-0">
+          <div class="mat-label mat-label-3 text-center absolute opacity-0 transition-all duration-400">
             <span class="text-[10.5px] font-mono uppercase tracking-[0.4em] text-amber-400 block mb-1">MEDIUM 04</span>
-            <h3 class="text-4xl sm:text-6xl lg:text-7xl font-light tracking-wide text-white uppercase font-serif">Lime Plaster</h3>
-            <p class="text-xs font-mono text-stone-400 tracking-widest uppercase mt-2">Pulverized Pumice • Natural Hydraulic Lime</p>
+            <h3 class="text-3xl sm:text-5xl lg:text-7xl font-light tracking-wide text-white uppercase font-serif">Lime Plaster</h3>
+            <p class="text-xs sm:text-sm font-mono text-stone-300 tracking-widest uppercase mt-2">Pulverized Pumice • Natural Hydraulic Lime</p>
+            <p class="text-xs text-stone-400 font-light max-w-lg mx-auto mt-2 hidden sm:block">Breathable mineral plaster applied in delicate layered coats with hand trowels for a matte velvet warmth.</p>
           </div>
         </div>
       </div>
 
-      <!-- Bottom CTA to Materiality Lab -->
-      <div class="relative z-20 flex justify-end items-center">
-        <a href="/materiality" class="materiality-cta btn-slide-white inline-flex items-center gap-3 px-6 py-2.5 text-[10.5px] font-semibold uppercase tracking-[0.25em] shadow-lg">
-          <span>Explore the Materiality Lab</span>
+      <!-- Bottom Bar & CTA to Materiality Lab -->
+      <div class="relative z-20 flex justify-end items-center gap-3 pt-3">
+        <a href="/materiality" class="materiality-cta btn-slide-white inline-flex items-center gap-3 px-6 py-2 text-[10px] font-semibold uppercase tracking-[0.25em] shadow-lg">
+          <span>Explore Full Materiality Lab</span>
           <span class="btn-arrow">&rarr;</span>
         </a>
       </div>
@@ -1037,17 +993,14 @@ app.get('/', (req, res) => {
     </div>
   </section>`;
 
-  // SECTION 4: THE CRAFT JOURNEY & INTERACTIVE BEFORE/AFTER SLIDER (100vh Calibrated)
+  // SECTION 4: THE CRAFT JOURNEY & INTERACTIVE BEFORE/AFTER SLIDER (Calibrated)
   const sectionCraftJourney = `
-  <section class="section-craft-journey h-screen min-h-screen flex flex-col justify-between pt-20 sm:pt-24 pb-6 sm:pb-8 px-6 md:px-12 lg:px-20 bg-[#060606] border-t border-stone-800 text-white relative z-10 overflow-hidden">
+  <section class="section-craft-journey min-h-screen lg:h-screen flex flex-col justify-between pt-24 pb-12 sm:pb-16 lg:py-0 px-6 md:px-12 lg:px-20 bg-[#060606] border-t border-stone-800 text-white relative z-10 overflow-hidden">
     <div class="max-w-7xl mx-auto w-full my-auto space-y-6 sm:space-y-8">
       
       <!-- Compact Section Header -->
       <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-end border-b border-stone-800 pb-4">
         <div class="lg:col-span-8 space-y-1">
-          <span class="text-[10px] font-mono tracking-[0.45em] uppercase text-amber-500 block">
-            THE CRAFT JOURNEY • TRACEABLE PROVENANCE
-          </span>
           <h2 class="text-2xl sm:text-4xl font-light tracking-wide text-white uppercase font-serif leading-tight">
             From Raw Earth <span class="italic text-stone-400">to Living Sanctuary.</span>
           </h2>
@@ -1097,7 +1050,7 @@ app.get('/', (req, res) => {
 
                   ${idx === 1 ? `
                     <!-- Stage 2 Count-Up Stat: 4,500 Sq. Ft. Atelier -->
-                    <div class="atelier-stat-badge mt-1.5 p-2.5 bg-stone-900/80 border border-stone-800 flex items-center gap-3 max-w-sm shadow-lg">
+                    <div class="atelier-stat-badge mt-1.5 p-2.5 bg-stone-900/80 flex items-center gap-3 max-w-sm shadow-lg">
                       <div class="text-xl sm:text-2xl font-light text-amber-400 font-mono" id="atelier-sqft-counter">0</div>
                       <div class="text-[8.5px] font-mono tracking-widest text-stone-400 uppercase leading-snug">
                         <span>SQ. FT. DISPLAY ATELIER</span><br>
@@ -1113,14 +1066,9 @@ app.get('/', (req, res) => {
 
         <!-- Right 5 Cols: Interactive Draggable Split-Wipe Transformation Moment -->
         <div class="lg:col-span-5">
-          <div class="transformation-card bg-stone-950 border border-stone-800 p-4 sm:p-5 space-y-3.5 shadow-2xl rounded-sm">
-            <div class="flex justify-between items-center border-b border-stone-800 pb-2">
-              <span class="text-[9.5px] font-mono tracking-widest uppercase text-amber-500">TRANSFORMATION LAB</span>
-              <span id="transform-status-text" class="text-[8.5px] font-mono uppercase tracking-widest text-stone-400">STATE: 50% REVEAL</span>
-            </div>
-
+          <div class="transformation-card bg-stone-950 shadow-2xl rounded-sm overflow-hidden">
             <!-- Interactive Split-Wipe Curtain Container -->
-            <div id="split-curtain-container" class="split-curtain-viewport relative aspect-[4/3] max-h-[42vh] overflow-hidden cursor-ew-resize border border-stone-700 rounded-sm select-none" role="slider" aria-valuemin="0" aria-valuemax="100" aria-valuenow="50">
+            <div id="split-curtain-container" class="split-curtain-viewport relative aspect-[4/3] max-h-[46vh] overflow-hidden cursor-ew-resize rounded-sm select-none" role="slider" aria-valuemin="0" aria-valuemax="100" aria-valuenow="50">
               
               <!-- Raw Medium Image (Background Layer) -->
               <img
@@ -1128,9 +1076,6 @@ app.get('/', (req, res) => {
                 alt="Raw Geomorphic Travertine Block"
                 class="absolute inset-0 w-full h-full object-cover object-center filter contrast-115 brightness-90 pointer-events-none"
               />
-              <div class="absolute top-3 left-3 z-10 px-2 py-0.5 bg-black/80 text-[7.5px] font-mono text-stone-400 uppercase tracking-widest">
-                RAW EARTH MEDIUM
-              </div>
 
               <!-- Finished Piece Image (Clipped Foreground Layer) -->
               <div id="split-curtain-clip" class="absolute inset-0 overflow-hidden pointer-events-none" style="clip-path: polygon(50% 0, 100% 0, 100% 100%, 50% 100%);">
@@ -1139,9 +1084,6 @@ app.get('/', (req, res) => {
                   alt="Finished Solis Travertine Console"
                   class="absolute inset-0 w-full h-full object-cover object-center filter contrast-105 pointer-events-none"
                 />
-                <div class="absolute top-3 right-3 z-10 px-2 py-0.5 bg-black/80 text-[7.5px] font-mono text-amber-300 uppercase tracking-widest">
-                  FINISHED CONSOLE
-                </div>
               </div>
 
               <!-- Draggable Divider Bar -->
@@ -1152,11 +1094,6 @@ app.get('/', (req, res) => {
               </div>
 
             </div>
-
-            <div class="space-y-0.5 text-[10.5px] text-stone-400 font-light leading-relaxed">
-              <h4 class="text-xs font-light text-white uppercase font-serif tracking-wide">Hover or Drag to Compare Medium vs. Form</h4>
-              <p>Witness how 40 hours of hand-chisel craftsmanship converts unrefined Tuscan travertine into seamless living architecture.</p>
-            </div>
           </div>
         </div>
 
@@ -1165,9 +1102,9 @@ app.get('/', (req, res) => {
     </div>
   </section>`;
 
-  // SECTION 5: THE CURATED EDITORIAL COLLECTION (100vh Calibrated Grid)
+  // SECTION 5: THE CURATED EDITORIAL COLLECTION (Calibrated Grid)
   const sectionFeaturedPieces = `
-  <section class="section-featured-pieces h-screen min-h-screen flex flex-col justify-between pt-20 sm:pt-24 pb-6 sm:pb-8 px-6 md:px-12 lg:px-20 bg-black border-t border-stone-800 text-white relative z-10 overflow-hidden">
+  <section class="section-featured-pieces min-h-screen lg:h-screen flex flex-col justify-between pt-24 pb-12 sm:pb-16 lg:py-0 px-6 md:px-12 lg:px-20 bg-black border-t border-stone-800 text-white relative z-10 overflow-hidden">
     <div class="max-w-7xl mx-auto w-full my-auto space-y-5">
       
       <!-- Section Header -->
@@ -1189,11 +1126,11 @@ app.get('/', (req, res) => {
       <!-- 4 Flagship Products Horizontal Grid (Strict Uniform Proportions) -->
       <div class="featured-pieces-grid">
         ${PRODUCTS.slice(0, 4).map((p, idx) => `
-          <div class="featured-piece-card group flex flex-col justify-between bg-stone-950 border border-stone-800/80 p-3 sm:p-4 space-y-3 transition-all duration-300 hover:border-amber-500/50 shadow-xl rounded-sm" data-row="${idx}">
+          <div class="featured-piece-card group flex flex-col justify-between bg-stone-950 p-3 sm:p-4 space-y-3 transition-all duration-300 shadow-xl rounded-sm" data-row="${idx}">
             
             <div class="space-y-2.5">
               <!-- Uniform Fixed 4:3 Image Container -->
-              <div class="featured-piece-img-wrap relative w-full aspect-[4/3] overflow-hidden bg-stone-900 border border-stone-800/80 rounded-sm">
+              <div class="featured-piece-img-wrap relative w-full aspect-[4/3] overflow-hidden bg-stone-900 rounded-sm">
                 <img
                   src="${p.image}"
                   alt="${p.name} - Handcrafted by ${p.artisan}"
@@ -1251,7 +1188,7 @@ app.get('/', (req, res) => {
     </div>
   </section>`;
 
-  // SECTION 6: THE CLIENT VOICE & DUAL-AXIS INFINITE MARQUEE (100vh Calibrated)
+  // SECTION 6: THE CLIENT VOICE & DUAL-AXIS INFINITE MARQUEE (Calibrated)
   const factualStatementsRow1 = [
     "4,500 SQ. FT. ATELIER — VAVDI, RAJKOT",
     "100% RAW, UNSEALED MATERIALS",
@@ -1267,8 +1204,8 @@ app.get('/', (req, res) => {
   const sectionTrustVoice = `
   <section class="section-trust-voice relative bg-black border-t border-stone-800 text-white overflow-hidden" id="trust-voice-container">
     
-    <!-- Pinned 100vh Viewport Container (abouttt) -->
-    <div class="abouttt trust-voice-pinned w-full h-screen sticky top-0 flex flex-col justify-between pt-20 sm:pt-24 pb-8 px-6 md:px-12 lg:px-20 overflow-hidden bg-[#030303]">
+    <!-- 1. Pinned Narrative Quote Scrub Viewport -->
+    <div class="abouttt trust-voice-pinned w-full min-h-screen lg:h-screen flex flex-col justify-between pt-24 pb-8 px-6 md:px-12 lg:px-20 overflow-hidden bg-[#030303]" id="trust-voice-pinned-viewport">
       
       <!-- Subtle Ambient Warm Glow -->
       <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[700px] h-[350px] bg-amber-500/[0.035] rounded-full blur-3xl pointer-events-none"></div>
@@ -1305,6 +1242,206 @@ app.get('/', (req, res) => {
       <div class="relative z-20 flex justify-between items-center text-[9px] font-mono tracking-widest text-stone-500 uppercase border-t border-white/10 pt-3">
         <span>SCROLL TO ADVANCE NARRATIVE</span>
         <span>ELYSIUM SPATIAL ATELIER</span>
+      </div>
+
+    </div>
+
+    <!-- 2. Sculptural Frosted Glass Testimonial Component (Reference Layout) -->
+    <div class="section-testimonial-stage relative w-full py-24 sm:py-32 px-6 sm:px-10 lg:px-16 overflow-hidden flex flex-col items-center justify-center border-t border-stone-800/80 bg-black" id="trust-testimonial-stage">
+      
+      <!-- Full-Bleed Blurred Atelier Stone Backdrop -->
+      <div class="absolute inset-0 z-0 overflow-hidden pointer-events-none">
+        <img
+          src="/images/atelier_materials.jpg"
+          alt="Elysium Stone Atelier Texture"
+          class="w-full h-full object-cover object-center filter blur-xl brightness-[0.25] contrast-125 scale-110"
+        />
+        <div class="absolute inset-0 bg-gradient-to-b from-black/90 via-black/75 to-black"></div>
+        <div class="absolute -top-32 left-1/2 -translate-x-1/2 w-[600px] h-[300px] bg-amber-500/[0.05] rounded-full blur-3xl"></div>
+      </div>
+
+      <!-- Center Floating Frosted Glass Card -->
+      <div id="elysium-testimonial-card" class="testimonial-card relative z-10 w-full max-w-2xl bg-stone-950/75 backdrop-blur-2xl border border-amber-500/20 rounded-2xl p-8 sm:p-12 text-center shadow-[0_25px_60px_-15px_rgba(0,0,0,0.95),0_0_40px_rgba(212,175,55,0.06)] overflow-visible will-change-[transform,opacity]">
+        
+        <!-- Top Custom Botanical Wreath Frame with 100% Unobstructed Round Portrait in Circular Frame -->
+        <div class="testimonial-wreath-wrap relative w-60 sm:w-72 h-auto mx-auto mb-6 flex items-center justify-center">
+          
+          <svg class="testimonial-frame-svg w-full h-auto pointer-events-none z-10 overflow-visible text-amber-300 drop-shadow-[0_4px_16px_rgba(0,0,0,0.9)] select-none" viewBox="0 0 240 180" fill="none">
+            
+            <defs>
+              <!-- Exact Circle Clip Path for Portrait Photo -->
+              <clipPath id="testimonial-circle-clip">
+                <circle id="testimonial-portrait-circle" cx="140" cy="90" r="54" />
+              </clipPath>
+            </defs>
+
+            <!-- 1. Central Circular Portrait Photo (100% Round, Zero Overlap Inside Circle) -->
+            <g class="testimonial-portrait-wrap will-change-[opacity,transform]">
+              <!-- Dark Backing Base Circle -->
+              <circle cx="140" cy="90" r="54" fill="#141210" />
+              <!-- Pure Round Clipped Image -->
+              <image
+                id="testimonial-portrait-img"
+                href="/images/maker_portrait.jpg"
+                x="86"
+                y="36"
+                width="108"
+                height="108"
+                clip-path="url(#testimonial-circle-clip)"
+                preserveAspectRatio="xMidYMid slice"
+                class="filter contrast-105 brightness-95"
+              />
+            </g>
+
+            <!-- 2. Fragment: Complete Outer Gold Ring Framing the Portrait -->
+            <circle class="stone-fragment stone-frag-ring text-amber-400/90" cx="140" cy="90" r="54" stroke="currentColor" stroke-width="1.8" fill="none" stroke-linecap="round"/>
+
+            <!-- 3. Fragment: Top Botanical Leaves (Sprouting Upward Along Outer Rim) -->
+            <g class="stone-fragment stone-frag-top-leaves text-amber-400" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" fill="none">
+              <!-- Upward Rose Leaf -->
+              <path d="M 86,48 C 76,32 86,16 96,8 C 108,18 110,34 100,46 Z" stroke-width="1.5" fill="#000000" fill-opacity="0.35"/>
+              <path d="M 86,48 Q 94,26 96,8" stroke-width="1.3"/>
+              <path d="M 90,38 L 84,33 M 92,30 L 86,24 M 94,22 L 89,17 M 92,38 L 99,34 M 94,30 L 102,25 M 95,21 L 102,17" stroke-width="0.9"/>
+              
+              <!-- Top-Right Leaf -->
+              <path d="M 100,44 C 110,30 126,24 138,22 C 138,38 126,50 114,52 Z" stroke-width="1.5" fill="#000000" fill-opacity="0.35"/>
+              <path d="M 100,44 Q 119,33 138,22" stroke-width="1.3"/>
+              <path d="M 109,39 L 112,32 M 117,35 L 123,29 M 125,30 L 131,24 M 111,43 L 116,48 M 119,40 L 125,45" stroke-width="0.9"/>
+              
+              <!-- Small Outer Leaf -->
+              <path d="M 78,54 C 66,46 66,32 72,24 C 82,30 85,44 82,52 Z" stroke-width="1.3" fill="#000000" fill-opacity="0.35"/>
+              <path d="M 78,54 Q 74,38 72,24" stroke-width="1.1"/>
+            </g>
+
+            <!-- 4. Fragment: Upper Blooming Rose on Outer Left Perimeter -->
+            <g class="stone-fragment stone-frag-rose-top text-amber-300" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" fill="none">
+              <path d="M 50,52 C 44,42 52,30 66,30 C 80,30 88,42 82,54" stroke-width="1.6" fill="#000000" fill-opacity="0.55"/>
+              <path d="M 82,54 C 88,60 86,74 74,78 C 62,82 52,76 50,64" stroke-width="1.6" fill="#000000" fill-opacity="0.55"/>
+              <path d="M 50,64 C 40,66 34,54 40,44 C 46,36 58,34 66,36" stroke-width="1.6" fill="#000000" fill-opacity="0.55"/>
+              <path d="M 46,50 C 40,58 44,70 54,74 C 64,78 74,74 76,64" stroke-width="1.4"/>
+              <path d="M 56,42 C 66,38 76,44 74,54 C 72,64 60,66 52,60" stroke-width="1.4"/>
+              <path d="M 62,50 C 58,47 60,57 66,56 C 72,55 70,46 63,44 C 56,43 54,54 60,59 C 66,64 74,60 74,52" stroke-width="1.3"/>
+              <circle cx="63" cy="53" r="2.2" stroke-width="1.2" fill="currentColor" fill-opacity="0.25"/>
+            </g>
+
+            <!-- 5. Fragment: Side Bud & Berry Sprig Extending Outward -->
+            <g class="stone-fragment stone-frag-berries-side text-amber-400/90" stroke="currentColor" stroke-linecap="round" fill="none">
+              <path d="M 54,78 Q 38,70 26,58" stroke-width="1.4"/>
+              <path d="M 46,74 L 34,68 M 40,80 L 22,78 M 42,86 L 28,92 M 50,90 L 38,98" stroke-width="1.1"/>
+              
+              <circle cx="26" cy="58" r="3.2" stroke-width="1.3" fill="#000000" fill-opacity="0.6"/>
+              <circle cx="34" cy="68" r="3.4" stroke-width="1.3" fill="#000000" fill-opacity="0.6"/>
+              <circle cx="22" cy="78" r="3.6" stroke-width="1.3" fill="#000000" fill-opacity="0.6"/>
+              <circle cx="28" cy="92" r="3.4" stroke-width="1.3" fill="#000000" fill-opacity="0.6"/>
+              <circle cx="38" cy="98" r="3" stroke-width="1.3" fill="#000000" fill-opacity="0.6"/>
+              
+              <circle cx="25" cy="57" r="0.8" fill="currentColor" stroke="none"/>
+              <circle cx="33" cy="67" r="0.8" fill="currentColor" stroke="none"/>
+              <circle cx="21" cy="77" r="0.8" fill="currentColor" stroke="none"/>
+              <circle cx="27" cy="91" r="0.8" fill="currentColor" stroke="none"/>
+            </g>
+
+            <!-- 6. Fragment: Lower Blooming Rose on Outer Left Perimeter -->
+            <g class="stone-fragment stone-frag-rose-bottom text-amber-300" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" fill="none">
+              <path d="M 48,94 C 40,84 50,72 64,72 C 78,72 88,84 82,96" stroke-width="1.6" fill="#000000" fill-opacity="0.55"/>
+              <path d="M 82,96 C 90,104 88,118 76,124 C 64,128 52,122 48,110" stroke-width="1.6" fill="#000000" fill-opacity="0.55"/>
+              <path d="M 48,110 C 36,114 30,102 38,90 C 44,80 56,80 64,82" stroke-width="1.6" fill="#000000" fill-opacity="0.55"/>
+              <path d="M 38,90 C 28,100 32,116 44,124 C 56,132 70,132 80,124" stroke-width="1.6" fill="#000000" fill-opacity="0.55"/>
+              <path d="M 44,102 C 36,112 44,126 58,128 C 72,130 84,120 84,108" stroke-width="1.4"/>
+              <path d="M 54,86 C 66,84 78,90 76,102 C 74,114 60,116 50,108" stroke-width="1.4"/>
+              <path d="M 62,96 C 56,92 58,104 66,102 C 74,100 71,90 63,88 C 54,87 52,100 60,106 C 68,112 78,106 77,97" stroke-width="1.3"/>
+              <circle cx="63" cy="97" r="2.4" stroke-width="1.2" fill="currentColor" fill-opacity="0.25"/>
+            </g>
+
+            <!-- 7. Fragment: Bottom Foliage & Veined Leaves -->
+            <g class="stone-fragment stone-frag-bottom-leaves text-amber-400" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" fill="none">
+              <path d="M 56,128 C 46,142 50,160 62,170 C 72,156 74,138 66,128 Z" stroke-width="1.5" fill="#000000" fill-opacity="0.35"/>
+              <path d="M 56,128 Q 62,150 62,170" stroke-width="1.3"/>
+              <path d="M 58,140 L 51,145 M 60,150 L 53,156 M 60,140 L 67,136 M 61,150 L 68,145" stroke-width="0.9"/>
+              
+              <path d="M 76,126 C 90,138 108,146 124,142 C 114,130 100,122 84,122 Z" stroke-width="1.5" fill="#000000" fill-opacity="0.35"/>
+              <path d="M 76,126 Q 104,136 124,142" stroke-width="1.3"/>
+            </g>
+
+            <!-- 8. Fragment: Bottom Sweeping Berry Droop -->
+            <g class="stone-fragment stone-frag-berries-bottom text-amber-400/90" stroke="currentColor" stroke-linecap="round" fill="none">
+              <path d="M 74,132 Q 98,150 130,158" stroke-width="1.4"/>
+              <path d="M 84,140 L 92,150 M 96,144 L 104,155 M 110,148 L 118,158 M 122,152 L 128,160" stroke-width="1.1"/>
+              
+              <circle cx="92" cy="150" r="3.4" stroke-width="1.3" fill="#000000" fill-opacity="0.6"/>
+              <circle cx="104" cy="155" r="3.6" stroke-width="1.3" fill="#000000" fill-opacity="0.6"/>
+              <circle cx="118" cy="158" r="3.4" stroke-width="1.3" fill="#000000" fill-opacity="0.6"/>
+              <circle cx="128" cy="160" r="3" stroke-width="1.3" fill="#000000" fill-opacity="0.6"/>
+              
+              <circle cx="91" cy="149" r="0.8" fill="currentColor" stroke="none"/>
+              <circle cx="103" cy="154" r="0.8" fill="currentColor" stroke="none"/>
+              <circle cx="117" cy="157" r="0.8" fill="currentColor" stroke="none"/>
+            </g>
+
+          </svg>
+
+        </div>
+
+        <!-- Crossfading Text Content Container -->
+        <div id="testimonial-content-container" class="space-y-4">
+          <!-- Large Emotional Headline in Cormorant Garamond -->
+          <h3 id="testimonial-headline" class="testimonial-headline text-3xl sm:text-4xl lg:text-5xl font-light text-white italic font-serif tracking-wide leading-tight">
+            “Grounded.”
+          </h3>
+
+          <!-- Full Testimonial Quote with Gold Sweeping Highlight -->
+          <p id="testimonial-quote" class="testimonial-quote text-sm sm:text-base text-stone-300 font-light leading-relaxed max-w-xl mx-auto font-sans">
+            “Elysium delivered a custom travertine console that transformed our living room into <span class="testimonial-highlight-wrap inline-block relative"><span class="testimonial-highlight-bg absolute inset-0 bg-amber-500/20 border border-amber-400/30 rounded-xs"></span><span class="testimonial-highlight-text relative z-10 text-amber-200 font-normal px-1.5">a monolithic living sanctuary</span></span> with unmatched tactile reverence.”
+          </p>
+
+          <!-- Attribution & Star Rating Row -->
+          <div id="testimonial-attribution-block" class="testimonial-attribution pt-4 space-y-2">
+            <div class="text-xs sm:text-sm text-stone-200 font-sans">
+              <strong id="testimonial-author" class="font-semibold text-white">Sarah P.</strong>
+              <span class="text-stone-500 mx-1">•</span>
+              <span id="testimonial-project" class="text-stone-400">Bespoke Console Commission, South Bombay Residence</span>
+            </div>
+
+            <div class="inline-flex items-center gap-2 text-[10px] font-mono tracking-widest text-amber-400/90 uppercase bg-black/60 px-3.5 py-1.5 rounded-full border border-amber-500/20 shadow-inner">
+              <span id="testimonial-tag">🪨 Custom Commission</span>
+              <span class="text-stone-600">•</span>
+              <div id="testimonial-stars-container" class="flex items-center gap-0.5 text-amber-400">
+                <!-- 5 SVG Stars for Staggered Animation -->
+                <svg class="testimonial-star inline-block w-3.5 h-3.5 fill-amber-400 text-amber-400" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>
+                <svg class="testimonial-star inline-block w-3.5 h-3.5 fill-amber-400 text-amber-400" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>
+                <svg class="testimonial-star inline-block w-3.5 h-3.5 fill-amber-400 text-amber-400" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>
+                <svg class="testimonial-star inline-block w-3.5 h-3.5 fill-amber-400 text-amber-400" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>
+                <svg class="testimonial-star inline-block w-3.5 h-3.5 fill-amber-400 text-amber-400" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>
+              </div>
+              <span class="text-stone-300 font-semibold font-mono">5/5</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Two Refined Botanical Corner Clusters (Bottom-Left & Bottom-Right) -->
+        <svg class="stone-fragment stone-frag-bl absolute bottom-3 left-3 w-12 h-12 pointer-events-none text-amber-400/40" viewBox="0 0 60 60" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M 8,52 C 16,42 28,38 42,36" stroke-width="1.4"/>
+          <path d="M 18,48 C 16,38 24,30 32,28 C 34,36 28,44 20,46" stroke-width="1.2" fill="#000000" fill-opacity="0.3"/>
+          <path d="M 28,40 C 32,32 40,28 48,28 C 48,36 40,42 32,40" stroke-width="1.2" fill="#000000" fill-opacity="0.3"/>
+          <circle cx="44" cy="35" r="2.2" stroke-width="1" fill="#000000"/>
+          <circle cx="50" cy="32" r="2" stroke-width="1" fill="#000000"/>
+        </svg>
+
+        <svg class="stone-fragment stone-frag-br absolute bottom-3 right-3 w-12 h-12 pointer-events-none text-amber-400/40 scale-x-[-1]" viewBox="0 0 60 60" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M 8,52 C 16,42 28,38 42,36" stroke-width="1.4"/>
+          <path d="M 18,48 C 16,38 24,30 32,28 C 34,36 28,44 20,46" stroke-width="1.2" fill="#000000" fill-opacity="0.3"/>
+          <path d="M 28,40 C 32,32 40,28 48,28 C 48,36 40,42 32,40" stroke-width="1.2" fill="#000000" fill-opacity="0.3"/>
+          <circle cx="44" cy="35" r="2.2" stroke-width="1" fill="#000000"/>
+          <circle cx="50" cy="32" r="2" stroke-width="1" fill="#000000"/>
+        </svg>
+
+      </div>
+
+      <!-- Small Dot Indicators for Manual Navigation / Status -->
+      <div class="testimonial-dots flex items-center justify-center gap-2.5 mt-8 relative z-20" id="testimonial-dots-nav">
+        <button class="testimonial-dot active w-2.5 h-2.5 rounded-full bg-amber-400 transition-all cursor-pointer shadow-[0_0_8px_#f59e0b]" data-idx="0" aria-label="Testimonial 1"></button>
+        <button class="testimonial-dot w-2.5 h-2.5 rounded-full bg-stone-700 hover:bg-stone-500 transition-all cursor-pointer" data-idx="1" aria-label="Testimonial 2"></button>
+        <button class="testimonial-dot w-2.5 h-2.5 rounded-full bg-stone-700 hover:bg-stone-500 transition-all cursor-pointer" data-idx="2" aria-label="Testimonial 3"></button>
       </div>
 
     </div>

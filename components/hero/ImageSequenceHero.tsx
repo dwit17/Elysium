@@ -440,37 +440,6 @@ export default function ImageSequenceHero() {
               </div>
             </div>
 
-            {/* ---------------------------------------------------------------
-                Scroll Indicator Row
-                progressTextRef is updated directly by GSAP onUpdate — no setState.
-                ArrowDown bounce kept in Framer Motion (isolated, no conflict).
-            --------------------------------------------------------------- */}
-            <div
-              ref={scrollBarRef}
-              className="flex justify-between items-end border-t border-white/10 pt-4 pointer-events-auto"
-            >
-              <span
-                ref={progressTextRef}
-                className="text-[9px] font-mono tracking-widest text-stone-400 uppercase"
-              >
-                SCROLL PROGRESS: 0%
-              </span>
-
-              <button
-                onClick={handleExploreClick}
-                className="flex items-center gap-2 text-[10px] uppercase tracking-[0.3em] font-mono text-stone-300 hover:text-white transition-colors cursor-pointer"
-              >
-                <span>SCROLL TO BUILD</span>
-                {/* Framer Motion bounce — isolated, no GSAP conflict */}
-                <motion.div
-                  animate={{ y: [0, 4, 0] }}
-                  transition={{ repeat: Infinity, duration: 1.8 }}
-                >
-                  <ArrowDown className="w-3.5 h-3.5" />
-                </motion.div>
-              </button>
-            </div>
-
           </div>
         )}
 

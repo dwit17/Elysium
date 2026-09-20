@@ -2,7 +2,6 @@
   'use strict';
 
   const TOTAL_FRAMES = 181;
-  const PRIORITY_FRAME_COUNT = 15;
 
   const STORY_STEPS = [
     { start: 0, end: 0.15, text: 'Before the first detail.' },
@@ -23,6 +22,8 @@
     const container = document.getElementById('hero-scroll-container');
     const canvas = document.getElementById('hero-canvas');
     const preloader = document.getElementById('hero-preloader');
+    const progressBar = document.getElementById('preloader-progress-bar');
+    const progressText = document.getElementById('preloader-progress-text');
     const storyTextEl = document.getElementById('story-overlay-text');
     const scrollProgressTextEl = document.getElementById('scroll-progress-text');
 
@@ -30,32 +31,45 @@
       return;
     }
 
-    const ctx = canvas.getContext('2d');
+    const ctx = canvas.getContext('2d', { alpha: false });
     const images = new Array(TOTAL_FRAMES).fill(null);
     const loadedMap = new Array(TOTAL_FRAMES).fill(false);
+    let loadedCount = 0;
     let currentFrameIndex = 0;
-    let rafId = null;
+    let isDisposed = false;
+    let hasRenderedAny = false;
+    let heroScrollTrigger = null;
 
     const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
     function resizeCanvas() {
-      if (!canvas) return;
+      if (!canvas || isDisposed) return;
       const dpr = Math.min(window.devicePixelRatio || 1, 2);
-      canvas.width = window.innerWidth * dpr;
-      canvas.height = window.innerHeight * dpr;
+      const w = window.innerWidth;
+      const h = window.innerHeight;
+
+      canvas.width = Math.round(w * dpr);
+      canvas.height = Math.round(h * dpr);
+      canvas.style.width = w + 'px';
+      canvas.style.height = h + 'px';
+
       drawFrame(currentFrameIndex);
     }
 
     function getFrameImage(index) {
       if (images[index] && loadedMap[index]) return images[index];
       // Search nearest loaded frame
-      for (let offset = 1; offset < 30; offset++) {
+      for (let offset = 1; offset < 35; offset++) {
         if (index - offset >= 0 && images[index - offset] && loadedMap[index - offset]) {
           return images[index - offset];
         }
         if (index + offset < TOTAL_FRAMES && images[index + offset] && loadedMap[index + offset]) {
           return images[index + offset];
         }
+      }
+      // Return first available loaded frame
+      for (let i = 0; i < TOTAL_FRAMES; i++) {
+        if (images[i] && loadedMap[i]) return images[i];
       }
       return images[0];
     }
@@ -67,7 +81,7 @@
 
       const canvasWidth = canvas.width;
       const canvasHeight = canvas.height;
-      ctx.clearRect(0, 0, canvasWidth, canvasHeight);
+      if (canvasWidth === 0 || canvasHeight === 0) return;
 
       const imageAspect = img.naturalWidth / img.naturalHeight;
       const canvasAspect = canvasWidth / canvasHeight;
@@ -87,15 +101,11 @@
       }
 
       ctx.drawImage(img, offsetX, offsetY, drawWidth, drawHeight);
+      hasRenderedAny = true;
     }
 
-    function updateScroll() {
-      const containerTop = container.offsetTop;
-      const totalScrollableHeight = container.offsetHeight - window.innerHeight;
-      if (totalScrollableHeight <= 0) return;
-
-      const scrollY = Math.max(0, window.scrollY - containerTop);
-      const progress = Math.min(Math.max(scrollY / totalScrollableHeight, 0), 1);
+    function handleProgress(progress) {
+      if (isDisposed) return;
 
       if (scrollProgressTextEl) {
         scrollProgressTextEl.innerText = `SCROLL PROGRESS: ${Math.round(progress * 100)}%`;
@@ -106,15 +116,59 @@
         storyTextEl.innerText = activeStep.text;
       }
 
-      const targetFrame = prefersReducedMotion ? TOTAL_FRAMES - 1 : Math.round(progress * (TOTAL_FRAMES - 1));
-      if (targetFrame !== currentFrameIndex) {
+      const targetFrame = prefersReducedMotion
+        ? 0
+        : Math.min(Math.round(progress * (TOTAL_FRAMES - 1)), TOTAL_FRAMES - 1);
+
+      if (targetFrame !== currentFrameIndex || !hasRenderedAny) {
         currentFrameIndex = targetFrame;
         drawFrame(targetFrame);
       }
     }
 
-    // Expose for external smooth scrollers (Lenis / GSAP)
-    window.__elysiumUpdateHero = updateScroll;
+    function setupScrollTrigger() {
+      if (typeof gsap !== 'undefined' && typeof ScrollTrigger !== 'undefined') {
+        gsap.registerPlugin(ScrollTrigger);
+
+        if (heroScrollTrigger) {
+          heroScrollTrigger.kill();
+        }
+
+        heroScrollTrigger = ScrollTrigger.create({
+          trigger: container,
+          start: 'top top',
+          end: '+=2000',
+          pin: true,
+          scrub: 0.5,
+          anticipatePin: 1,
+          invalidateOnRefresh: true,
+          onUpdate: (self) => {
+            handleProgress(self.progress);
+          },
+        });
+
+        console.log('[Elysium Hero] GSAP ScrollTrigger pinning initialized.');
+      }
+    }
+
+    function updatePreloaderProgress(pct) {
+      if (progressBar) {
+        progressBar.style.width = pct + '%';
+      }
+      if (progressText) {
+        progressText.innerText = `INITIALIZING SPACE ${pct}%`;
+      }
+    }
+
+    function dismissPreloader() {
+      if (preloader) {
+        preloader.style.pointerEvents = 'none';
+        preloader.style.opacity = '0';
+        setTimeout(() => {
+          if (preloader) preloader.style.display = 'none';
+        }, 300);
+      }
+    }
 
     function loadSingleFrame(index) {
       return new Promise((resolve) => {
@@ -128,72 +182,83 @@
           if (settled) return;
           settled = true;
           loadedMap[index] = success;
-          if (success) images[index] = img;
+          if (success) {
+            images[index] = img;
+            loadedCount++;
+            const pct = Math.min(Math.round((loadedCount / 10) * 100), 100);
+            updatePreloaderProgress(pct);
+            if (!hasRenderedAny || index === currentFrameIndex) {
+              drawFrame(currentFrameIndex);
+            }
+          }
           resolve();
         };
 
         img.onload = () => done(true);
         img.onerror = () => done(false);
-        setTimeout(() => done(false), 1200);
+        setTimeout(() => done(false), 5000);
         img.src = getFramePath(index);
       });
     }
 
-    let isDisposed = false;
-    function dismissPreloader() {
-      if (preloader) {
-        preloader.style.pointerEvents = 'none';
-        preloader.style.opacity = '0';
-        setTimeout(() => {
-          if (preloader) preloader.style.display = 'none';
-        }, 400);
-      }
-    }
-
     async function startLoading() {
-      // Safety fallback: preloader dismisses after 500ms max
+      // 1. Establish initial canvas coordinate buffer
+      resizeCanvas();
+
+      // 2. Setup ScrollTrigger pinning immediately
+      setupScrollTrigger();
+
+      // 3. Safety timer: dismiss preloader after 800ms max so space is never blocked
       const safetyTimer = setTimeout(() => {
         dismissPreloader();
-        resizeCanvas();
         drawFrame(0);
-      }, 500);
+        if (typeof ScrollTrigger !== 'undefined') ScrollTrigger.refresh();
+      }, 800);
 
-      // Priority initial frames
-      const priorityPromises = [];
-      for (let i = 0; i < PRIORITY_FRAME_COUNT; i++) {
-        priorityPromises.push(loadSingleFrame(i));
-      }
-
-      await Promise.all(priorityPromises);
+      // 4. Load initial frame (Frame 0) first for instant visual paint
+      await loadSingleFrame(0);
       clearTimeout(safetyTimer);
 
       if (isDisposed) return;
 
       dismissPreloader();
-      resizeCanvas();
       drawFrame(0);
 
-      // Progressive background loading
-      for (let i = PRIORITY_FRAME_COUNT; i < TOTAL_FRAMES; i += 12) {
+      if (typeof ScrollTrigger !== 'undefined') {
+        ScrollTrigger.refresh();
+      }
+
+      // 5. Quickly load initial 10 frames in parallel for instant smooth scrub
+      const earlyBatch = [];
+      for (let i = 1; i < 10; i++) {
+        earlyBatch.push(loadSingleFrame(i));
+      }
+      await Promise.all(earlyBatch);
+
+      if (isDisposed) return;
+
+      // 6. Progressive background loading of all remaining frames
+      for (let i = 10; i < TOTAL_FRAMES; i += 10) {
         if (isDisposed) break;
         const batch = [];
-        for (let j = i; j < Math.min(i + 12, TOTAL_FRAMES); j++) {
+        for (let j = i; j < Math.min(i + 10, TOTAL_FRAMES); j++) {
           batch.push(loadSingleFrame(j));
         }
         await Promise.all(batch);
-        await new Promise((r) => setTimeout(r, 20));
+        await new Promise((r) => setTimeout(r, 15));
       }
     }
 
     window.addEventListener('resize', resizeCanvas, { passive: true });
-    window.addEventListener('scroll', () => {
-      if (rafId) cancelAnimationFrame(rafId);
-      rafId = requestAnimationFrame(updateScroll);
+    window.addEventListener('orientationchange', () => {
+      setTimeout(resizeCanvas, 100);
     }, { passive: true });
 
     window.addEventListener('beforeunload', () => {
       isDisposed = true;
-      if (rafId) cancelAnimationFrame(rafId);
+      if (heroScrollTrigger) {
+        heroScrollTrigger.kill();
+      }
     });
 
     startLoading();

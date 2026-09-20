@@ -355,3 +355,27 @@
   transform: scale(0.98);
 }
 
+/* ============================================================
+   ZERO BORDER ENFORCEMENT ON ALL IMAGES & MEDIA WRAPPERS
+   ============================================================ */
+img,
+picture,
+video,
+canvas,
+.manifesto-portrait-wrap,
+.manifesto-portrait-clip,
+.horizontal-img-frame,
+.featured-piece-img-wrap,
+.split-curtain-viewport,
+.product-img-container,
+.art-image-frame,
+.art-image-inner,
+.baroque-art-frame,
+.baroque-inner-border,
+.baroque-art-content {
+  border: none !important;
+  outline: none !important;
+  box-shadow: none !important;
+}
+
+

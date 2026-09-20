@@ -118,7 +118,7 @@ export default function FeaturedPieces() {
                 <div className="space-y-4">
                   <Link
                     href={`/artisan-pieces/${product.slug}`}
-                    className="block relative aspect-[3/4] w-full bg-stone-900 overflow-hidden rounded-xs border border-stone-800/80"
+                    className="block relative aspect-[3/4] w-full bg-stone-900 overflow-hidden rounded-xs"
                   >
                     <img
                       src={product.image}
@@ -126,7 +126,7 @@ export default function FeaturedPieces() {
                       loading="lazy"
                       className="parallax-img absolute inset-0 w-full h-[120%] -top-[10%] object-cover object-center transition-[filter,transform] duration-700 group-hover:scale-105 grayscale group-hover:grayscale-0 opacity-85 group-hover:opacity-100"
                     />
-                    <div className="absolute top-4 left-4 text-[8px] uppercase tracking-[0.25em] text-white bg-black/80 px-2.5 py-1 backdrop-blur-sm font-mono border border-white/10 z-10">
+                    <div className="absolute top-4 left-4 text-[8px] uppercase tracking-[0.25em] text-white bg-black/80 px-2.5 py-1 backdrop-blur-sm font-mono z-10">
                       {product.category}
                     </div>
                     <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end p-6 z-10">
