@@ -1394,46 +1394,15 @@ app.get('/', (req, res) => {
             “Elysium delivered a custom travertine console that transformed our living room into <span class="testimonial-highlight-wrap inline-block relative"><span class="testimonial-highlight-bg absolute inset-0 bg-amber-500/20 border border-amber-400/30 rounded-xs"></span><span class="testimonial-highlight-text relative z-10 text-amber-200 font-normal px-1.5">a monolithic living sanctuary</span></span> with unmatched tactile reverence.”
           </p>
 
-          <!-- Attribution & Star Rating Row -->
-          <div id="testimonial-attribution-block" class="testimonial-attribution pt-4 space-y-2">
+          <!-- Attribution Row -->
+          <div id="testimonial-attribution-block" class="testimonial-attribution pt-4">
             <div class="text-xs sm:text-sm text-stone-200 font-sans">
               <strong id="testimonial-author" class="font-semibold text-white">Sarah P.</strong>
               <span class="text-stone-500 mx-1">•</span>
               <span id="testimonial-project" class="text-stone-400">Bespoke Console Commission, South Bombay Residence</span>
             </div>
-
-            <div class="inline-flex items-center gap-2 text-[10px] font-mono tracking-widest text-amber-400/90 uppercase bg-black/60 px-3.5 py-1.5 rounded-full border border-amber-500/20 shadow-inner">
-              <span id="testimonial-tag">🪨 Custom Commission</span>
-              <span class="text-stone-600">•</span>
-              <div id="testimonial-stars-container" class="flex items-center gap-0.5 text-amber-400">
-                <!-- 5 SVG Stars for Staggered Animation -->
-                <svg class="testimonial-star inline-block w-3.5 h-3.5 fill-amber-400 text-amber-400" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>
-                <svg class="testimonial-star inline-block w-3.5 h-3.5 fill-amber-400 text-amber-400" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>
-                <svg class="testimonial-star inline-block w-3.5 h-3.5 fill-amber-400 text-amber-400" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>
-                <svg class="testimonial-star inline-block w-3.5 h-3.5 fill-amber-400 text-amber-400" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>
-                <svg class="testimonial-star inline-block w-3.5 h-3.5 fill-amber-400 text-amber-400" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>
-              </div>
-              <span class="text-stone-300 font-semibold font-mono">5/5</span>
-            </div>
           </div>
         </div>
-
-        <!-- Two Refined Botanical Corner Clusters (Bottom-Left & Bottom-Right) -->
-        <svg class="stone-fragment stone-frag-bl absolute bottom-3 left-3 w-12 h-12 pointer-events-none text-amber-400/40" viewBox="0 0 60 60" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
-          <path d="M 8,52 C 16,42 28,38 42,36" stroke-width="1.4"/>
-          <path d="M 18,48 C 16,38 24,30 32,28 C 34,36 28,44 20,46" stroke-width="1.2" fill="#000000" fill-opacity="0.3"/>
-          <path d="M 28,40 C 32,32 40,28 48,28 C 48,36 40,42 32,40" stroke-width="1.2" fill="#000000" fill-opacity="0.3"/>
-          <circle cx="44" cy="35" r="2.2" stroke-width="1" fill="#000000"/>
-          <circle cx="50" cy="32" r="2" stroke-width="1" fill="#000000"/>
-        </svg>
-
-        <svg class="stone-fragment stone-frag-br absolute bottom-3 right-3 w-12 h-12 pointer-events-none text-amber-400/40 scale-x-[-1]" viewBox="0 0 60 60" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
-          <path d="M 8,52 C 16,42 28,38 42,36" stroke-width="1.4"/>
-          <path d="M 18,48 C 16,38 24,30 32,28 C 34,36 28,44 20,46" stroke-width="1.2" fill="#000000" fill-opacity="0.3"/>
-          <path d="M 28,40 C 32,32 40,28 48,28 C 48,36 40,42 32,40" stroke-width="1.2" fill="#000000" fill-opacity="0.3"/>
-          <circle cx="44" cy="35" r="2.2" stroke-width="1" fill="#000000"/>
-          <circle cx="50" cy="32" r="2" stroke-width="1" fill="#000000"/>
-        </svg>
 
       </div>
 
