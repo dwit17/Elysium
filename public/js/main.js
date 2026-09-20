@@ -155,4 +155,30 @@ document.addEventListener('DOMContentLoaded', () => {
       }
     });
   }
+
+  // 5. Independent Image Skeleton & Blur-Up Crossfade Loading System
+  function initImageBlurUpLoaders() {
+    const blurImages = document.querySelectorAll('.image-blur-up');
+    
+    blurImages.forEach((img) => {
+      const parent = img.closest('.img-skeleton-wrap');
+      const placeholder = parent ? parent.querySelector('.img-skeleton-placeholder') : null;
+
+      function onImgLoaded() {
+        img.classList.add('loaded');
+        if (placeholder) {
+          placeholder.classList.add('loaded');
+        }
+      }
+
+      if (img.complete && img.naturalWidth > 0) {
+        onImgLoaded();
+      } else {
+        img.addEventListener('load', onImgLoaded);
+        img.addEventListener('error', onImgLoaded);
+      }
+    });
+  }
+
+  initImageBlurUpLoaders();
 });

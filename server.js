@@ -728,15 +728,15 @@ app.get('/', (req, res) => {
   </div>`;
 
   // SECTION 1: THE ATELIER MANIFESTO & 3D INTERACTIVE TILT SCULPTURE
-  // Calibrated for responsive viewports (Zainab Kabira & Palmo inspired)
+  // Calibrated for natural height & breathing room (Preserving 100% of copy, signature, and links)
   const manifestoHeadingWords = "Every Piece Begins With a Name.".split(" ");
   const sectionManifesto = `
-  <section class="section-manifesto min-h-screen lg:h-screen flex items-center justify-center pt-24 pb-14 sm:pb-16 lg:py-0 px-6 md:px-12 lg:px-20 bg-[#030303] border-t border-stone-800 text-white relative z-10 overflow-hidden">
+  <section class="section-manifesto relative bg-[#030303] border-t border-stone-800 text-white z-10 overflow-hidden py-20 sm:py-24 lg:py-28 px-6 md:px-12 lg:px-20">
     
     <!-- Ambient Radial Glow Accent -->
     <div class="absolute -top-40 -left-40 w-96 h-96 bg-amber-500/10 rounded-full blur-3xl pointer-events-none"></div>
 
-    <div class="max-w-7xl mx-auto w-full my-auto">
+    <div class="max-w-7xl mx-auto w-full">
       <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-16 items-center">
         
         <!-- Left 7 Cols: Split-Text Manifesto -->
@@ -791,16 +791,18 @@ app.get('/', (req, res) => {
           <div class="manifesto-tilt-container relative w-full max-w-sm perspective-[1200px]" id="manifesto-tilt-card">
             <div class="manifesto-portrait-wrap relative overflow-hidden bg-stone-950 shadow-2xl transition-transform duration-200 ease-out will-change-transform rounded-sm">
               
-              <div class="manifesto-portrait-clip aspect-[4/5] sm:aspect-[3/4] relative overflow-hidden max-h-[50vh]">
+              <div class="manifesto-portrait-clip aspect-[4/5] sm:aspect-[3/4] relative overflow-hidden max-h-[50vh] img-skeleton-wrap">
+                <div class="img-skeleton-placeholder"></div>
                 <img
                   src="/images/maker_portrait.jpg"
                   alt="Lead Artisan at work in the Elysium Rajkot Atelier"
-                  class="manifesto-portrait-img w-full h-full object-cover object-center filter contrast-105 brightness-95"
+                  class="manifesto-portrait-img image-blur-up w-full h-full object-cover filter contrast-105 brightness-95"
+                  style="object-position: center 25%;"
                   loading="lazy"
                 />
-                <div class="absolute inset-0 bg-gradient-to-t from-black/85 via-transparent to-transparent pointer-events-none"></div>
+                <div class="absolute inset-0 bg-gradient-to-t from-black/85 via-transparent to-transparent pointer-events-none z-10"></div>
                 <!-- Dynamic Mouse Glare Element -->
-                <div class="tilt-glare absolute inset-0 pointer-events-none opacity-0 transition-opacity duration-300"></div>
+                <div class="tilt-glare absolute inset-0 pointer-events-none opacity-0 transition-opacity duration-300 z-20"></div>
                 <!-- Initial clip-path overlay mask -->
                 <div class="manifesto-portrait-mask absolute inset-0 bg-[#030303] z-10" style="clip-path: inset(0 100% 0 0);"></div>
               </div>
@@ -813,7 +815,7 @@ app.get('/', (req, res) => {
     </div>
   </section>`;
 
-  // SECTION 2: THE PINNED HORIZONTAL ATELIER EXPEDITION (100vh Pinned Viewport)
+  // SECTION 2: THE PINNED HORIZONTAL ATELIER EXPEDITION (100dvh Pinned Viewport on Desktop, Natural on Mobile)
   const horizontalChapters = [
     {
       index: '01',
@@ -864,7 +866,7 @@ app.get('/', (req, res) => {
   const sectionHorizontalGallery = `
   <section class="section-horizontal-gallery relative bg-black border-t border-stone-800 overflow-hidden" id="horizontal-suite-container">
     
-    <!-- Pinned Viewport Container (100vh on desktop, natural stack on compact) -->
+    <!-- Pinned Viewport Container (100dvh on desktop, natural stack on compact) -->
     <div class="horizontal-pinned-track w-full min-h-screen lg:h-screen flex flex-col justify-center overflow-hidden">
 
       <!-- Horizontal Slides Track (GSAP translates x smoothly on desktop, stacks responsively on mobile) -->
@@ -885,7 +887,7 @@ app.get('/', (req, res) => {
                   ${ch.description}
                 </p>
 
-                <!-- Spec Pill List (Palmo inspired) -->
+                <!-- Spec Pill List -->
                 <div class="space-y-1.5 pt-1">
                   ${ch.specs.map(spec => `
                     <div class="flex items-center gap-2.5 text-[10px] font-mono tracking-wider text-stone-400">
@@ -905,14 +907,15 @@ app.get('/', (req, res) => {
 
               <!-- Right Column: Widescreen Architectural Frame -->
               <div class="lg:col-span-7 flex justify-center">
-                <div class="horizontal-img-frame relative aspect-[16/10] max-h-[50vh] overflow-hidden bg-stone-950 shadow-2xl rounded-sm group">
+                <div class="horizontal-img-frame relative aspect-[16/10] max-h-[50vh] w-full overflow-hidden bg-stone-950 shadow-2xl rounded-sm group img-skeleton-wrap">
+                  <div class="img-skeleton-placeholder"></div>
                   <img
                     src="${ch.image}"
                     alt="${ch.title} - Elysium Atelier Handcrafted Decor"
-                    class="w-full h-full object-cover object-center filter contrast-105 transition-transform duration-700 group-hover:scale-105"
+                    class="image-blur-up w-full h-full object-cover object-center filter contrast-105 transition-transform duration-700 group-hover:scale-105"
                     loading="lazy"
                   />
-                  <div class="absolute inset-0 bg-gradient-to-t from-black/75 via-transparent to-transparent"></div>
+                  <div class="absolute inset-0 bg-gradient-to-t from-black/75 via-transparent to-transparent pointer-events-none z-10"></div>
                 </div>
               </div>
 
@@ -925,7 +928,7 @@ app.get('/', (req, res) => {
     </div>
   </section>`;
 
-  // SECTION 3: THE TACTILE MATERIALITY LAB (Sticky Viewport on desktop, interactive switcher on mobile)
+  // SECTION 3: THE TACTILE MATERIALITY LAB (Sticky 100dvh Viewport on desktop, natural on mobile)
   const sectionMaterialityInterlude = `
   <section class="section-materiality-interlude relative bg-black border-t border-stone-800" id="materiality-suite-container">
     <div class="materiality-pinned w-full min-h-screen lg:h-screen overflow-hidden flex flex-col justify-between pt-20 sm:pt-24 pb-8 sm:pb-10 px-6 sm:px-10 lg:px-16 relative">
@@ -933,16 +936,16 @@ app.get('/', (req, res) => {
       <!-- Macro Material Images (4 slices, scaling during active window) -->
       <div class="materiality-images absolute inset-0 z-0 pointer-events-none">
         <div class="mat-slide mat-slide-0 absolute inset-0 overflow-hidden transition-opacity duration-500">
-          <img src="/images/atelier_materials.jpg" alt="Raw Italian Travertine Stone Macro" class="mat-img w-full h-full object-cover object-center filter brightness-90 contrast-110" />
+          <img src="/images/atelier_materials.jpg" alt="Raw Italian Travertine Stone Macro" class="mat-img image-blur-up w-full h-full object-cover object-center filter brightness-90 contrast-110" />
         </div>
         <div class="mat-slide mat-slide-1 absolute inset-0 overflow-hidden opacity-0 transition-opacity duration-500">
-          <img src="/images/story_clay_vessel.jpg" alt="Organic Stoneware Clay Macro" class="mat-img w-full h-full object-cover object-center filter brightness-90 contrast-110" />
+          <img src="/images/story_clay_vessel.jpg" alt="Organic Stoneware Clay Macro" class="mat-img image-blur-up w-full h-full object-cover object-center filter brightness-90 contrast-110" />
         </div>
         <div class="mat-slide mat-slide-2 absolute inset-0 overflow-hidden opacity-0 transition-opacity duration-500">
-          <img src="/images/maker_tools.jpg" alt="Crafted Oak Timber Macro" class="mat-img w-full h-full object-cover object-center filter brightness-90 contrast-110" />
+          <img src="/images/maker_tools.jpg" alt="Crafted Oak Timber Macro" class="mat-img image-blur-up w-full h-full object-cover object-center filter brightness-90 contrast-110" />
         </div>
         <div class="mat-slide mat-slide-3 absolute inset-0 overflow-hidden opacity-0 transition-opacity duration-500">
-          <img src="/images/story_plaster_relief.jpg" alt="Textured Lime Plaster Finish Macro" class="mat-img w-full h-full object-cover object-center filter brightness-90 contrast-110" />
+          <img src="/images/story_plaster_relief.jpg" alt="Textured Lime Plaster Finish Macro" class="mat-img image-blur-up w-full h-full object-cover object-center filter brightness-90 contrast-110" />
         </div>
       </div>
 
@@ -993,10 +996,10 @@ app.get('/', (req, res) => {
     </div>
   </section>`;
 
-  // SECTION 4: THE CRAFT JOURNEY & INTERACTIVE BEFORE/AFTER SLIDER (Calibrated)
+  // SECTION 4: THE CRAFT JOURNEY & INTERACTIVE BEFORE/AFTER SLIDER (Natural Height)
   const sectionCraftJourney = `
-  <section class="section-craft-journey min-h-screen lg:h-screen flex flex-col justify-between pt-24 pb-12 sm:pb-16 lg:py-0 px-6 md:px-12 lg:px-20 bg-[#060606] border-t border-stone-800 text-white relative z-10 overflow-hidden">
-    <div class="max-w-7xl mx-auto w-full my-auto space-y-6 sm:space-y-8">
+  <section class="section-craft-journey relative bg-[#060606] border-t border-stone-800 text-white z-10 overflow-hidden py-20 sm:py-24 lg:py-28 px-6 md:px-12 lg:px-20">
+    <div class="max-w-7xl mx-auto w-full space-y-6 sm:space-y-8">
       
       <!-- Compact Section Header -->
       <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-end border-b border-stone-800 pb-4">
@@ -1064,30 +1067,31 @@ app.get('/', (req, res) => {
           </div>
         </div>
 
-        <!-- Right 5 Cols: Interactive Draggable Split-Wipe Transformation Moment -->
+        <!-- Right 5 Cols: Interactive Draggable & Touch Split-Wipe Transformation Moment -->
         <div class="lg:col-span-5">
           <div class="transformation-card bg-stone-950 shadow-2xl rounded-sm overflow-hidden">
             <!-- Interactive Split-Wipe Curtain Container -->
-            <div id="split-curtain-container" class="split-curtain-viewport relative aspect-[4/3] max-h-[46vh] overflow-hidden cursor-ew-resize rounded-sm select-none" role="slider" aria-valuemin="0" aria-valuemax="100" aria-valuenow="50">
+            <div id="split-curtain-container" class="split-curtain-viewport relative aspect-[4/3] max-h-[46vh] overflow-hidden cursor-ew-resize rounded-sm select-none img-skeleton-wrap" role="slider" aria-valuemin="0" aria-valuemax="100" aria-valuenow="50">
+              <div class="img-skeleton-placeholder"></div>
               
               <!-- Raw Medium Image (Background Layer) -->
               <img
                 src="/images/atelier_materials.jpg"
                 alt="Raw Geomorphic Travertine Block"
-                class="absolute inset-0 w-full h-full object-cover object-center filter contrast-115 brightness-90 pointer-events-none"
+                class="image-blur-up absolute inset-0 w-full h-full object-cover object-center filter contrast-115 brightness-90 pointer-events-none"
               />
 
               <!-- Finished Piece Image (Clipped Foreground Layer) -->
-              <div id="split-curtain-clip" class="absolute inset-0 overflow-hidden pointer-events-none" style="clip-path: polygon(50% 0, 100% 0, 100% 100%, 50% 100%);">
+              <div id="split-curtain-clip" class="absolute inset-0 overflow-hidden pointer-events-none z-10" style="clip-path: polygon(50% 0, 100% 0, 100% 100%, 50% 100%);">
                 <img
                   src="/images/chapter_living_room.jpg"
                   alt="Finished Solis Travertine Console"
-                  class="absolute inset-0 w-full h-full object-cover object-center filter contrast-105 pointer-events-none"
+                  class="image-blur-up absolute inset-0 w-full h-full object-cover object-center filter contrast-105 pointer-events-none"
                 />
               </div>
 
               <!-- Draggable Divider Bar -->
-              <div id="split-curtain-handle" class="absolute top-0 bottom-0 w-1 bg-amber-400 shadow-[0_0_12px_#f59e0b] pointer-events-none" style="left: 50%;">
+              <div id="split-curtain-handle" class="absolute top-0 bottom-0 w-1 bg-amber-400 shadow-[0_0_12px_#f59e0b] pointer-events-none z-20" style="left: 50%;">
                 <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-6 h-6 rounded-full bg-black border-2 border-amber-400 flex items-center justify-center text-[8.5px] text-amber-300 shadow-xl">
                   &harr;
                 </div>
@@ -1102,10 +1106,10 @@ app.get('/', (req, res) => {
     </div>
   </section>`;
 
-  // SECTION 5: THE CURATED EDITORIAL COLLECTION (Calibrated Grid)
+  // SECTION 5: THE CURATED EDITORIAL COLLECTION (Natural Height Grid)
   const sectionFeaturedPieces = `
-  <section class="section-featured-pieces min-h-screen lg:h-screen flex flex-col justify-between pt-24 pb-12 sm:pb-16 lg:py-0 px-6 md:px-12 lg:px-20 bg-black border-t border-stone-800 text-white relative z-10 overflow-hidden">
-    <div class="max-w-7xl mx-auto w-full my-auto space-y-5">
+  <section class="section-featured-pieces relative bg-black border-t border-stone-800 text-white z-10 overflow-hidden py-20 sm:py-24 lg:py-28 px-6 md:px-12 lg:px-20">
+    <div class="max-w-7xl mx-auto w-full space-y-6">
       
       <!-- Section Header -->
       <div class="flex flex-col md:flex-row md:items-end justify-between gap-4 border-b border-stone-800 pb-3">
@@ -1124,17 +1128,18 @@ app.get('/', (req, res) => {
       </div>
 
       <!-- 4 Flagship Products Horizontal Grid (Strict Uniform Proportions) -->
-      <div class="featured-pieces-grid">
+      <div class="featured-pieces-grid grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
         ${PRODUCTS.slice(0, 4).map((p, idx) => `
           <div class="featured-piece-card group flex flex-col justify-between bg-stone-950 p-3 sm:p-4 space-y-3 transition-all duration-300 shadow-xl rounded-sm" data-row="${idx}">
             
             <div class="space-y-2.5">
-              <!-- Uniform Fixed 4:3 Image Container -->
-              <div class="featured-piece-img-wrap relative w-full aspect-[4/3] overflow-hidden bg-stone-900 rounded-sm">
+              <!-- Uniform Fixed 4:3 Image Container with Skeleton Placeholder -->
+              <div class="featured-piece-img-wrap relative w-full aspect-[4/3] overflow-hidden bg-stone-900 rounded-sm img-skeleton-wrap">
+                <div class="img-skeleton-placeholder"></div>
                 <img
                   src="${p.image}"
                   alt="${p.name} - Handcrafted by ${p.artisan}"
-                  class="featured-piece-img w-full h-full object-cover object-center filter contrast-105 transition-transform duration-700 ease-out group-hover:scale-[1.06]"
+                  class="featured-piece-img image-blur-up w-full h-full object-cover object-center filter contrast-105 transition-transform duration-700 ease-out group-hover:scale-[1.06]"
                   loading="lazy"
                 />
               </div>
@@ -1204,7 +1209,7 @@ app.get('/', (req, res) => {
   const sectionTrustVoice = `
   <section class="section-trust-voice relative bg-black border-t border-stone-800 text-white overflow-hidden" id="trust-voice-container">
     
-    <!-- 1. Pinned Narrative Quote Scrub Viewport -->
+    <!-- 1. Pinned Narrative Quote Scrub Viewport (100dvh on desktop) -->
     <div class="abouttt trust-voice-pinned w-full min-h-screen lg:h-screen flex flex-col justify-between pt-24 pb-8 px-6 md:px-12 lg:px-20 overflow-hidden bg-[#030303]" id="trust-voice-pinned-viewport">
       
       <!-- Subtle Ambient Warm Glow -->
@@ -1238,16 +1243,19 @@ app.get('/', (req, res) => {
         </div>
       </div>
 
-      <!-- Bottom Status Strip -->
+      <!-- Bottom Status Strip (Adaptive to touch devices) -->
       <div class="relative z-20 flex justify-between items-center text-[9px] font-mono tracking-widest text-stone-500 uppercase border-t border-white/10 pt-3">
-        <span>SCROLL TO ADVANCE NARRATIVE</span>
+        <span>
+          <span class="mouse-device-only">SCROLL TO ADVANCE NARRATIVE</span>
+          <span class="touch-device-only">SWIPE TO ADVANCE NARRATIVE</span>
+        </span>
         <span>ELYSIUM SPATIAL ATELIER</span>
       </div>
 
     </div>
 
-    <!-- 2. Sculptural Frosted Glass Testimonial Component (Reference Layout) -->
-    <div class="section-testimonial-stage relative w-full py-24 sm:py-32 px-6 sm:px-10 lg:px-16 overflow-hidden flex flex-col items-center justify-center border-t border-stone-800/80 bg-black" id="trust-testimonial-stage">
+    <!-- 2. Sculptural Frosted Glass Testimonial Component (Natural Height) -->
+    <div class="section-testimonial-stage relative w-full py-20 sm:py-28 lg:py-32 px-6 sm:px-10 lg:px-16 overflow-hidden flex flex-col items-center justify-center border-t border-stone-800/80 bg-black" id="trust-testimonial-stage">
       
       <!-- Full-Bleed Blurred Atelier Stone Backdrop -->
       <div class="absolute inset-0 z-0 overflow-hidden pointer-events-none">

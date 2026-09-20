@@ -100,16 +100,12 @@
       return;
     }
 
-    // Pinned Scrub Timeline for Desktop
+    // Natural Height Progressive Entrance Timeline for Manifesto
     const manifestoTl = gsap.timeline({
       scrollTrigger: {
         trigger: section,
-        start: 'top top',
-        end: '+=1000',
-        pin: true,
-        scrub: 0.8,
-        anticipatePin: 1,
-        invalidateOnRefresh: true,
+        start: 'top 75%',
+        toggleActions: 'play none none none',
       },
     });
 
@@ -121,16 +117,16 @@
     gsap.set(signature, { opacity: 0, y: 15 });
     gsap.set(links, { opacity: 0, y: 12 });
 
-    // Coordinated scrub sequence
+    // Coordinated entrance sequence
     manifestoTl
-      .to(eyebrow, { opacity: 1, y: 0, duration: 0.25, ease: 'power2.out' }, 0)
-      .to(divider, { scaleX: 1, duration: 0.35, ease: 'power2.out' }, 0.08)
-      .to(words, { opacity: 1, y: 0, stagger: 0.03, duration: 0.5, ease: 'power2.out' }, 0.08)
-      .fromTo(mask, { clipPath: 'inset(0 100% 0 0)' }, { clipPath: 'inset(0 0% 0 0)', duration: 0.65, ease: 'power3.inOut' }, 0.15)
-      .to(para1, { opacity: 1, y: 0, duration: 0.45, ease: 'power2.out' }, 0.4)
-      .to(para2, { opacity: 1, y: 0, duration: 0.45, ease: 'power2.out' }, 0.55)
-      .to(signature, { opacity: 1, y: 0, duration: 0.35, ease: 'power2.out' }, 0.65)
-      .to(links, { opacity: 1, y: 0, stagger: 0.08, duration: 0.35, ease: 'power2.out' }, 0.75);
+      .to(eyebrow, { opacity: 1, y: 0, duration: 0.45, ease: 'power2.out' }, 0)
+      .to(divider, { scaleX: 1, duration: 0.5, ease: 'power2.out' }, 0.1)
+      .to(words, { opacity: 1, y: 0, stagger: 0.02, duration: 0.6, ease: 'power2.out' }, 0.15)
+      .fromTo(mask, { clipPath: 'inset(0 100% 0 0)' }, { clipPath: 'inset(0 0% 0 0)', duration: 0.85, ease: 'power3.inOut' }, 0.25)
+      .to(para1, { opacity: 1, y: 0, duration: 0.55, ease: 'power2.out' }, 0.45)
+      .to(para2, { opacity: 1, y: 0, duration: 0.55, ease: 'power2.out' }, 0.6)
+      .to(signature, { opacity: 1, y: 0, duration: 0.45, ease: 'power2.out' }, 0.75)
+      .to(links, { opacity: 1, y: 0, stagger: 0.1, duration: 0.45, ease: 'power2.out' }, 0.85);
 
     // 3D Perspective Tilt on Mousemove
     const isFinePointer = window.matchMedia('(hover: hover) and (pointer: fine)').matches;
@@ -181,7 +177,7 @@
       });
     }
 
-    console.log('[Elysium Motion] Section 1 (Manifesto) initialized with pinned scrub.');
+    console.log('[Elysium Motion] Section 1 (Manifesto) initialized with natural height entrance.');
   }
 
   /**
@@ -479,9 +475,10 @@
         }
       }
 
+      // Pointer events for modern touch & mouse
       curtainContainer.addEventListener('pointerdown', (e) => {
         isDragging = true;
-        curtainContainer.setPointerCapture(e.pointerId);
+        try { curtainContainer.setPointerCapture(e.pointerId); } catch(err) {}
         updateCurtainPosition(e.clientX);
       });
 
@@ -498,6 +495,35 @@
 
       curtainContainer.addEventListener('pointercancel', () => {
         isDragging = false;
+      });
+
+      // Explicit mobile touch events fallback
+      curtainContainer.addEventListener('touchstart', (e) => {
+        isDragging = true;
+        if (e.touches && e.touches[0]) {
+          updateCurtainPosition(e.touches[0].clientX);
+        }
+      }, { passive: true });
+
+      curtainContainer.addEventListener('touchmove', (e) => {
+        if (isDragging && e.touches && e.touches[0]) {
+          updateCurtainPosition(e.touches[0].clientX);
+        }
+      }, { passive: true });
+
+      curtainContainer.addEventListener('touchend', () => {
+        isDragging = false;
+      });
+
+      // Tap-to-toggle reveal on mobile click
+      curtainContainer.addEventListener('click', (e) => {
+        if (!isDragging && isMobileScreen()) {
+          const rect = curtainContainer.getBoundingClientRect();
+          const currentPct = parseFloat(curtainContainer.getAttribute('aria-valuenow') || '50');
+          const newPct = currentPct > 50 ? 15 : 85;
+          const targetX = rect.left + (rect.width * newPct) / 100;
+          updateCurtainPosition(targetX);
+        }
       });
 
       curtainContainer.addEventListener('keydown', (e) => {

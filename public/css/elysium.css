@@ -2244,3 +2244,194 @@ canvas,
   box-shadow: 0 0 10px rgba(212, 175, 55, 0.65) !important;
 }
 
+/* ============================================================
+   VIEWPORT HEIGHT CASCADE & SAFE AREA SYSTEM
+   (Strict fallback order: 100vh then 100dvh)
+   ============================================================ */
+:root {
+  --sat: env(safe-area-inset-top, 0px);
+  --sar: env(safe-area-inset-right, 0px);
+  --sab: env(safe-area-inset-bottom, 0px);
+  --sal: env(safe-area-inset-left, 0px);
+}
+
+/* Hero Section */
+#hero-scroll-container {
+  height: 100vh;
+  height: 100dvh;
+  min-height: 100vh;
+  min-height: 100dvh;
+}
+
+.hero-sticky-viewport {
+  height: 100vh;
+  height: 100dvh;
+  min-height: 100vh;
+  min-height: 100dvh;
+}
+
+/* Individual Piece Showcases (Desktop Horizontal Track) */
+@media (min-width: 1024px) {
+  .horizontal-pinned-track {
+    height: 100vh;
+    height: 100dvh;
+    min-height: 100vh;
+    min-height: 100dvh;
+  }
+}
+
+/* Materiality Interlude (Desktop Pinned Interlude) */
+@media (min-width: 1024px) {
+  .materiality-pinned {
+    height: 100vh;
+    height: 100dvh;
+    min-height: 100vh;
+    min-height: 100dvh;
+  }
+}
+
+/* Trust & Voice Narrative Viewport (Desktop Pinned Viewport) */
+@media (min-width: 1024px) {
+  .trust-voice-pinned {
+    height: 100vh;
+    height: 100dvh;
+    min-height: 100vh;
+    min-height: 100dvh;
+  }
+}
+
+/* Footer Fullscreen: Centered flexbox, no artificial empty gaps */
+.footer-fullscreen {
+  min-height: 100vh;
+  min-height: 100dvh;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding-top: calc(1.5rem + var(--sat));
+  padding-bottom: calc(1.5rem + var(--sab));
+}
+
+.footer-decor-fullscreen {
+  min-height: 100vh;
+  min-height: 100dvh;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+/* ============================================================
+   IMAGE SIZING & CONTAINMENT DISCIPLINE
+   ============================================================ */
+img {
+  max-width: 100%;
+  height: auto;
+}
+
+.manifesto-portrait-clip img,
+.horizontal-img-frame img,
+.mat-img,
+.featured-piece-img-wrap img,
+.split-curtain-viewport img,
+#footer-bg-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+}
+
+.manifesto-portrait-clip img {
+  object-position: center 25%;
+}
+
+/* ============================================================
+   ELYSIUM SKELETON & BLUR-UP LOADER SYSTEM
+   (Reusing Hero Preloader Aesthetic: Geist Mono, subtle pulse, 0.4s crossfade)
+   ============================================================ */
+.img-skeleton-wrap {
+  position: relative;
+  overflow: hidden;
+  background-color: #0c0a09;
+}
+
+.img-skeleton-placeholder {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(90deg, #141210 0%, #1f1b18 50%, #141210 100%);
+  background-size: 200% 100%;
+  animation: elysium-skeleton-pulse 1.8s ease-in-out infinite;
+  z-index: 2;
+  transition: opacity 0.4s ease-out, visibility 0.4s ease-out;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  pointer-events: none;
+}
+
+.img-skeleton-placeholder.loaded {
+  opacity: 0;
+  visibility: hidden;
+}
+
+@keyframes elysium-skeleton-pulse {
+  0% { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
+}
+
+.image-blur-up {
+  opacity: 0;
+  filter: blur(10px);
+  transform: scale(1.02);
+  transition: opacity 0.4s cubic-bezier(0.16, 1, 0.3, 1),
+              filter 0.4s cubic-bezier(0.16, 1, 0.3, 1),
+              transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+  will-change: opacity, filter, transform;
+}
+
+.image-blur-up.loaded {
+  opacity: 1;
+  filter: blur(0px);
+  transform: scale(1);
+}
+
+/* ============================================================
+   FLUID CLAMP TYPOGRAPHY & TOUCH POLISH
+   ============================================================ */
+.manifesto-heading {
+  font-size: clamp(1.75rem, 4vw, 3.25rem) !important;
+  line-height: 1.18 !important;
+}
+
+.section-craft-journey h2,
+.section-horizontal-gallery h3,
+.section-featured-pieces h2,
+.section-materiality-interlude h3 {
+  font-size: clamp(1.6rem, 3.5vw, 2.75rem) !important;
+  line-height: 1.2 !important;
+}
+
+.trust-quote-text {
+  font-size: clamp(1.25rem, 2.8vw, 2.5rem) !important;
+  line-height: 1.45 !important;
+}
+
+.testimonial-headline {
+  font-size: clamp(1.75rem, 4vw, 3rem) !important;
+}
+
+/* Touch prompt adaptation */
+.touch-device-only {
+  display: none;
+}
+.mouse-device-only {
+  display: inline;
+}
+
+@media (hover: none) and (pointer: coarse) {
+  .touch-device-only {
+    display: inline;
+  }
+  .mouse-device-only {
+    display: none;
+  }
+}
+
