@@ -383,59 +383,92 @@
    */
   /**
    * 3B. SECTION 3B — ELYSIUM SPATIAL LIVING SANCTUARY
-   * Smooth entrance animation for the Living Sanctuary showcase image and spatial points.
+   * Botanical porcelain-white branch & blooming leaves scroll-driven drawing animation.
    */
   function initLivingSanctuarySection() {
-    const section = document.getElementById('living-sanctuary-container');
-    if (!section || typeof gsap === 'undefined' || typeof ScrollTrigger === 'undefined') return;
+    const track = document.getElementById('sanctuary-journey-track');
+    const drawPath = document.getElementById('sanctuary-draw-path');
+    if (!track || !drawPath || typeof gsap === 'undefined' || typeof ScrollTrigger === 'undefined') return;
 
-    const showcaseFrame = section.querySelector('.process-showcase-frame');
-    const spatialPoints = section.querySelectorAll('.space-y-2');
-    const ctas = section.querySelectorAll('.btn-slide-white, .btn-slide-subtle');
+    const stations = track.querySelectorAll('.sanctuary-station');
+    const leafClusters = track.querySelectorAll('.sanctuary-leaf-cluster');
 
+    // Reduced motion fallback
     if (prefersReducedMotion) {
-      if (showcaseFrame) gsap.set(showcaseFrame, { opacity: 1, y: 0 });
-      if (spatialPoints.length) gsap.set(spatialPoints, { opacity: 1, y: 0 });
-      if (ctas.length) gsap.set(ctas, { opacity: 1, y: 0 });
+      drawPath.style.strokeDashoffset = '0';
+      stations.forEach((station) => {
+        station.classList.add('is-active');
+        const badge = station.querySelector('.sanctuary-waypoint-badge');
+        if (badge) badge.classList.add('is-active');
+      });
+      leafClusters.forEach((cluster) => cluster.classList.add('is-active'));
       return;
     }
 
-    gsap.from(showcaseFrame, {
-      y: 35,
-      opacity: 0,
-      duration: 1.0,
-      ease: 'power3.out',
-      scrollTrigger: {
-        trigger: section,
-        start: 'top 80%',
-        toggleActions: 'play none none reverse',
-      },
+    // 1. Calculate path total length & set initial dash offset
+    let pathLength = 0;
+    try {
+      pathLength = drawPath.getTotalLength();
+    } catch (e) {
+      pathLength = 3600;
+    }
+
+    // Initialize clean hidden stroke
+    gsap.set(drawPath, {
+      strokeDasharray: pathLength,
+      strokeDashoffset: pathLength,
     });
 
-    gsap.from(spatialPoints, {
-      y: 30,
-      opacity: 0,
-      duration: 0.8,
-      stagger: 0.15,
-      ease: 'power3.out',
+    // 2. Direct GSAP hardware-accelerated stroke scrub & organic leaf blooming
+    gsap.to(drawPath, {
+      strokeDashoffset: 0,
+      ease: 'none',
       scrollTrigger: {
-        trigger: section,
-        start: 'top 75%',
-        toggleActions: 'play none none reverse',
-      },
-    });
-
-    gsap.from(ctas, {
-      y: 20,
-      opacity: 0,
-      duration: 0.7,
-      stagger: 0.1,
-      ease: 'power2.out',
-      scrollTrigger: {
-        trigger: section,
+        trigger: track,
         start: 'top 70%',
-        toggleActions: 'play none none reverse',
+        end: 'bottom 85%',
+        scrub: 0.4,
+        invalidateOnRefresh: true,
+        onUpdate: (self) => {
+          const progress = self.progress;
+          // Unfurl botanical leaf clusters as the branch draws past their coordinate
+          leafClusters.forEach((cluster) => {
+            const threshold = parseFloat(cluster.getAttribute('data-progress') || '0');
+            if (progress >= threshold) {
+              if (!cluster.classList.contains('is-active')) cluster.classList.add('is-active');
+            } else {
+              if (cluster.classList.contains('is-active')) cluster.classList.remove('is-active');
+            }
+          });
+        },
       },
+    });
+
+    // 3. Clean Milestone & Station Activation (pure opacity & border states, zero layout shifts)
+    stations.forEach((station) => {
+      const badge = station.querySelector('.sanctuary-waypoint-badge');
+
+      ScrollTrigger.create({
+        trigger: station,
+        start: 'top 68%',
+        end: 'bottom 25%',
+        onEnter: () => {
+          station.classList.add('is-active');
+          if (badge) badge.classList.add('is-active');
+        },
+        onLeaveBack: () => {
+          station.classList.remove('is-active');
+          if (badge) badge.classList.remove('is-active');
+        },
+      });
+    });
+
+    // 4. Recalculate cleanly on resize
+    window.addEventListener('resize', () => {
+      try {
+        const newLen = drawPath.getTotalLength();
+        drawPath.style.strokeDasharray = newLen;
+      } catch (e) {}
     });
   }
 
