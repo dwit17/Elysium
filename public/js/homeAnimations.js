@@ -58,7 +58,7 @@
           }
         });
 
-        gsap.ticker.lagSmoothing(0);
+        gsap.ticker.lagSmoothing(500, 33);
         window.__elysiumLenis = lenisInstance;
         console.log('[Elysium GSAP] Lenis smooth scroll initialized & bridged to GSAP ticker.');
       } catch (err) {
@@ -363,8 +363,84 @@
   }
 
   /**
-   * 4. SECTION 4 — THE CRAFT JOURNEY & TRANSFORMATION LAB (PINNED SCRUB LOCK-IN)
-   * Locks in at top of viewport, scrubs through the 3 artisan phases & 4,500 sq ft count, then smoothly hands over to Section 5.
+   * 3B+4. UNIFIED PROCESS TRACE — Wave Bend + Craft Journey merged into one scroll system.
+   * One pinned ScrollTrigger owns all scroll progress:
+   *   — path draw (strokeDashoffset)
+   *   — tracer position (getPointAtLength)
+   *   — 4 node illuminations (data-progress thresholds)
+   *   — 4 craft stage activations (same thresholds)
+   *   — atelier countup (at stage 1 threshold)
+   * Node SVG positions derived from path geometry, never hard-coded coordinates.
+   */
+  /**
+   * 3B+4. UNIFIED PROCESS TRACE — Dynamic Layout-Calibrated Wave Motion System
+   * Wave path and waypoints are calculated directly from physical DOM layout markers:
+   *   — Start Anchor (Editorial frame)
+   *   — 4 Stage Anchors (Raw Sourcing -> Hand Sculpting -> Beeswax Curing -> Atelier Authentication)
+   *   — End Anchor (Transformation Before/After Slider)
+   * SVG coordinates match screen pixels 1:1 with zero distortion.
+   * Path length, thresholds, node positions, and tracer motion are calculated dynamically.
+   */
+  /**
+   * 3B. SECTION 3B — ELYSIUM SPATIAL LIVING SANCTUARY
+   * Smooth entrance animation for the Living Sanctuary showcase image and spatial points.
+   */
+  function initLivingSanctuarySection() {
+    const section = document.getElementById('living-sanctuary-container');
+    if (!section || typeof gsap === 'undefined' || typeof ScrollTrigger === 'undefined') return;
+
+    const showcaseFrame = section.querySelector('.process-showcase-frame');
+    const spatialPoints = section.querySelectorAll('.space-y-2');
+    const ctas = section.querySelectorAll('.btn-slide-white, .btn-slide-subtle');
+
+    if (prefersReducedMotion) {
+      if (showcaseFrame) gsap.set(showcaseFrame, { opacity: 1, y: 0 });
+      if (spatialPoints.length) gsap.set(spatialPoints, { opacity: 1, y: 0 });
+      if (ctas.length) gsap.set(ctas, { opacity: 1, y: 0 });
+      return;
+    }
+
+    gsap.from(showcaseFrame, {
+      y: 35,
+      opacity: 0,
+      duration: 1.0,
+      ease: 'power3.out',
+      scrollTrigger: {
+        trigger: section,
+        start: 'top 80%',
+        toggleActions: 'play none none reverse',
+      },
+    });
+
+    gsap.from(spatialPoints, {
+      y: 30,
+      opacity: 0,
+      duration: 0.8,
+      stagger: 0.15,
+      ease: 'power3.out',
+      scrollTrigger: {
+        trigger: section,
+        start: 'top 75%',
+        toggleActions: 'play none none reverse',
+      },
+    });
+
+    gsap.from(ctas, {
+      y: 20,
+      opacity: 0,
+      duration: 0.7,
+      stagger: 0.1,
+      ease: 'power2.out',
+      scrollTrigger: {
+        trigger: section,
+        start: 'top 70%',
+        toggleActions: 'play none none reverse',
+      },
+    });
+  }
+
+  /**
+   * 4. SECTION 4 — CRAFT JOURNEY & INTERACTIVE TRANSFORMATION SLIDER (3-Point Timeline)
    */
   function initCraftJourneySection() {
     const section = document.querySelector('.section-craft-journey');
@@ -397,7 +473,7 @@
       scrollTrigger: {
         trigger: section,
         start: 'top top',
-        end: '+=1400',
+        end: '+=1200',
         pin: true,
         scrub: 0.8,
         anticipatePin: 1,
@@ -416,7 +492,7 @@
       gsap.set(stageNum, { opacity: idx === 0 ? 1 : 0.4, scale: idx === 0 ? 1 : 0.85 });
     });
 
-    // Progressive scrub through stages
+    // Progressive scrub through stages (3-point timeline)
     craftTl
       .to(scrubLine, { strokeDashoffset: 650, ease: 'none', duration: 0.35 }, 0)
       
@@ -452,7 +528,6 @@
     const curtainContainer = document.getElementById('split-curtain-container');
     const curtainClip = document.getElementById('split-curtain-clip');
     const curtainHandle = document.getElementById('split-curtain-handle');
-    const statusText = document.getElementById('transform-status-text');
 
     if (curtainContainer && curtainClip && curtainHandle) {
       let isDragging = false;
@@ -461,88 +536,54 @@
         const rect = curtainContainer.getBoundingClientRect();
         let pct = ((clientX - rect.left) / rect.width) * 100;
         pct = Math.max(0, Math.min(100, pct));
-
         curtainClip.style.clipPath = `polygon(${pct}% 0, 100% 0, 100% 100%, ${pct}% 100%)`;
         curtainHandle.style.left = `${pct}%`;
         curtainContainer.setAttribute('aria-valuenow', Math.round(pct));
-
-        if (statusText) {
-          statusText.innerText = `STATE: ${Math.round(pct)}% REVEAL`;
-          statusText.style.color = pct > 50 ? '#fbbf24' : '#a8a29e';
-        }
       }
 
-      // Pointer events for modern touch & mouse
       curtainContainer.addEventListener('pointerdown', (e) => {
         isDragging = true;
-        try { curtainContainer.setPointerCapture(e.pointerId); } catch(err) {}
+        try { curtainContainer.setPointerCapture(e.pointerId); } catch (err) { }
         updateCurtainPosition(e.clientX);
       });
-
       curtainContainer.addEventListener('pointermove', (e) => {
-        if (isDragging || !isMobileScreen()) {
-          updateCurtainPosition(e.clientX);
-        }
+        if (isDragging || !isMobileScreen()) updateCurtainPosition(e.clientX);
       });
-
       curtainContainer.addEventListener('pointerup', (e) => {
         isDragging = false;
-        try { curtainContainer.releasePointerCapture(e.pointerId); } catch(err) {}
+        try { curtainContainer.releasePointerCapture(e.pointerId); } catch (err) { }
       });
-
-      curtainContainer.addEventListener('pointercancel', () => {
-        isDragging = false;
-      });
-
-      // Explicit mobile touch events fallback
+      curtainContainer.addEventListener('pointercancel', () => { isDragging = false; });
       curtainContainer.addEventListener('touchstart', (e) => {
         isDragging = true;
-        if (e.touches && e.touches[0]) {
-          updateCurtainPosition(e.touches[0].clientX);
-        }
+        if (e.touches?.[0]) updateCurtainPosition(e.touches[0].clientX);
       }, { passive: true });
-
       curtainContainer.addEventListener('touchmove', (e) => {
-        if (isDragging && e.touches && e.touches[0]) {
-          updateCurtainPosition(e.touches[0].clientX);
-        }
+        if (isDragging && e.touches?.[0]) updateCurtainPosition(e.touches[0].clientX);
       }, { passive: true });
-
-      curtainContainer.addEventListener('touchend', () => {
-        isDragging = false;
-      });
-
-      // Tap-to-toggle reveal on mobile click
+      curtainContainer.addEventListener('touchend', () => { isDragging = false; });
       curtainContainer.addEventListener('click', (e) => {
         if (!isDragging && isMobileScreen()) {
           const rect = curtainContainer.getBoundingClientRect();
           const currentPct = parseFloat(curtainContainer.getAttribute('aria-valuenow') || '50');
           const newPct = currentPct > 50 ? 15 : 85;
-          const targetX = rect.left + (rect.width * newPct) / 100;
-          updateCurtainPosition(targetX);
+          updateCurtainPosition(rect.left + (rect.width * newPct) / 100);
         }
       });
-
       curtainContainer.addEventListener('keydown', (e) => {
         let currentPct = parseFloat(curtainContainer.getAttribute('aria-valuenow') || '50');
-        if (e.key === 'ArrowLeft') {
-          e.preventDefault();
-          currentPct = Math.max(0, currentPct - 10);
-        } else if (e.key === 'ArrowRight') {
-          e.preventDefault();
-          currentPct = Math.min(100, currentPct + 10);
-        }
+        if (e.key === 'ArrowLeft') { e.preventDefault(); currentPct = Math.max(0, currentPct - 10); }
+        else if (e.key === 'ArrowRight') { e.preventDefault(); currentPct = Math.min(100, currentPct + 10); }
         curtainClip.style.clipPath = `polygon(${currentPct}% 0, 100% 0, 100% 100%, ${currentPct}% 100%)`;
         curtainHandle.style.left = `${currentPct}%`;
         curtainContainer.setAttribute('aria-valuenow', Math.round(currentPct));
-        if (statusText) {
-          statusText.innerText = `STATE: ${Math.round(currentPct)}% REVEAL`;
-        }
       });
     }
 
-    console.log('[Elysium Motion] Section 4 (Craft Journey) initialized with pinned scrub.');
+    console.log('[Elysium Motion] Section 4 (Craft Journey) initialized with 3-stage pinned scrub & slider.');
   }
+
+
 
   /**
    * 5. SECTION 5 — CURATED EDITORIAL COLLECTION
@@ -574,87 +615,85 @@
   }
 
   /**
-   * 6. SECTION 6 — TRUST & VOICE (PINNED CHARACTER-BY-CHARACTER SCRUB LOCK-IN)
-   * Locks in at top of viewport, reveals text character-by-character on scroll without fade, then smoothly releases to Footer.
+   * 6. SECTION 6 — TRUST & VOICE (HORIZONTAL CONTAINER-ANIMATION STREAM)
+   * Horizontal scroll stream with nested ScrollTriggers on characters using containerAnimation.
+   * Characters tumble into place with random yPercent and rotation as they enter the viewport.
    */
   function initTrustVoiceSection() {
-    const section = document.getElementById('trust-voice-container') || document.querySelector('.section-trust-voice');
-    const quoteElement = document.querySelector('#split-type-text');
-    if (!section || !quoteElement || typeof gsap === 'undefined' || typeof ScrollTrigger === 'undefined') return;
+    const wrapper = document.querySelector('.Horizontal') || document.getElementById('trust-horizontal-wrapper');
+    const text = document.querySelector('.Horizontal__text');
+    if (!wrapper || !text || typeof gsap === 'undefined' || typeof ScrollTrigger === 'undefined') return;
 
-    const chars = Array.from(quoteElement.querySelectorAll('.trust-char'));
-    const attribution = section.querySelector('.trust-attribution');
-    const eyebrow = section.querySelector('.trust-eyebrow');
-
-    if (prefersReducedMotion || isMobileScreen() || chars.length === 0) {
-      if (chars.length) {
-        chars.forEach((c) => {
-          c.style.opacity = '1';
-          c.style.color = '#ffffff';
-        });
-      }
-      if (attribution) gsap.set(attribution, { opacity: 1, y: 0 });
-      if (eyebrow) gsap.set(eyebrow, { opacity: 1 });
+    if (prefersReducedMotion || isCompactScreen()) {
+      gsap.set(text, { paddingLeft: '1.5rem', paddingRight: '1.5rem', whiteSpace: 'normal', width: '100%', x: 0 });
       return;
     }
 
-    // Initial state: dim muted stone color for all characters
-    chars.forEach((c) => {
-      c.style.opacity = '0.2';
-      c.style.color = '#57534e';
-      c.style.textShadow = 'none';
-      c.style.transition = 'color 0.1s ease, opacity 0.1s ease, text-shadow 0.1s ease';
-    });
-    if (attribution) gsap.set(attribution, { opacity: 0, y: 15 });
-    if (eyebrow) gsap.set(eyebrow, { opacity: 0.8 });
-
-    const totalChars = chars.length;
-    let lastActiveIdx = -1;
-
-    // Direct character-by-character scrub lock-in
-    ScrollTrigger.create({
-      trigger: section,
-      pin: true,
-      start: 'top top',
-      end: '+=1400',
-      scrub: 0.3,
-      anticipatePin: 1,
-      invalidateOnRefresh: true,
-      onUpdate: (self) => {
-        const p = self.progress;
-
-        // Map 0 -> 0.82 of scroll progress to sequential character index
-        const charProgress = Math.min(1, p / 0.82);
-        const activeIdx = Math.floor(charProgress * totalChars);
-
-        if (activeIdx !== lastActiveIdx) {
-          lastActiveIdx = activeIdx;
-          for (let i = 0; i < totalChars; i++) {
-            if (i <= activeIdx) {
-              chars[i].style.opacity = '1';
-              chars[i].style.color = '#ffffff';
-              chars[i].style.textShadow = '0 0 14px rgba(255, 255, 255, 0.4)';
-            } else {
-              chars[i].style.opacity = '0.2';
-              chars[i].style.color = '#57534e';
-              chars[i].style.textShadow = 'none';
-            }
+    let ctx = gsap.context(() => {
+      // 1. Text splitting into words & chars via SplitText, SplitType, or inline fallback
+      let splitChars = [];
+      if (typeof SplitText !== 'undefined') {
+        const split = SplitText.create(text, { type: 'chars, words' });
+        splitChars = split.chars;
+      } else if (typeof SplitType !== 'undefined') {
+        const split = new SplitType(text, { types: 'chars, words', tagName: 'span' });
+        splitChars = split.chars;
+      } else {
+        const words = text.innerText.trim().split(/\s+/);
+        text.innerHTML = '';
+        words.forEach((word, wIdx) => {
+          const wordSpan = document.createElement('span');
+          wordSpan.className = 'word inline-flex';
+          word.split('').forEach((ch) => {
+            const charSpan = document.createElement('span');
+            charSpan.className = 'char inline-block';
+            charSpan.innerText = ch;
+            wordSpan.appendChild(charSpan);
+            splitChars.push(charSpan);
+          });
+          text.appendChild(wordSpan);
+          if (wIdx < words.length - 1) {
+            text.appendChild(document.createTextNode(' '));
           }
-        }
+        });
+      }
 
-        // Attribution reveal in final 18% of scroll
-        if (attribution) {
-          if (p > 0.82) {
-            const attrP = Math.min(1, (p - 0.82) / 0.18);
-            gsap.to(attribution, { opacity: attrP, y: (1 - attrP) * 12, duration: 0.15, overwrite: 'auto' });
-          } else {
-            gsap.to(attribution, { opacity: 0, y: 12, duration: 0.15, overwrite: 'auto' });
-          }
-        }
-      },
-    });
+      // 2. Horizontal scroll tween pinned to viewport
+      const scrollTween = gsap.to(text, {
+        xPercent: -100,
+        ease: 'none',
+        scrollTrigger: {
+          trigger: wrapper,
+          pin: true,
+          start: 'clamp(top top)',
+          end: '+=5000px',
+          scrub: true,
+          anticipatePin: 1,
+          invalidateOnRefresh: true,
+        },
+      });
 
-    console.log(`[Elysium Motion] Section 6 Character-by-character scroll animation initialized with ${chars.length} chars.`);
+      // 3. Characters tumble into place via containerAnimation
+      if (splitChars && splitChars.length) {
+        splitChars.forEach((char) => {
+          gsap.from(char, {
+            yPercent: gsap.utils.random(-200, 200),
+            rotation: gsap.utils.random(-20, 20),
+            opacity: 0,
+            ease: 'back.out(1.2)',
+            scrollTrigger: {
+              trigger: char,
+              containerAnimation: scrollTween,
+              start: 'left 100%',
+              end: 'left 30%',
+              scrub: 1,
+            },
+          });
+        });
+      }
+    }, wrapper);
+
+    console.log('[Elysium Motion] Section 6 (Trust & Voice) containerAnimation horizontal stream initialized.');
   }
 
   /**
@@ -730,7 +769,7 @@
     } else {
       // Set initial states for GSAP Timeline
       gsap.set(card, { opacity: 0, scale: 0.92, y: 30 });
-      
+
       // Each fragment starts from randomized offset (±60px, ±25deg, 0 opacity)
       fragments.forEach((frag) => {
         const randX = (Math.random() * 120 - 60).toFixed(1);
@@ -905,12 +944,12 @@
           }
 
           // Fade back in
-          gsap.fromTo(crossfadeTargets, 
+          gsap.fromTo(crossfadeTargets,
             { opacity: 0, y: 8 },
-            { 
-              opacity: 1, 
-              y: 0, 
-              duration: 0.45, 
+            {
+              opacity: 1,
+              y: 0,
+              duration: 0.45,
               ease: 'power2.out',
               onComplete: () => {
                 // Sweep highlight
@@ -1041,10 +1080,11 @@
     // 0. Initialize Lenis smooth scroller
     initLenisSmoothScroll();
 
-    // 1. Homepage Body Sections (Manifesto, Horizontal Suite, Materiality, Craft Journey, Featured, Trust)
+    // 1. Homepage Body Sections (Manifesto, Horizontal Suite, Materiality, Process Trace, Featured, Trust)
     initManifestoSection();
     initHorizontalGallerySection();
     initMaterialityInterludeSection();
+    initLivingSanctuarySection();
     initCraftJourneySection();
     initFeaturedPiecesSection();
     initTrustVoiceSection();

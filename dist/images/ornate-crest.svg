@@ -1,0 +1,24 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 300 30" fill="none">
+  <!-- Delicate Baroque Center Crest / Medallion -->
+  <g stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round" fill="none">
+    <!-- Center Fleur-de-lis / Palmette -->
+    <path d="M 150,4 C 146,12 144,18 150,26 C 156,18 154,12 150,4 Z" fill="currentColor" fill-opacity="0.25" />
+    <path d="M 150,16 C 142,12 136,8 132,12 C 128,16 132,22 138,20 C 144,18 148,22 150,26" />
+    <path d="M 150,16 C 158,12 164,8 168,12 C 172,16 168,22 162,20 C 156,18 152,22 150,26" />
+    
+    <!-- Left Flanking Tendrils & Swirls -->
+    <path d="M 132,16 C 120,8 108,8 96,15 C 88,20 82,18 84,12 C 86,6 94,8 92,14" />
+    <path d="M 84,15 L 20,15" stroke-width="1" />
+    <circle cx="20" cy="15" r="2" fill="currentColor" />
+    <circle cx="10" cy="15" r="1.2" fill="currentColor" />
+
+    <!-- Right Flanking Tendrils & Swirls -->
+    <path d="M 168,16 C 180,8 192,8 204,15 C 212,20 218,18 216,12 C 214,6 206,8 208,14" />
+    <path d="M 216,15 L 280,15" stroke-width="1" />
+    <circle cx="280" cy="15" r="2" fill="currentColor" />
+    <circle cx="290" cy="15" r="1.2" fill="currentColor" />
+
+    <!-- Center Accent Pearl -->
+    <circle cx="150" cy="15" r="2.5" fill="currentColor" />
+  </g>
+</svg>

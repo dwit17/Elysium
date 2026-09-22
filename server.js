@@ -274,7 +274,7 @@ function renderProductImage({ src, alt, href = '', className = '', imgClassName 
     <div class="product-img-container ${aspect} ${className}">
       <img src="${src}" alt="${alt}" class="${imgClassName}" />
     </div>`;
-  
+
   if (href) {
     return `<a href="${href}" class="block group">${content}</a>`;
   }
@@ -327,9 +327,8 @@ function renderPage({ title, description, path, content, isHeroPage = false }) {
   <meta property="og:url" content="${canonical}">
   <meta property="og:site_name" content="${BRAND.fullName}">
   <meta property="og:image" content="${BRAND.domain}/images/photo-1600121848594-d8644e57abab">
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400;1,500&family=Geist+Mono:wght@300;400;500;600&family=Syne:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="preload" href="/fonts/Geist-Light.ttf" as="font" type="font/ttf" crossorigin>
+  <link rel="preload" href="/fonts/Geist-Medium.ttf" as="font" type="font/ttf" crossorigin>
   <link rel="stylesheet" href="/css/tailwind.min.css">
   <link rel="stylesheet" href="/css/elysium.css">
   <script type="application/ld+json">${JSON.stringify(orgSchema)}</script>
@@ -360,10 +359,6 @@ function renderPage({ title, description, path, content, isHeroPage = false }) {
     <div class="max-w-7xl mx-auto px-6 md:px-12 flex justify-between items-center">
       <a href="/" class="flex items-center gap-4 cursor-pointer">
         <img src="/images/logo.png" alt="ELYSIUM" class="h-10 md:h-12 w-auto filter invert opacity-90">
-        <div class="flex flex-col">
-          <span class="text-xs font-semibold tracking-[0.35em] text-white uppercase leading-tight">${BRAND.name}</span>
-          <span class="text-[8px] tracking-[0.4em] text-stone-400 uppercase font-mono">HOME DECOR</span>
-        </div>
       </a>
 
       <nav class="hidden lg:flex items-center space-x-8 text-xs font-medium tracking-[0.2em] uppercase text-stone-400">
@@ -996,7 +991,93 @@ app.get('/', (req, res) => {
     </div>
   </section>`;
 
-  // SECTION 4: THE CRAFT JOURNEY & INTERACTIVE BEFORE/AFTER SLIDER (Natural Height)
+  // SECTION 3B: ELYSIUM SPATIAL LIVING SANCTUARY (Individual Architectural Showcase)
+  const sectionLivingSanctuary = `
+  <section class="section-living-sanctuary relative bg-[#040404] border-t border-stone-800/80 text-white py-20 sm:py-28 lg:py-32 px-6 md:px-12 lg:px-20 overflow-hidden" id="living-sanctuary-container">
+    <div class="max-w-7xl mx-auto w-full space-y-12">
+      
+      <!-- Section Header -->
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-end border-b border-stone-800/60 pb-6">
+        <div class="lg:col-span-8 space-y-2">
+          <span class="text-[10px] font-mono tracking-[0.45em] uppercase text-amber-500 block">SPATIAL LIVING SANCTUARY &bull; LIVING FORM 01</span>
+          <h2 class="text-3xl sm:text-5xl font-light tracking-wide text-white uppercase font-sans leading-tight">
+            Elysium Spatial Living Sanctuary
+          </h2>
+        </div>
+        <div class="lg:col-span-4">
+          <p class="text-xs text-stone-400 font-light leading-relaxed">
+            Form 01 — Hand-chiseled travertine, pit-fired ceramic volumes, and honest joinery curated inside our Vavdi, Rajkot display atelier.
+          </p>
+        </div>
+      </div>
+
+      <!-- Main Showcase Grid: Left Frame Showcase, Right Architectural Highlights & CTAs -->
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-16 items-center">
+        
+        <!-- Left 7 Cols: Editorial Showcase Image Frame -->
+        <div class="lg:col-span-7 relative">
+          <div class="process-showcase-frame relative aspect-[16/10] w-full overflow-hidden bg-stone-950 rounded-sm border border-stone-800 shadow-2xl img-skeleton-wrap group">
+            <div class="img-skeleton-placeholder"></div>
+            <img
+              src="/images/chapter_living_room.jpg"
+              alt="Elysium Spatial Living Sanctuary"
+              class="image-blur-up w-full h-full object-cover object-center filter contrast-105 brightness-95 transition-transform duration-700 group-hover:scale-105"
+              loading="lazy"
+            />
+            <div class="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent pointer-events-none"></div>
+            <div class="absolute bottom-5 left-5 right-5 flex justify-between items-center text-[10px] font-mono uppercase tracking-widest text-stone-300">
+              <span class="px-2.5 py-1 bg-black/80 backdrop-blur-md border border-stone-800 rounded-xs">Living Form 01</span>
+              <span class="px-2.5 py-1 bg-black/80 backdrop-blur-md border border-stone-800 rounded-xs">Atelier Rajkot</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Right 5 Cols: Curatorial Spatial Points & CTAs -->
+        <div class="lg:col-span-5 space-y-8">
+          <div class="space-y-6">
+            <div class="space-y-2 border-l-2 border-amber-500/80 pl-4">
+              <span class="text-[10px] font-mono text-amber-500 uppercase tracking-widest">01 &bull; GROUNDING CENTER</span>
+              <h3 class="text-lg font-light text-white uppercase font-sans">Solis Travertine Console</h3>
+              <p class="text-xs text-stone-400 font-light leading-relaxed">
+                Monolithic 1800mm console carved from single-source Italian limestone with unfilled geomorphic pores.
+              </p>
+            </div>
+
+            <div class="space-y-2 border-l-2 border-stone-800 pl-4 hover:border-stone-600 transition-colors">
+              <span class="text-[10px] font-mono text-stone-500 uppercase tracking-widest">02 &bull; TACTILE VESSEL</span>
+              <h3 class="text-lg font-light text-white uppercase font-sans">Unglazed Stoneware Clay</h3>
+              <p class="text-xs text-stone-400 font-light leading-relaxed">
+                Iron-dense riverbed clay pit-fired for smoke-speckled texture and natural breathable porosity.
+              </p>
+            </div>
+
+            <div class="space-y-2 border-l-2 border-stone-800 pl-4 hover:border-stone-600 transition-colors">
+              <span class="text-[10px] font-mono text-stone-500 uppercase tracking-widest">03 &bull; AMBIENT SHADOW</span>
+              <h3 class="text-lg font-light text-white uppercase font-sans">Mineral Plaster Relievo</h3>
+              <p class="text-xs text-stone-400 font-light leading-relaxed">
+                Pulverized pumice &amp; lime wall planes catching incident morning and evening daylight.
+              </p>
+            </div>
+          </div>
+
+          <div class="pt-4 flex flex-wrap items-center gap-4 border-t border-stone-800/80">
+            <a href="/materiality" class="btn-slide-white px-6 py-3.5 text-[9.5px] font-semibold uppercase tracking-[0.2em] shadow-lg">
+              <span>Explore Materiality</span>
+              <span class="btn-arrow ml-2">&rarr;</span>
+            </a>
+            <a href="/our-story" class="btn-slide-subtle px-6 py-3.5 text-[9.5px] font-semibold uppercase tracking-[0.2em]">
+              <span>Our Provenance</span>
+              <span class="btn-arrow ml-2">&rarr;</span>
+            </a>
+          </div>
+        </div>
+
+      </div>
+
+    </div>
+  </section>`;
+
+  // SECTION 4: THE CRAFT JOURNEY & INTERACTIVE BEFORE/AFTER SLIDER (3-Point Section)
   const sectionCraftJourney = `
   <section class="section-craft-journey relative bg-[#060606] border-t border-stone-800 text-white z-10 overflow-hidden py-20 sm:py-24 lg:py-28 px-6 md:px-12 lg:px-20">
     <div class="max-w-7xl mx-auto w-full space-y-6 sm:space-y-8">
@@ -1004,21 +1085,22 @@ app.get('/', (req, res) => {
       <!-- Compact Section Header -->
       <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-end border-b border-stone-800 pb-4">
         <div class="lg:col-span-8 space-y-1">
-          <h2 class="text-2xl sm:text-4xl font-light tracking-wide text-white uppercase font-serif leading-tight">
+          <span class="text-[10px] font-mono tracking-[0.45em] uppercase text-stone-500 block">CHRONOLOGY &bull; ATELIER CRAFT</span>
+          <h2 class="text-2xl sm:text-4xl font-light tracking-wide text-white uppercase font-sans leading-tight">
             From Raw Earth <span class="italic text-stone-400">to Living Sanctuary.</span>
           </h2>
         </div>
         <div class="lg:col-span-4">
           <p class="text-xs text-stone-400 font-light leading-relaxed">
-            Four rigorous stages. Zero shortcuts. Every raw block is hand-sculpted in Rajkot, buffed with organic beeswax, and individually cataloged.
+            Three rigorous stages. Zero shortcuts. Every raw block is hand-sculpted in Rajkot, buffed with organic beeswax, and individually catalogued.
           </p>
         </div>
       </div>
 
-      <!-- 4-Stage Progressive Timeline with SVG Scrub Line & Split Curtain -->
+      <!-- 3-Stage Progressive Timeline with SVG Scrub Line & Split Curtain -->
       <div class="craft-timeline-container relative grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-center">
         
-        <!-- Left 7 Cols: The 4 Steps with SVG Connecting Line -->
+        <!-- Left 7 Cols: The 3 Steps with SVG Connecting Line -->
         <div class="lg:col-span-7 relative pl-8 sm:pl-10">
           
           <!-- SVG Scrubbed Vertical Line -->
@@ -1027,7 +1109,7 @@ app.get('/', (req, res) => {
             <line id="craft-scrub-line" x1="2" y1="0" x2="2" y2="100%" stroke="#d4af37" stroke-width="2.5" stroke-dasharray="1000" stroke-dashoffset="1000" />
           </svg>
 
-          <div class="space-y-5 sm:space-y-6">
+          <div class="space-y-6 sm:space-y-7">
             ${CRAFT_STEPS.map((step, idx) => `
               <div class="craft-stage-item relative" data-stage="${idx}">
                 <!-- Glowing Step Marker Dot -->
@@ -1035,10 +1117,10 @@ app.get('/', (req, res) => {
                   <span class="craft-dot-inner w-1.5 h-1.5 rounded-full bg-stone-700 transition-all duration-400"></span>
                 </div>
 
-                <div class="space-y-1">
+                <div class="space-y-1.5">
                   <div class="flex items-baseline gap-3">
                     <span class="craft-stage-num text-base sm:text-lg font-mono text-amber-500 font-semibold tracking-wider inline-block">${step.step}</span>
-                    <h3 class="craft-stage-title text-sm sm:text-base font-light text-white uppercase font-serif tracking-wide">${step.title}</h3>
+                    <h3 class="craft-stage-title text-sm sm:text-base font-light text-white uppercase font-sans tracking-wide">${step.title}</h3>
                   </div>
 
                   <p class="craft-stage-desc text-xs text-stone-300 font-light leading-relaxed max-w-lg">
@@ -1047,13 +1129,13 @@ app.get('/', (req, res) => {
 
                   <div class="craft-stage-meta flex flex-wrap gap-3 text-[9px] font-mono text-stone-500 uppercase tracking-widest pt-0.5">
                     <span>Duration: ${step.duration}</span>
-                    <span>•</span>
+                    <span>&bull;</span>
                     <span>Supervisor: ${step.supervisor}</span>
                   </div>
 
                   ${idx === 1 ? `
                     <!-- Stage 2 Count-Up Stat: 4,500 Sq. Ft. Atelier -->
-                    <div class="atelier-stat-badge mt-1.5 p-2.5 bg-stone-900/80 flex items-center gap-3 max-w-sm shadow-lg">
+                    <div class="atelier-stat-badge mt-2 p-2.5 bg-stone-900/80 flex items-center gap-3 max-w-sm shadow-lg border border-stone-800/80 rounded-xs">
                       <div class="text-xl sm:text-2xl font-light text-amber-400 font-mono" id="atelier-sqft-counter">0</div>
                       <div class="text-[8.5px] font-mono tracking-widest text-stone-400 uppercase leading-snug">
                         <span>SQ. FT. DISPLAY ATELIER</span><br>
@@ -1069,7 +1151,7 @@ app.get('/', (req, res) => {
 
         <!-- Right 5 Cols: Interactive Draggable & Touch Split-Wipe Transformation Moment -->
         <div class="lg:col-span-5">
-          <div class="transformation-card bg-stone-950 shadow-2xl rounded-sm overflow-hidden">
+          <div class="transformation-card bg-stone-950 shadow-2xl rounded-sm overflow-hidden border border-stone-800">
             <!-- Interactive Split-Wipe Curtain Container -->
             <div id="split-curtain-container" class="split-curtain-viewport relative aspect-[4/3] max-h-[46vh] overflow-hidden cursor-ew-resize rounded-sm select-none img-skeleton-wrap" role="slider" aria-valuemin="0" aria-valuemax="100" aria-valuenow="50">
               <div class="img-skeleton-placeholder"></div>
@@ -1201,55 +1283,37 @@ app.get('/', (req, res) => {
     "NO SYNTHETIC LACQUERS OR ADHESIVES"
   ];
   const quoteRawText = "The travertine console feels less like placed furniture and more like a permanent piece of architecture. It brings a profound, grounding stillness to our living space.";
-  const quoteWordsHtml = quoteRawText.split(" ").map((word) => {
-    const chars = word.split("").map((c) => `<span class="trust-char inline-block will-change-[opacity,transform,color]">${c}</span>`).join("");
-    return `<span class="inline-block whitespace-nowrap">${chars}&nbsp;</span>`;
-  }).join("");
 
   const sectionTrustVoice = `
-  <section class="section-trust-voice relative bg-black border-t border-stone-800 text-white overflow-hidden" id="trust-voice-container">
+  <section class="section-trust-voice relative bg-[#030303] border-t border-stone-800 text-white overflow-hidden" id="trust-voice-container">
     
-    <!-- 1. Pinned Narrative Quote Scrub Viewport (100dvh on desktop) -->
-    <div class="abouttt trust-voice-pinned w-full min-h-screen lg:h-screen flex flex-col justify-between pt-24 pb-8 px-6 md:px-12 lg:px-20 overflow-hidden bg-[#030303]" id="trust-voice-pinned-viewport">
+    <!-- 1. Horizontal ContainerAnimation Stream Viewport -->
+    <div class="Horizontal relative w-full h-screen overflow-hidden bg-[#030303]" id="trust-horizontal-wrapper">
       
       <!-- Subtle Ambient Warm Glow -->
-      <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[700px] h-[350px] bg-amber-500/[0.035] rounded-full blur-3xl pointer-events-none"></div>
+      <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[400px] bg-amber-500/[0.035] rounded-full blur-3xl pointer-events-none"></div>
 
       <!-- Top Eyebrow -->
-      <div class="relative z-20 text-center">
+      <div class="absolute top-8 left-6 md:left-12 lg:left-20 z-20 pointer-events-none">
         <span class="trust-eyebrow text-[10px] font-mono tracking-[0.5em] uppercase text-amber-500 block">
           TRUST &amp; VOICE • LIVING SPACES
         </span>
       </div>
 
-      <!-- Center: Full-Bleed Testimonial (SplitType ScrollTrigger Scrub) -->
-      <div class="relative z-20 max-w-5xl mx-auto px-6 md:px-12 py-4 text-center space-y-6 trust-quote-container my-auto">
-        <div class="trust-quote-box relative">
-          <span class="text-amber-500/70 font-serif text-3xl sm:text-5xl inline-block -mb-2 mr-1 select-none">&ldquo;</span>
-          <h2 id="split-type-text" class="trust-quote-text text-xl sm:text-3xl md:text-4xl lg:text-[42px] font-light text-white font-serif leading-relaxed sm:leading-snug tracking-wide inline">
-            ${quoteWordsHtml}
-          </h2>
-          <span class="text-amber-500/70 font-serif text-3xl sm:text-5xl inline-block -mb-2 ml-1 select-none">&rdquo;</span>
-        </div>
-
-        <div class="trust-attribution space-y-2 pt-2">
-          <div class="w-16 h-px bg-gradient-to-r from-transparent via-amber-500/70 to-transparent mx-auto mb-3"></div>
-          <span class="text-xs sm:text-sm font-mono uppercase tracking-[0.35em] text-amber-300 block">
-            Interior Architecture Studio — Mumbai
-          </span>
-          <span class="text-[9.5px] font-mono tracking-widest text-stone-400 uppercase block">
-            Private Residence Architectural Commission • 2026
-          </span>
-        </div>
+      <!-- Horizontal Text Stream -->
+      <div class="Horizontal__container w-full">
+        <h3 class="Horizontal__text heading-xl select-none" id="trust-horizontal-stream">
+          “${quoteRawText}”
+        </h3>
       </div>
 
-      <!-- Bottom Status Strip (Adaptive to touch devices) -->
-      <div class="relative z-20 flex justify-between items-center text-[9px] font-mono tracking-widest text-stone-500 uppercase border-t border-white/10 pt-3">
+      <!-- Bottom Status Strip & Attribution -->
+      <div class="absolute bottom-8 left-6 right-6 md:left-12 md:right-12 lg:left-20 lg:right-20 z-20 flex justify-between items-center text-[9px] font-mono tracking-widest text-stone-500 uppercase border-t border-white/10 pt-3 pointer-events-none">
+        <span class="text-amber-300/80">INTERIOR ARCHITECTURE STUDIO — MUMBAI • PRIVATE RESIDENCE COMMISSION</span>
         <span>
-          <span class="mouse-device-only">SCROLL TO ADVANCE NARRATIVE</span>
-          <span class="touch-device-only">SWIPE TO ADVANCE NARRATIVE</span>
+          <span class="mouse-device-only">SCROLL TO ADVANCE HORIZONTAL STREAM</span>
+          <span class="touch-device-only">SWIPE TO ADVANCE HORIZONTAL STREAM</span>
         </span>
-        <span>ELYSIUM SPATIAL ATELIER</span>
       </div>
 
     </div>
@@ -1430,7 +1494,7 @@ app.get('/', (req, res) => {
     title: 'Elysium | Artisan Minimalist Home Decor, Handcrafted in India',
     description: BRAND.heroStatement,
     path: '/',
-    content: heroSection + sectionManifesto + sectionHorizontalGallery + sectionMaterialityInterlude + sectionCraftJourney + sectionFeaturedPieces + sectionTrustVoice,
+    content: heroSection + sectionManifesto + sectionHorizontalGallery + sectionMaterialityInterlude + sectionLivingSanctuary + sectionCraftJourney + sectionFeaturedPieces + sectionTrustVoice,
     isHeroPage: true,
   }));
 });
@@ -1449,29 +1513,29 @@ app.get('/philosophy', (req, res) => {
       <h2 class="text-3xl font-light tracking-wide text-white uppercase font-sans mb-12">Three Pillars of Design</h2>
       <div class="grid grid-cols-1 md:grid-cols-3 gap-12">
         ${renderBaroqueBox({
-          content: `
+    content: `
             <span class="text-xs font-mono font-bold text-amber-500 block mb-3">PILLAR 01</span>
             <h3 class="text-xl font-light text-white uppercase mb-2">Purity of Origin</h3>
             <p class="text-xs text-stone-400 leading-relaxed font-light">We source only unrefined travertine, premium iron-dense clay, and slow-grow timber without synthetic coatings or chemical glues.</p>
           `,
-          className: 'p-8'
-        })}
+    className: 'p-8'
+  })}
         ${renderBaroqueBox({
-          content: `
+    content: `
             <span class="text-xs font-mono font-bold text-amber-500 block mb-3">PILLAR 02</span>
             <h3 class="text-xl font-light text-white uppercase mb-2">Wabi-Sabi Aesthetics</h3>
             <p class="text-xs text-stone-400 leading-relaxed font-light">We embrace organic cracks, natural geomorphic voids, and firing speckles as the individual voice of the medium.</p>
           `,
-          className: 'p-8'
-        })}
+    className: 'p-8'
+  })}
         ${renderBaroqueBox({
-          content: `
+    content: `
             <span class="text-xs font-mono font-bold text-amber-500 block mb-3">PILLAR 03</span>
             <h3 class="text-xl font-light text-white uppercase mb-2">Silent Geometry</h3>
             <p class="text-xs text-stone-400 leading-relaxed font-light">Simple low proportions, continuous physical cuts, and soft light absorption anchoring a room with calm authority.</p>
           `,
-          className: 'p-8'
-        })}
+    className: 'p-8'
+  })}
       </div>
     </section>
   </div>`;
@@ -1507,12 +1571,12 @@ app.get('/artisan-pieces', (req, res) => {
           <div class="product-card group cursor-pointer flex flex-col justify-between space-y-4 h-full" data-category="${p.category}">
             <div class="space-y-4">
               ${renderProductImage({
-                src: p.image,
-                alt: p.name,
-                href: `/artisan-pieces/${p.slug}`,
-                imgClassName: 'absolute inset-0 w-full h-full object-cover object-center grayscale group-hover:grayscale-0 transition-all duration-700',
-                aspect: 'w-full aspect-[3/4] relative overflow-hidden'
-              })}
+    src: p.image,
+    alt: p.name,
+    href: `/artisan-pieces/${p.slug}`,
+    imgClassName: 'absolute inset-0 w-full h-full object-cover object-center grayscale group-hover:grayscale-0 transition-all duration-700',
+    aspect: 'w-full aspect-[3/4] relative overflow-hidden'
+  })}
               <div class="space-y-1">
                 <a href="/artisan-pieces/${p.slug}"><h3 class="text-sm font-medium text-white hover:text-amber-200 transition-colors">${p.name}</h3></a>
                 <p class="text-[11px] font-mono text-stone-400 uppercase tracking-wider">${p.material} • By ${p.artisan}</p>
@@ -1557,11 +1621,11 @@ app.get('/artisan-pieces/:slug', (req, res) => {
       <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 items-start">
         <div class="lg:col-span-7">
           ${renderProductImage({
-            src: product.image,
-            alt: product.name,
-            aspect: 'w-full aspect-[4/5] relative overflow-hidden',
-            imgClassName: 'absolute inset-0 w-full h-full object-cover object-center'
-          })}
+    src: product.image,
+    alt: product.name,
+    aspect: 'w-full aspect-[4/5] relative overflow-hidden',
+    imgClassName: 'absolute inset-0 w-full h-full object-cover object-center'
+  })}
         </div>
         <div class="lg:col-span-5 space-y-8">
           <div class="space-y-3">
@@ -1571,29 +1635,29 @@ app.get('/artisan-pieces/:slug', (req, res) => {
           </div>
           
           ${renderBaroqueBox({
-            content: `
+    content: `
               <p class="text-xs text-stone-300 leading-relaxed font-light">${product.description}</p>
               <div class="w-full h-px bg-stone-800 my-4"></div>
               <p class="text-xs text-stone-400 italic">“${product.story}”</p>
             `,
-            className: 'p-6'
-          })}
+    className: 'p-6'
+  })}
 
           <div class="space-y-4 pt-2">
             <h3 class="text-xs font-mono uppercase tracking-[0.25em] text-stone-400">Technical Specifications</h3>
             <div class="grid grid-cols-2 gap-4 text-xs font-mono">
               ${renderBaroqueBox({
-                content: `<span class="text-[9px] text-stone-500 block">Dimensions</span><span class="text-stone-200 mt-1 block">${product.dimensions}</span>`,
-                className: 'p-4'
-              })}
+    content: `<span class="text-[9px] text-stone-500 block">Dimensions</span><span class="text-stone-200 mt-1 block">${product.dimensions}</span>`,
+    className: 'p-4'
+  })}
               ${renderBaroqueBox({
-                content: `<span class="text-[9px] text-stone-500 block">Approx. Weight</span><span class="text-stone-200 mt-1 block">${product.weight}</span>`,
-                className: 'p-4'
-              })}
+    content: `<span class="text-[9px] text-stone-500 block">Approx. Weight</span><span class="text-stone-200 mt-1 block">${product.weight}</span>`,
+    className: 'p-4'
+  })}
               ${renderBaroqueBox({
-                content: `<span class="text-[9px] text-stone-500 block">Provenance</span><span class="text-stone-200 mt-1 block">${product.origin}</span>`,
-                className: 'p-4 col-span-2'
-              })}
+    content: `<span class="text-[9px] text-stone-500 block">Provenance</span><span class="text-stone-200 mt-1 block">${product.origin}</span>`,
+    className: 'p-4 col-span-2'
+  })}
             </div>
           </div>
           <div class="pt-4 space-y-4">
@@ -1629,7 +1693,7 @@ app.get('/materiality', (req, res) => {
           <span class="text-[9px] font-mono uppercase tracking-[0.3em] text-stone-400 block mb-2">Primary Mediums</span>
           ${MATERIALS.map((m, idx) => `
             ${renderBaroqueBox({
-              content: `
+    content: `
                 <div class="material-card space-y-2 cursor-pointer transition-all hover:border-amber-400/60 ${idx === 0 ? 'active-material' : ''}" data-material-id="${m.id}" data-macro-img="${m.macroImage}" data-default-angle="${m.lightAngleDefault}" data-name="${m.name}">
                   <div class="flex justify-between items-center">
                     <span class="text-[10px] font-mono text-stone-500 uppercase">${m.category}</span>
@@ -1639,14 +1703,14 @@ app.get('/materiality', (req, res) => {
                   <p class="text-xs text-stone-400 leading-relaxed font-light">${m.description}</p>
                 </div>
               `,
-              className: 'p-5'
-            })}
+    className: 'p-5'
+  })}
           `).join('')}
         </div>
 
         <div class="lg:col-span-7">
           ${renderBaroqueBox({
-            content: `
+    content: `
               <div class="flex justify-between items-center text-[10px] uppercase font-mono text-stone-400 border-b border-stone-800 pb-4 mb-6">
                 <span id="material-title-display">Travertine Stone</span>
                 <span id="light-angle-display">Incident Angle: 135°</span>
@@ -1655,11 +1719,11 @@ app.get('/materiality', (req, res) => {
               <div class="flex items-center justify-center p-4">
                 <div class="relative w-full max-w-md aspect-square flex items-center justify-center">
                   ${renderProductImage({
-                    src: '/images/photo-1616486338812-3dadae4b4ace',
-                    alt: 'Material preview',
-                    aspect: 'w-full h-full',
-                    imgClassName: 'w-full h-full object-cover grayscale brightness-90 transition-all duration-500'
-                  })}
+      src: '/images/photo-1616486338812-3dadae4b4ace',
+      alt: 'Material preview',
+      aspect: 'w-full h-full',
+      imgClassName: 'w-full h-full object-cover grayscale brightness-90 transition-all duration-500'
+    })}
                   <div id="material-light-overlay" class="absolute inset-4 pointer-events-none mix-blend-overlay transition-all duration-300" style="background: linear-gradient(135deg, rgba(255,255,255,0.4) 0%, rgba(0,0,0,0.75) 100%);"></div>
                   <button id="macro-zoom-btn" class="absolute top-6 right-6 text-xs font-mono uppercase text-stone-300 bg-black/80 backdrop-blur-md px-3 py-1.5 border border-stone-800 hover:bg-stone-900 transition-colors z-30">Macro Zoom</button>
                 </div>
@@ -1670,8 +1734,8 @@ app.get('/materiality', (req, res) => {
                 <input id="light-angle-slider" type="range" min="0" max="360" value="135" class="w-full accent-amber-500">
               </div>
             `,
-            className: 'p-8 flex flex-col justify-between'
-          })}
+    className: 'p-8 flex flex-col justify-between'
+  })}
         </div>
       </div>
     </div>
@@ -1710,11 +1774,11 @@ app.get('/our-story', (req, res) => {
           </div>
           <div class="lg:col-span-6">
             ${renderProductImage({
-              src: '/images/photo-1600121848594-d8644e57abab',
-              alt: 'Showroom',
-              aspect: 'w-full aspect-[16/10] relative overflow-hidden',
-              imgClassName: 'absolute inset-0 w-full h-full object-cover grayscale opacity-85'
-            })}
+    src: '/images/photo-1600121848594-d8644e57abab',
+    alt: 'Showroom',
+    aspect: 'w-full aspect-[16/10] relative overflow-hidden',
+    imgClassName: 'absolute inset-0 w-full h-full object-cover grayscale opacity-85'
+  })}
           </div>
         </div>
       </section>
@@ -1761,7 +1825,7 @@ app.get('/our-story', (req, res) => {
 // 7. Contact Route
 app.get('/contact', (req, res) => {
   const pieceName = req.query.piece ? String(req.query.piece) : '';
-  const initialMessage = pieceName 
+  const initialMessage = pieceName
     ? `Hello Elysium, I am interested in inquiring about the "${pieceName}" piece from your artisan collection. Could you please share more details and availability?`
     : '';
 
@@ -1776,29 +1840,29 @@ app.get('/contact', (req, res) => {
       <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 items-start">
         <div class="lg:col-span-5 space-y-8">
           ${renderBaroqueBox({
-            content: `
+    content: `
               <span class="text-[10px] font-mono uppercase tracking-[0.3em] text-amber-500 block mb-2">Instant Communication</span>
               <h3 class="text-xl font-light text-white uppercase mb-4">WhatsApp Direct Line</h3>
               <a href="${createWhatsAppLink(pieceName)}" target="_blank" rel="noopener noreferrer" class="btn-slide-white w-full py-3.5 text-center text-xs font-semibold uppercase tracking-[0.25em] shadow-md"><span>OPEN WHATSAPP CHAT</span><span class="btn-arrow ml-2">&rarr;</span></a>
             `,
-            className: 'p-8'
-          })}
+    className: 'p-8'
+  })}
 
           ${renderBaroqueBox({
-            content: `
+    content: `
               <div class="space-y-4 text-xs font-mono text-stone-300">
                 <p><span class="text-stone-500 block">ADDRESS</span>${BRAND.address}</p>
                 <p><span class="text-stone-500 block">PHONE</span>+91 ${BRAND.phoneDisplay}</p>
                 <p><span class="text-stone-500 block">HOURS</span>${BRAND.timing}</p>
               </div>
             `,
-            className: 'p-8'
-          })}
+    className: 'p-8'
+  })}
         </div>
 
         <div class="lg:col-span-7">
           ${renderBaroqueBox({
-            content: `
+    content: `
               <h2 class="text-2xl font-light tracking-wide text-white uppercase mb-6">Send an Enquiry</h2>
               <div id="form-success-alert" class="hidden p-6 bg-stone-900 border border-stone-800 text-center mb-6">
                 <h3 class="text-lg font-light text-white uppercase">Enquiry Received</h3>
@@ -1813,8 +1877,8 @@ app.get('/contact', (req, res) => {
                 <button type="submit" class="btn-slide-white w-full py-4 text-center text-xs font-semibold uppercase tracking-[0.25em] shadow-md"><span>SUBMIT FORM ENQUIRY</span></button>
               </form>
             `,
-            className: 'p-8'
-          })}
+    className: 'p-8'
+  })}
         </div>
       </div>
     </div>
