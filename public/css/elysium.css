@@ -2784,43 +2784,20 @@ img {
 
 @media (max-width: 1023px) {
   .atelier-reveal {
-    width: 100%;
-    left: auto;
-    right: auto;
-    margin-left: 0;
-    margin-right: 0;
+    width: 100vw;
+    margin-left: -50vw;
+    left: 50%;
+    right: 50%;
   }
   .atelier-reveal__pin {
-    height: auto;
-    min-height: auto;
-    overflow: visible;
-    display: block;
-    padding-top: 5rem;
-    padding-bottom: 5rem;
-  }
-  .atelier-reveal__intro {
-    opacity: 1 !important;
-    transform: none !important;
+    height: 100vh;
+    width: 100%;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
   }
   .atelier-reveal__card {
-    position: relative;
-    right: auto;
-    bottom: auto;
-    width: 100%;
-    max-width: 650px;
-    height: 52vh;
-    margin: 2.5rem auto 0 auto;
-    border-radius: 16px;
-    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.6);
-  }
-  .atelier-reveal__img {
-    transform: scale(1) !important;
-  }
-  .atelier-reveal__path {
-    display: none;
-  }
-  .atelier-reveal__markers {
-    display: none;
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.7);
   }
 }
 

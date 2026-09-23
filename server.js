@@ -330,7 +330,7 @@ function renderPage({ title, description, path, content, isHeroPage = false }) {
   <link rel="preload" href="/fonts/Geist-Light.ttf" as="font" type="font/ttf" crossorigin>
   <link rel="preload" href="/fonts/Geist-Medium.ttf" as="font" type="font/ttf" crossorigin>
   <link rel="stylesheet" href="/css/tailwind.min.css">
-  <link rel="stylesheet" href="/css/elysium.css">
+  <link rel="stylesheet" href="/css/elysium.css?v=2.6">
   <script type="application/ld+json">${JSON.stringify(orgSchema)}</script>
 </head>
 <body class="bg-black text-white selection:bg-white selection:text-black antialiased overflow-x-hidden">
@@ -569,7 +569,7 @@ function renderPage({ title, description, path, content, isHeroPage = false }) {
 
   <script src="/js/main.js"></script>
   ${isHeroPage ? '<script src="/js/heroCanvas.js"></script>' : ''}
-  <script src="/js/homeAnimations.js"></script>
+  <script src="/js/homeAnimations.js?v=2.6"></script>
   <script>
     (function() {
       if (location.hostname === 'localhost' || location.hostname === '127.0.0.1') {
