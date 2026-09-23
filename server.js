@@ -1023,181 +1023,6 @@ app.get('/', (req, res) => {
       <!-- Main Journey Track Container with Overlay Clean Botanical SVG Branch Canvas -->
       <div class="sanctuary-journey-track relative w-full pt-4 pb-12" id="sanctuary-journey-track">
 
-        <!-- Botanical Branch & Leaf Canvas (Pure White, Weaves Directly Across Editorial Images, Zero Text Overlap) -->
-        <div class="sanctuary-svg-wrap absolute inset-0 w-full h-full pointer-events-none z-20 overflow-visible" id="sanctuary-svg-wrap">
-          <svg
-            class="sanctuary-svg-canvas w-full h-full"
-            viewBox="0 0 1000 3200"
-            preserveAspectRatio="none"
-            fill="none"
-            xmlns="http://www.w3.org/2000/svg"
-            id="sanctuary-svg-element"
-          >
-            <!-- 1. Background Subtle Architectural Guide Line -->
-            <path
-              d="M 500,30 C 500,120 380,220 280,360 C 180,500 220,640 380,740 C 480,800 580,920 620,1050 C 660,1180 780,1260 780,1380 C 780,1500 680,1620 540,1720 C 420,1800 240,1920 240,2060 C 240,2200 360,2300 500,2400 C 620,2490 760,2600 760,2740 C 760,2880 640,2980 500,3070 L 500,3180"
-              class="sanctuary-guide-path"
-              stroke="rgba(255, 255, 255, 0.12)"
-              stroke-width="1"
-              stroke-dasharray="4 6"
-              vector-effect="non-scaling-stroke"
-            />
-
-            <!-- 2. Main Porcelain White Botanical Branch Stem (Weaves Through Images with High Artisanal Contrast) -->
-            <path
-              d="M 500,30 C 500,120 380,220 280,360 C 180,500 220,640 380,740 C 480,800 580,920 620,1050 C 660,1180 780,1260 780,1380 C 780,1500 680,1620 540,1720 C 420,1800 240,1920 240,2060 C 240,2200 360,2300 500,2400 C 620,2490 760,2600 760,2740 C 760,2880 640,2980 500,3070 L 500,3180"
-              class="sanctuary-draw-path"
-              id="sanctuary-draw-path"
-              stroke="#ffffff"
-              stroke-width="1.8"
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              vector-effect="non-scaling-stroke"
-            />
-
-            <!-- ================================================================= -->
-            <!-- 3. ORGANIC LEAF CLUSTERS & BOTANICAL TENDRILS                     -->
-            <!-- ================================================================= -->
-
-            <!-- Cluster 1: Entrance Wave Sprig (y ≈ 160, x ≈ 410) -->
-            <g class="sanctuary-leaf-cluster" data-progress="0.03" style="transform-origin: 410px 160px;">
-              <circle cx="410" cy="160" r="2.2" fill="#ffffff" />
-              <path d="M 410,160 C 390,140 370,146 358,166 C 376,175 400,170 410,160 Z" class="leaf-blade" stroke="#ffffff" stroke-width="1.1" fill="rgba(255,255,255,0.08)" vector-effect="non-scaling-stroke" />
-              <path d="M 410,160 Q 382,158 358,166" class="leaf-vein" stroke="rgba(255,255,255,0.6)" stroke-width="0.7" vector-effect="non-scaling-stroke" />
-              <path d="M 410,160 C 428,138 450,142 460,162 C 444,172 422,170 410,160 Z" class="leaf-blade" stroke="#ffffff" stroke-width="1.1" fill="rgba(255,255,255,0.08)" vector-effect="non-scaling-stroke" />
-              <path d="M 410,160 Q 438,154 460,162" class="leaf-vein" stroke="rgba(255,255,255,0.6)" stroke-width="0.7" vector-effect="non-scaling-stroke" />
-            </g>
-
-            <!-- Cluster 2: Station 1 Image Top Entry (y ≈ 360, x ≈ 280) -->
-            <g class="sanctuary-leaf-cluster" data-progress="0.08" style="transform-origin: 280px 360px;">
-              <circle cx="280" cy="360" r="2.5" fill="#ffffff" />
-              <path d="M 280,360 C 255,335 230,340 216,364 C 238,374 265,370 280,360 Z" class="leaf-blade" stroke="#ffffff" stroke-width="1.2" fill="rgba(255,255,255,0.1)" vector-effect="non-scaling-stroke" />
-              <path d="M 280,360 Q 245,355 216,364" class="leaf-vein" stroke="rgba(255,255,255,0.7)" stroke-width="0.8" vector-effect="non-scaling-stroke" />
-              <path d="M 280,360 C 300,332 328,335 340,358 C 322,370 295,368 280,360 Z" class="leaf-blade" stroke="#ffffff" stroke-width="1.2" fill="rgba(255,255,255,0.1)" vector-effect="non-scaling-stroke" />
-              <path d="M 280,360 Q 312,348 340,358" class="leaf-vein" stroke="rgba(255,255,255,0.7)" stroke-width="0.8" vector-effect="non-scaling-stroke" />
-            </g>
-
-            <!-- Cluster 3: Across Station 1 Image Face (y ≈ 530, x ≈ 200) + Tendril -->
-            <g class="sanctuary-leaf-cluster" data-progress="0.14" style="transform-origin: 200px 530px;">
-              <circle cx="200" cy="530" r="2.5" fill="#ffffff" />
-              <!-- Spiraling Botanical Tendril on Image -->
-              <path d="M 200,530 C 165,510 140,535 148,570 C 156,600 188,600 196,575 C 202,555 182,545 174,558" class="vine-tendril" stroke="#ffffff" stroke-width="1.1" fill="none" vector-effect="non-scaling-stroke" />
-              <!-- Leaf Pair -->
-              <path d="M 200,530 C 170,500 145,510 130,535 C 155,548 185,542 200,530 Z" class="leaf-blade" stroke="#ffffff" stroke-width="1.2" fill="rgba(255,255,255,0.12)" vector-effect="non-scaling-stroke" />
-              <path d="M 200,530 Q 160,525 130,535" class="leaf-vein" stroke="rgba(255,255,255,0.8)" stroke-width="0.8" vector-effect="non-scaling-stroke" />
-              <path d="M 200,530 C 220,495 250,500 265,525 C 245,540 218,538 200,530 Z" class="leaf-blade" stroke="#ffffff" stroke-width="1.2" fill="rgba(255,255,255,0.12)" vector-effect="non-scaling-stroke" />
-              <path d="M 200,530 Q 235,518 265,525" class="leaf-vein" stroke="rgba(255,255,255,0.8)" stroke-width="0.8" vector-effect="non-scaling-stroke" />
-            </g>
-
-            <!-- Cluster 4: Station 1 Image Exit (y ≈ 740, x ≈ 380) -->
-            <g class="sanctuary-leaf-cluster" data-progress="0.21" style="transform-origin: 380px 740px;">
-              <circle cx="380" cy="740" r="2" fill="#ffffff" />
-              <path d="M 380,740 C 355,720 330,726 318,748 C 338,756 365,750 380,740 Z" class="leaf-blade" stroke="#ffffff" stroke-width="1.1" fill="rgba(255,255,255,0.08)" vector-effect="non-scaling-stroke" />
-              <path d="M 380,740 Q 348,736 318,748" class="leaf-vein" stroke="rgba(255,255,255,0.6)" stroke-width="0.7" vector-effect="non-scaling-stroke" />
-            </g>
-
-            <!-- Cluster 5: Transition Sweep 1 to 2 (y ≈ 980, x ≈ 600) -->
-            <g class="sanctuary-leaf-cluster" data-progress="0.29" style="transform-origin: 600px 980px;">
-              <circle cx="600" cy="980" r="2.2" fill="#ffffff" />
-              <path d="M 600,980 C 625,955 650,960 665,985 C 645,998 618,992 600,980 Z" class="leaf-blade" stroke="#ffffff" stroke-width="1.1" fill="rgba(255,255,255,0.08)" vector-effect="non-scaling-stroke" />
-              <path d="M 600,980 Q 635,972 665,985" class="leaf-vein" stroke="rgba(255,255,255,0.6)" stroke-width="0.7" vector-effect="non-scaling-stroke" />
-            </g>
-
-            <!-- Cluster 6: Station 2 Image Top Entry (y ≈ 1180, x ≈ 740) -->
-            <g class="sanctuary-leaf-cluster" data-progress="0.36" style="transform-origin: 740px 1180px;">
-              <circle cx="740" cy="1180" r="2.5" fill="#ffffff" />
-              <path d="M 740,1180 C 715,1155 690,1160 676,1184 C 698,1194 725,1190 740,1180 Z" class="leaf-blade" stroke="#ffffff" stroke-width="1.2" fill="rgba(255,255,255,0.1)" vector-effect="non-scaling-stroke" />
-              <path d="M 740,1180 Q 705,1175 676,1184" class="leaf-vein" stroke="rgba(255,255,255,0.7)" stroke-width="0.8" vector-effect="non-scaling-stroke" />
-              <path d="M 740,1180 C 760,1152 788,1155 800,1178 C 782,1190 755,1188 740,1180 Z" class="leaf-blade" stroke="#ffffff" stroke-width="1.2" fill="rgba(255,255,255,0.1)" vector-effect="non-scaling-stroke" />
-              <path d="M 740,1180 Q 772,1168 800,1178" class="leaf-vein" stroke="rgba(255,255,255,0.7)" stroke-width="0.8" vector-effect="non-scaling-stroke" />
-            </g>
-
-            <!-- Cluster 7: Across Station 2 Image Face (y ≈ 1380, x ≈ 780) + Tendril -->
-            <g class="sanctuary-leaf-cluster" data-progress="0.43" style="transform-origin: 780px 1380px;">
-              <circle cx="780" cy="1380" r="2.5" fill="#ffffff" />
-              <!-- Spiraling Botanical Tendril on Image -->
-              <path d="M 780,1380 C 815,1360 840,1385 832,1420 C 824,1450 792,1450 784,1425 C 778,1405 798,1395 806,1408" class="vine-tendril" stroke="#ffffff" stroke-width="1.1" fill="none" vector-effect="non-scaling-stroke" />
-              <!-- Leaf Pair -->
-              <path d="M 780,1380 C 750,1350 725,1360 710,1385 C 735,1398 765,1392 780,1380 Z" class="leaf-blade" stroke="#ffffff" stroke-width="1.2" fill="rgba(255,255,255,0.12)" vector-effect="non-scaling-stroke" />
-              <path d="M 780,1380 Q 740,1375 710,1385" class="leaf-vein" stroke="rgba(255,255,255,0.8)" stroke-width="0.8" vector-effect="non-scaling-stroke" />
-              <path d="M 780,1380 C 800,1345 830,1350 845,1375 C 825,1390 798,1388 780,1380 Z" class="leaf-blade" stroke="#ffffff" stroke-width="1.2" fill="rgba(255,255,255,0.12)" vector-effect="non-scaling-stroke" />
-              <path d="M 780,1380 Q 815,1368 845,1375" class="leaf-vein" stroke="rgba(255,255,255,0.8)" stroke-width="0.8" vector-effect="non-scaling-stroke" />
-            </g>
-
-            <!-- Cluster 8: Station 2 Image Exit (y ≈ 1540, x ≈ 640) -->
-            <g class="sanctuary-leaf-cluster" data-progress="0.50" style="transform-origin: 640px 1540px;">
-              <circle cx="640" cy="1540" r="2" fill="#ffffff" />
-              <path d="M 640,1540 C 615,1520 590,1526 578,1548 C 598,1556 625,1550 640,1540 Z" class="leaf-blade" stroke="#ffffff" stroke-width="1.1" fill="rgba(255,255,255,0.08)" vector-effect="non-scaling-stroke" />
-              <path d="M 640,1540 Q 608,1536 578,1548" class="leaf-vein" stroke="rgba(255,255,255,0.6)" stroke-width="0.7" vector-effect="non-scaling-stroke" />
-            </g>
-
-            <!-- Cluster 9: Transition Sweep 2 to 3 (y ≈ 1720, x ≈ 480) -->
-            <g class="sanctuary-leaf-cluster" data-progress="0.57" style="transform-origin: 480px 1720px;">
-              <circle cx="480" cy="1720" r="2.2" fill="#ffffff" />
-              <path d="M 480,1720 C 455,1700 430,1706 418,1728 C 438,1736 465,1730 480,1720 Z" class="leaf-blade" stroke="#ffffff" stroke-width="1.1" fill="rgba(255,255,255,0.08)" vector-effect="non-scaling-stroke" />
-              <path d="M 480,1720 Q 448,1716 418,1728" class="leaf-vein" stroke="rgba(255,255,255,0.6)" stroke-width="0.7" vector-effect="non-scaling-stroke" />
-            </g>
-
-            <!-- Cluster 10: Station 3 Image Top Entry (y ≈ 1880, x ≈ 280) -->
-            <g class="sanctuary-leaf-cluster" data-progress="0.63" style="transform-origin: 280px 1880px;">
-              <circle cx="280" cy="1880" r="2.5" fill="#ffffff" />
-              <path d="M 280,1880 C 255,1855 230,1860 216,1884 C 238,1894 265,1890 280,1880 Z" class="leaf-blade" stroke="#ffffff" stroke-width="1.2" fill="rgba(255,255,255,0.1)" vector-effect="non-scaling-stroke" />
-              <path d="M 280,1880 Q 245,1875 216,1884" class="leaf-vein" stroke="rgba(255,255,255,0.7)" stroke-width="0.8" vector-effect="non-scaling-stroke" />
-              <path d="M 280,1880 C 300,1852 328,1855 340,1878 C 322,1890 295,1888 280,1880 Z" class="leaf-blade" stroke="#ffffff" stroke-width="1.2" fill="rgba(255,255,255,0.1)" vector-effect="non-scaling-stroke" />
-              <path d="M 280,1880 Q 312,1868 340,1878" class="leaf-vein" stroke="rgba(255,255,255,0.7)" stroke-width="0.8" vector-effect="non-scaling-stroke" />
-            </g>
-
-            <!-- Cluster 11: Across Station 3 Image Face (y ≈ 2060, x ≈ 240) + Tendril -->
-            <g class="sanctuary-leaf-cluster" data-progress="0.70" style="transform-origin: 240px 2060px;">
-              <circle cx="240" cy="2060" r="2.5" fill="#ffffff" />
-              <!-- Spiraling Botanical Tendril on Image -->
-              <path d="M 240,2060 C 205,2040 180,2065 188,2100 C 196,2130 228,2130 236,2105 C 242,2085 222,2075 214,2088" class="vine-tendril" stroke="#ffffff" stroke-width="1.1" fill="none" vector-effect="non-scaling-stroke" />
-              <!-- Leaf Pair -->
-              <path d="M 240,2060 C 210,2030 185,2040 170,2065 C 195,2078 225,2072 240,2060 Z" class="leaf-blade" stroke="#ffffff" stroke-width="1.2" fill="rgba(255,255,255,0.12)" vector-effect="non-scaling-stroke" />
-              <path d="M 240,2060 Q 200,2055 170,2065" class="leaf-vein" stroke="rgba(255,255,255,0.8)" stroke-width="0.8" vector-effect="non-scaling-stroke" />
-              <path d="M 240,2060 C 260,2025 290,2030 305,2055 C 285,2070 258,2068 240,2060 Z" class="leaf-blade" stroke="#ffffff" stroke-width="1.2" fill="rgba(255,255,255,0.12)" vector-effect="non-scaling-stroke" />
-              <path d="M 240,2060 Q 275,2048 305,2055" class="leaf-vein" stroke="rgba(255,255,255,0.8)" stroke-width="0.8" vector-effect="non-scaling-stroke" />
-            </g>
-
-            <!-- Cluster 12: Station 3 Image Exit (y ≈ 2260, x ≈ 400) -->
-            <g class="sanctuary-leaf-cluster" data-progress="0.77" style="transform-origin: 400px 2260px;">
-              <circle cx="400" cy="2260" r="2" fill="#ffffff" />
-              <path d="M 400,2260 C 375,2240 350,2246 338,2268 C 358,2276 385,2270 400,2260 Z" class="leaf-blade" stroke="#ffffff" stroke-width="1.1" fill="rgba(255,255,255,0.08)" vector-effect="non-scaling-stroke" />
-              <path d="M 400,2260 Q 368,2256 338,2268" class="leaf-vein" stroke="rgba(255,255,255,0.6)" stroke-width="0.7" vector-effect="non-scaling-stroke" />
-            </g>
-
-            <!-- Cluster 13: Transition Sweep 3 to 4 (y ≈ 2450, x ≈ 560) -->
-            <g class="sanctuary-leaf-cluster" data-progress="0.83" style="transform-origin: 560px 2450px;">
-              <circle cx="560" cy="2450" r="2.2" fill="#ffffff" />
-              <path d="M 560,2450 C 585,2425 610,2430 625,2455 C 605,2468 578,2462 560,2450 Z" class="leaf-blade" stroke="#ffffff" stroke-width="1.1" fill="rgba(255,255,255,0.08)" vector-effect="non-scaling-stroke" />
-              <path d="M 560,2450 Q 595,2442 625,2455" class="leaf-vein" stroke="rgba(255,255,255,0.6)" stroke-width="0.7" vector-effect="non-scaling-stroke" />
-            </g>
-
-            <!-- Cluster 14: Across Station 4 Image Face (y ≈ 2740, x ≈ 760) + Tendril -->
-            <g class="sanctuary-leaf-cluster" data-progress="0.90" style="transform-origin: 760px 2740px;">
-              <circle cx="760" cy="2740" r="2.5" fill="#ffffff" />
-              <!-- Spiraling Botanical Tendril on Image -->
-              <path d="M 760,2740 C 795,2720 820,2745 812,2780 C 804,2810 772,2810 764,2785 C 758,2765 778,2755 786,2768" class="vine-tendril" stroke="#ffffff" stroke-width="1.1" fill="none" vector-effect="non-scaling-stroke" />
-              <!-- Leaf Pair -->
-              <path d="M 760,2740 C 730,2710 705,2720 690,2745 C 715,2758 745,2752 760,2740 Z" class="leaf-blade" stroke="#ffffff" stroke-width="1.2" fill="rgba(255,255,255,0.12)" vector-effect="non-scaling-stroke" />
-              <path d="M 760,2740 Q 720,2735 690,2745" class="leaf-vein" stroke="rgba(255,255,255,0.8)" stroke-width="0.8" vector-effect="non-scaling-stroke" />
-              <path d="M 760,2740 C 780,2705 810,2710 825,2735 C 805,2750 778,2748 760,2740 Z" class="leaf-blade" stroke="#ffffff" stroke-width="1.2" fill="rgba(255,255,255,0.12)" vector-effect="non-scaling-stroke" />
-              <path d="M 760,2740 Q 795,2728 825,2735" class="leaf-vein" stroke="rgba(255,255,255,0.8)" stroke-width="0.8" vector-effect="non-scaling-stroke" />
-            </g>
-
-            <!-- Cluster 15: Grand Terminal Botanical Crown (Station 5 Top, y ≈ 3110, x ≈ 500) -->
-            <g class="sanctuary-leaf-cluster" data-progress="0.97" style="transform-origin: 500px 3110px;">
-              <circle cx="500" cy="3110" r="3" fill="#ffffff" />
-              <path d="M 500,3110 C 472,3082 444,3090 428,3116 C 454,3128 484,3120 500,3110 Z" class="leaf-blade" stroke="#ffffff" stroke-width="1.3" fill="rgba(255,255,255,0.08)" vector-effect="non-scaling-stroke" />
-              <path d="M 500,3110 Q 464,3104 428,3116" class="leaf-vein" stroke="rgba(255,255,255,0.7)" stroke-width="0.8" vector-effect="non-scaling-stroke" />
-              <path d="M 500,3110 C 528,3082 556,3090 572,3116 C 546,3128 516,3120 500,3110 Z" class="leaf-blade" stroke="#ffffff" stroke-width="1.3" fill="rgba(255,255,255,0.08)" vector-effect="non-scaling-stroke" />
-              <path d="M 500,3110 Q 536,3104 572,3116" class="leaf-vein" stroke="rgba(255,255,255,0.7)" stroke-width="0.8" vector-effect="non-scaling-stroke" />
-              <path d="M 500,3110 C 490,3140 492,3165 500,3180 C 508,3165 510,3140 500,3110 Z" class="leaf-blade" stroke="#ffffff" stroke-width="1.3" fill="rgba(255,255,255,0.12)" vector-effect="non-scaling-stroke" />
-              <path d="M 500,3110 L 500,3178" class="leaf-vein" stroke="rgba(255,255,255,0.8)" stroke-width="0.9" vector-effect="non-scaling-stroke" />
-            </g>
-
-          </svg>
-        </div>
 
         <!-- ========================================================================= -->
         <!-- STATION 01: MONOLITHIC TRAVERTINE THRESHOLD (Left Image Traversal)       -->
@@ -1208,7 +1033,7 @@ app.get('/', (req, res) => {
             <!-- Left Col 1-7: Showcase Editorial Image (Branch Weaves Directly Across) -->
             <div class="lg:col-span-7 relative z-10">
               <!-- Waypoint Milestone 01 Node -->
-              <div class="sanctuary-waypoint-badge absolute -top-3.5 -left-3.5 sm:top-4 sm:left-4 z-30" data-node="1">
+              <div id="sanctuary-wp-1" class="sanctuary-waypoint-badge absolute -top-3.5 -left-3.5 sm:top-4 sm:left-4 z-30" data-node="1">
                 <span class="waypoint-num">01</span>
               </div>
 
@@ -1303,7 +1128,7 @@ app.get('/', (req, res) => {
             <!-- Right Col 6-12: Showcase Image (Branch Weaves Directly Across) -->
             <div class="lg:col-span-7 order-1 lg:order-2 relative z-10">
               <!-- Waypoint Milestone 02 Node -->
-              <div class="sanctuary-waypoint-badge absolute -top-3.5 -right-3.5 sm:top-4 sm:right-4 z-30" data-node="2">
+              <div id="sanctuary-wp-2" class="sanctuary-waypoint-badge absolute -top-3.5 -right-3.5 sm:top-4 sm:right-4 z-30" data-node="2">
                 <span class="waypoint-num">02</span>
               </div>
 
@@ -1346,7 +1171,7 @@ app.get('/', (req, res) => {
             <!-- Left Col 1-7: Showcase Editorial Image (Branch Weaves Directly Across) -->
             <div class="lg:col-span-7 relative z-10">
               <!-- Waypoint Milestone 03 Node -->
-              <div class="sanctuary-waypoint-badge absolute -top-3.5 -left-3.5 sm:top-4 sm:left-4 z-30" data-node="3">
+              <div id="sanctuary-wp-3" class="sanctuary-waypoint-badge absolute -top-3.5 -left-3.5 sm:top-4 sm:left-4 z-30" data-node="3">
                 <span class="waypoint-num">03</span>
               </div>
 
@@ -1441,7 +1266,7 @@ app.get('/', (req, res) => {
             <!-- Right Col 6-12: Showcase Image (Branch Weaves Directly Across) -->
             <div class="lg:col-span-7 order-1 lg:order-2 relative z-10">
               <!-- Waypoint Milestone 04 Node -->
-              <div class="sanctuary-waypoint-badge absolute -top-3.5 -right-3.5 sm:top-4 sm:right-4 z-30" data-node="4">
+              <div id="sanctuary-wp-4" class="sanctuary-waypoint-badge absolute -top-3.5 -right-3.5 sm:top-4 sm:right-4 z-30" data-node="4">
                 <span class="waypoint-num">04</span>
               </div>
 
@@ -1482,7 +1307,7 @@ app.get('/', (req, res) => {
           
           <!-- Milestone Badge 05 Centered on the Crown -->
           <div class="flex justify-center mb-6">
-            <div class="sanctuary-waypoint-badge relative z-30" data-node="5">
+            <div id="sanctuary-wp-5" class="sanctuary-waypoint-badge relative z-30" data-node="5">
               <span class="waypoint-num">05</span>
             </div>
           </div>

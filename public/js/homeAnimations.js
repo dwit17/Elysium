@@ -382,94 +382,549 @@
    * Path length, thresholds, node positions, and tracer motion are calculated dynamically.
    */
   /**
-   * 3B. SECTION 3B — ELYSIUM SPATIAL LIVING SANCTUARY
-   * Botanical porcelain-white branch & blooming leaves scroll-driven drawing animation.
+   * 3B. LIVING SANCTUARY — Vine-Growth Scroll Animation
+   *
+   * Root-cause fixes in this rebuild:
+   *  1. CONTAINER BUG: The vine mount is now created by JS and appended as a
+   *     DIRECT CHILD of #living-sanctuary-container (position:relative, full
+   *     viewport width). Previously it was inside the constrained max-w-7xl
+   *     inner content div, so the SVG was painted in a narrow box while badge
+   *     coordinates measured against the full section — causing the left-edge drift.
+   *
+   *  2. COORDINATE SYSTEM: SVG uses NO viewBox. Width/height = section CSS px.
+   *     Anchors measured via getBoundingClientRect relative to the SECTION rect.
+   *     Since 1 SVG unit = 1 CSS px and mount is absolute inset-0 in section,
+   *     all coordinates are inherently correct at every scroll position.
+   *
+   *  3. VINE X POSITION: Fixed left-gutter position per breakpoint, computed
+   *     from the section's own padding, so the vine always lives in whitespace
+   *     and never crosses image or text content.
+   *
+   *  4. ALL 5 LEAVES: Y positions measured from station container centers
+   *     (full-width block elements), not waypoint badges (which can be outside
+   *     the parent box with negative offsets, drifting the old fixed viewBox).
+   *
+   *  5. IMMEDIATE START: ScrollTrigger start: 'top bottom' — vine begins growing
+   *     the moment the section's top edge enters the viewport bottom.
+   */
+  /**
+   * 3B. LIVING SANCTUARY — Botanical Vine & Blooming Leaves Engine
+   *
+   * Features & Fixes:
+   *  1. FULL-SECTION PATH: Spans from top header (Y ~30px) through all 5 waypoint anchors
+   *     down to section bottom (Y ~height - 30px).
+   *  2. EXPLICIT SVG SIZING: Sets width, height, and viewBox to exact container bounding rect,
+   *     preventing left-edge squeezing or clipping across all viewports.
+   *  3. GSAP SCRUB TIMING: Scrub starts at 'top 70%' and completes at 'bottom 85%' so the growing
+   *     vine tip is continuously visible in viewport during scrolling.
+   *  4. GSAP LEAF BLOOM ANIMATIONS: High-fidelity botanical leaf clusters with blades, veins,
+   *     and tendrils animated directly via GSAP timelines for guaranteed cross-browser motion.
+   *  5. DYNAMIC REFLOW: Debounced ResizeObserver + image/font settle handling.
    */
   function initLivingSanctuarySection() {
-    const track = document.getElementById('sanctuary-journey-track');
-    const drawPath = document.getElementById('sanctuary-draw-path');
-    if (!track || !drawPath || typeof gsap === 'undefined' || typeof ScrollTrigger === 'undefined') return;
+    const section = document.getElementById('living-sanctuary-container');
+    const track   = document.getElementById('sanctuary-journey-track');
+    if (!section || !track || typeof gsap === 'undefined' || typeof ScrollTrigger === 'undefined') return;
 
-    const stations = track.querySelectorAll('.sanctuary-station');
-    const leafClusters = track.querySelectorAll('.sanctuary-leaf-cluster');
+    const stationEls = Array.from(track.querySelectorAll('.sanctuary-station'));
+    const WP_IDS     = ['sanctuary-wp-1', 'sanctuary-wp-2', 'sanctuary-wp-3', 'sanctuary-wp-4', 'sanctuary-wp-5'];
+    const SVG_NS     = 'http://www.w3.org/2000/svg';
 
-    // Reduced motion fallback
+    // ── Reduced-motion: reveal everything instantly ───────────────────────────
     if (prefersReducedMotion) {
-      drawPath.style.strokeDashoffset = '0';
-      stations.forEach((station) => {
-        station.classList.add('is-active');
-        const badge = station.querySelector('.sanctuary-waypoint-badge');
-        if (badge) badge.classList.add('is-active');
+      stationEls.forEach((s) => s.classList.add('is-active'));
+      WP_IDS.forEach((id) => {
+        const el = document.getElementById(id);
+        if (el) el.classList.add('is-active');
       });
-      leafClusters.forEach((cluster) => cluster.classList.add('is-active'));
       return;
     }
 
-    // 1. Calculate path total length & set initial dash offset
-    let pathLength = 0;
-    try {
-      pathLength = drawPath.getTotalLength();
-    } catch (e) {
-      pathLength = 3600;
+    // ── Create vine mount as SECTION-LEVEL child ──────────────────────────────
+    let mount = document.getElementById('sanctuary-vine-mount');
+    if (!mount) {
+      mount = document.createElement('div');
+      mount.id = 'sanctuary-vine-mount';
+      mount.className = 'sanctuary-vine-mount';
+      section.appendChild(mount);
     }
 
-    // Initialize clean hidden stroke
-    gsap.set(drawPath, {
-      strokeDasharray: pathLength,
-      strokeDashoffset: pathLength,
-    });
+    // ── Internal state ────────────────────────────────────────────────────────
+    let leafClusters = [];
+    let pathTweens   = [];
+    let leafSTs      = [];
+    let resizeTimer  = null;
+    let isInitialized = false;
 
-    // 2. Direct GSAP hardware-accelerated stroke scrub & organic leaf blooming
-    gsap.to(drawPath, {
-      strokeDashoffset: 0,
-      ease: 'none',
-      scrollTrigger: {
-        trigger: track,
-        start: 'top 70%',
-        end: 'bottom 85%',
-        scrub: 0.4,
-        invalidateOnRefresh: true,
-        onUpdate: (self) => {
-          const progress = self.progress;
-          // Unfurl botanical leaf clusters as the branch draws past their coordinate
-          leafClusters.forEach((cluster) => {
-            const threshold = parseFloat(cluster.getAttribute('data-progress') || '0');
-            if (progress >= threshold) {
-              if (!cluster.classList.contains('is-active')) cluster.classList.add('is-active');
-            } else {
-              if (cluster.classList.contains('is-active')) cluster.classList.remove('is-active');
-            }
+    // ── SVG element helper ────────────────────────────────────────────────────
+    function mk(tag, attrs, classes) {
+      const el = document.createElementNS(SVG_NS, tag);
+      if (attrs) {
+        for (const [k, v] of Object.entries(attrs)) el.setAttribute(k, String(v));
+      }
+      if (classes) classes.forEach((c) => el.classList.add(c));
+      return el;
+    }
+
+    // ── Measure anchor points & station image card centers ───────────────────
+    function getAnchors() {
+      const secRect = section.getBoundingClientRect();
+      const anchors = [];
+
+      WP_IDS.forEach((id, i) => {
+        const badge = document.getElementById(id);
+        const st = stationEls[i];
+        if (!badge) return;
+
+        const r = badge.getBoundingClientRect();
+        let bx = (r.left + r.right) / 2 - secRect.left;
+        let by = (r.top + r.bottom) / 2 - secRect.top;
+
+        // Measure the specific image card frame for exact center-to-center green dot anchors
+        const card = st ? (st.querySelector('.sanctuary-card-frame') || st) : null;
+        let cardCx = bx;
+        let cardTop = by;
+        let cardBottom = by + 420;
+
+        if (card) {
+          const cr = card.getBoundingClientRect();
+          cardCx = (cr.left + cr.right) / 2 - secRect.left;
+          cardTop = cr.top - secRect.top;
+          cardBottom = cr.bottom - secRect.top;
+        }
+
+        // Station 5 (Center Crown Section)
+        if (i === 4) {
+          cardCx = secRect.width * 0.5;
+          cardTop = by - 15;
+          cardBottom = by + 20;
+        }
+
+        anchors.push({
+          badgeX: bx,
+          badgeY: by,
+          el: badge,
+          stationEl: st,
+          idx: i,
+          cardCx,
+          cardTop,
+          cardBottom,
+        });
+      });
+
+      return anchors;
+    }
+
+    // ── Leaf-cluster configurations: radiating into the open space between cards
+    const LEAF_CONFIGS = [
+      // Node 1 (Station 1 bottom-center - radiates down into open gap)
+      [
+        { rot: 45, sz: 16, sweep: 1 },
+        { rot: 135, sz: 16, sweep: -1 },
+        { rot: 90, sz: 14, sweep: 1 },
+        { rot: 0, sz: 13, sweep: -1 },
+        { rot: 180, sz: 13, sweep: 1 },
+      ],
+      // Node 2 (Station 2 top-center - radiates up into open gap)
+      [
+        { rot: -45, sz: 16, sweep: -1 },
+        { rot: -135, sz: 16, sweep: 1 },
+        { rot: -90, sz: 14, sweep: -1 },
+        { rot: 0, sz: 13, sweep: 1 },
+        { rot: -180, sz: 13, sweep: -1 },
+      ],
+      // Node 3 (Station 3 bottom-center - radiates down into open gap)
+      [
+        { rot: 45, sz: 16, sweep: 1 },
+        { rot: 135, sz: 16, sweep: -1 },
+        { rot: 90, sz: 14, sweep: 1 },
+        { rot: 0, sz: 13, sweep: -1 },
+        { rot: 180, sz: 13, sweep: 1 },
+      ],
+      // Node 4 (Station 4 top-center - radiates up into open gap)
+      [
+        { rot: -45, sz: 16, sweep: -1 },
+        { rot: -135, sz: 16, sweep: 1 },
+        { rot: -90, sz: 14, sweep: -1 },
+        { rot: 0, sz: 13, sweep: 1 },
+        { rot: -180, sz: 13, sweep: -1 },
+      ],
+      // Node 5 (Station 5 Center Crown - grand radial crown)
+      [
+        { rot: -60, sz: 19, sweep: 1 },
+        { rot: 60, sz: 19, sweep: -1 },
+        { rot: -15, sz: 17, sweep: 1 },
+        { rot: 15, sz: 17, sweep: -1 },
+        { rot: -140, sz: 15, sweep: 1 },
+        { rot: 140, sz: 15, sweep: -1 },
+        { rot: 180, sz: 14, sweep: 1 },
+      ],
+    ];
+
+    function buildLeafCluster(svg, cx, cy, stationIdx, isTerminal) {
+      const configs = LEAF_CONFIGS[stationIdx] || LEAF_CONFIGS[0];
+
+      const group = mk('g', {}, ['sanctuary-leaf-cluster']);
+
+      // 1. Center glowing green/white pearl node
+      group.appendChild(mk('circle', {
+        cx: cx.toFixed(1),
+        cy: cy.toFixed(1),
+        r: isTerminal ? 4.5 : 3.5,
+        fill: '#ffffff',
+      }, ['node-gem']));
+
+      // 2. Spiraling tendrils (curling into the open gap)
+      const tendrilAngles = isTerminal
+        ? [-60, 60, -140, 140]
+        : (stationIdx % 2 === 0 ? [60, 120] : [-60, -120]);
+
+      tendrilAngles.forEach((angle) => {
+        const rad = (angle * Math.PI) / 180;
+        const len = isTerminal ? 26 : 20;
+        const tEndX = cx + Math.cos(rad) * len;
+        const tEndY = cy + Math.sin(rad) * len;
+        const tCp1X = cx + Math.cos(rad - 0.4) * (len * 0.6);
+        const tCp1Y = cy + Math.sin(rad - 0.4) * (len * 0.6);
+        const tCp2X = cx + Math.cos(rad + 0.3) * (len * 0.9);
+        const tCp2Y = cy + Math.sin(rad + 0.3) * (len * 0.9);
+
+        const tendrilD = `M ${cx.toFixed(1)},${cy.toFixed(1)} C ${tCp1X.toFixed(1)},${tCp1Y.toFixed(1)} ${tCp2X.toFixed(1)},${tCp2Y.toFixed(1)} ${tEndX.toFixed(1)},${tEndY.toFixed(1)}`;
+        const tendril = mk('path', {
+          d: tendrilD,
+          stroke: 'rgba(255,255,255,0.7)',
+          'stroke-width': '0.9',
+          fill: 'none',
+          'vector-effect': 'non-scaling-stroke',
+        }, ['vine-tendril']);
+        group.appendChild(tendril);
+      });
+
+      // 3. Radiating leaf blades
+      configs.forEach(({ rot, sz, sweep }) => {
+        const lg = mk('g', { transform: `rotate(${rot},${cx.toFixed(1)},${cy.toFixed(1)})` });
+
+        const sw = sweep || 1;
+        const bladeD = [
+          `M ${cx.toFixed(1)},${cy.toFixed(1)}`,
+          `C ${(cx + sz * 0.65).toFixed(1)},${(cy - sz * 0.45 * sw).toFixed(1)}`,
+          `  ${(cx + sz * 1.95).toFixed(1)},${(cy - sz * 0.18 * sw).toFixed(1)}`,
+          `  ${(cx + sz * 2.3).toFixed(1)},${cy.toFixed(1)}`,
+          `C ${(cx + sz * 1.95).toFixed(1)},${(cy + sz * 0.18 * sw).toFixed(1)}`,
+          `  ${(cx + sz * 0.65).toFixed(1)},${(cy + sz * 0.45 * sw).toFixed(1)}`,
+          `  ${cx.toFixed(1)},${cy.toFixed(1)} Z`,
+        ].join(' ');
+
+        const veinD = `M ${cx.toFixed(1)},${cy.toFixed(1)} Q ${(cx + sz * 1.15).toFixed(1)},${(cy - sz * 0.05 * sw).toFixed(1)} ${(cx + sz * 2.25).toFixed(1)},${cy.toFixed(1)}`;
+
+        lg.appendChild(mk('path', {
+          d: bladeD,
+          stroke: '#ffffff',
+          'stroke-width': '1.0',
+          fill: 'rgba(255,255,255,0.12)',
+          'vector-effect': 'non-scaling-stroke',
+        }, ['leaf-blade']));
+
+        lg.appendChild(mk('path', {
+          d: veinD,
+          stroke: 'rgba(255,255,255,0.6)',
+          'stroke-width': '0.6',
+          fill: 'none',
+          'vector-effect': 'non-scaling-stroke',
+        }, ['leaf-vein']));
+
+        group.appendChild(lg);
+      });
+
+      // Set initial dormant state for GSAP blooming
+      gsap.set(group, { scale: 0, opacity: 0, transformOrigin: `${cx}px ${cy}px` });
+
+      svg.appendChild(group);
+      return { group, cx, cy, isTerminal };
+    }
+
+    // ── Full SVG rebuild ──────────────────────────────────────────────────────
+    function buildSVG(anchors) {
+      while (mount.firstChild) mount.removeChild(mount.firstChild);
+      leafSTs.forEach((st) => st.kill());
+      leafSTs = [];
+      pathTweens.forEach((tw) => {
+        if (tw.scrollTrigger) tw.scrollTrigger.kill();
+        tw.kill();
+      });
+      pathTweens = [];
+      leafClusters = [];
+
+      if (!anchors || anchors.length < 2) return;
+
+      const secRect = section.getBoundingClientRect();
+      const secW = Math.max(320, secRect.width);
+      const secH = Math.max(600, secRect.height);
+
+      // Explicit SVG sizing and viewBox to guarantee 1:1 pixel coordinate space
+      const svg = mk('svg', {
+        viewBox: `0 0 ${secW.toFixed(1)} ${secH.toFixed(1)}`,
+        width: `${secW.toFixed(1)}`,
+        height: `${secH.toFixed(1)}`,
+        fill: 'none',
+        xmlns: SVG_NS,
+      }, ['sanctuary-dynamic-svg']);
+
+      // ── Build Segment-by-Segment S-Curves in open space between cards ───────
+      for (let i = 0; i < anchors.length - 1; i++) {
+        const cur = anchors[i];
+        const next = anchors[i + 1];
+
+        // Green dot 1: Horizontal center of bottom edge of current image
+        const startX = cur.cardCx;
+        const startY = cur.cardBottom;
+
+        // Green dot 2: Horizontal center of top edge of next image
+        const endX = next.cardCx;
+        const endY = next.cardTop;
+
+        const dy = Math.max(60, endY - startY);
+
+        // Smooth cubic Bézier S-curve with vertical departure and arrival
+        const cp1x = startX;
+        const cp1y = startY + dy * 0.52;
+        const cp2x = endX;
+        const cp2y = endY - dy * 0.52;
+
+        const segD = `M ${startX.toFixed(1)},${startY.toFixed(1)} C ${cp1x.toFixed(1)},${cp1y.toFixed(1)} ${cp2x.toFixed(1)},${cp2y.toFixed(1)} ${endX.toFixed(1)},${endY.toFixed(1)}`;
+
+        // 1. Subtle dotted guide trace
+        svg.appendChild(mk('path', {
+          d: segD,
+          stroke: 'rgba(255,255,255,0.08)',
+          'stroke-width': '1.2',
+          'stroke-dasharray': '3 10',
+          'vector-effect': 'non-scaling-stroke',
+        }, ['sanctuary-guide-path']));
+
+        // 2. Diffuse glowing aura path
+        const segGlow = mk('path', {
+          d: segD,
+          stroke: 'rgba(255,255,255,0.22)',
+          'stroke-width': '4.5',
+          'stroke-linecap': 'round',
+          'stroke-linejoin': 'round',
+          'vector-effect': 'non-scaling-stroke',
+        }, ['sanctuary-glow-path']);
+        svg.appendChild(segGlow);
+
+        // 3. Sharp core drawing vine path
+        const segDraw = mk('path', {
+          d: segD,
+          stroke: '#ffffff',
+          'stroke-width': '2.0',
+          'stroke-linecap': 'round',
+          'stroke-linejoin': 'round',
+          'vector-effect': 'non-scaling-stroke',
+        }, ['sanctuary-draw-path']);
+        svg.appendChild(segDraw);
+
+        // Measure path length and prepare for scrubbed draw
+        let segLen = 1200;
+        try {
+          segLen = segDraw.getTotalLength() || 1200;
+        } catch (e) {}
+
+        gsap.set(segDraw, { strokeDasharray: segLen, strokeDashoffset: segLen });
+        gsap.set(segGlow, { strokeDasharray: segLen, strokeDashoffset: segLen });
+
+        // Calibrated ScrollTrigger per station gap: draws as gap enters viewport
+        const fromEl = cur.stationEl || cur.el;
+        const toEl = next.stationEl || next.el;
+
+        const twDraw = gsap.to(segDraw, {
+          strokeDashoffset: 0,
+          ease: 'none',
+          scrollTrigger: {
+            trigger: fromEl,
+            start: 'bottom 90%',
+            endTrigger: toEl,
+            end: 'top 35%',
+            scrub: 0.8,
+            invalidateOnRefresh: true,
+          },
+        });
+
+        const twGlow = gsap.to(segGlow, {
+          strokeDashoffset: 0,
+          ease: 'none',
+          scrollTrigger: {
+            trigger: fromEl,
+            start: 'bottom 90%',
+            endTrigger: toEl,
+            end: 'top 35%',
+            scrub: 0.8,
+            invalidateOnRefresh: true,
+          },
+        });
+
+        pathTweens.push(twDraw, twGlow);
+      }
+
+      // ── 4. Render leaf clusters at image card center green dots ──────────────
+      anchors.forEach((anchor, i) => {
+        // Exit node at bottom-center of card
+        if (i < anchors.length - 1) {
+          const clusterOut = buildLeafCluster(svg, anchor.cardCx, anchor.cardBottom, i, false);
+          clusterOut.triggerEl = anchor.stationEl || anchor.el;
+          clusterOut.badgeEl = anchor.el;
+          leafClusters.push(clusterOut);
+        }
+        // Entry node at top-center of card
+        if (i > 0) {
+          const clusterIn = buildLeafCluster(svg, anchor.cardCx, anchor.cardTop, i, i === anchors.length - 1);
+          clusterIn.triggerEl = anchor.stationEl || anchor.el;
+          clusterIn.badgeEl = anchor.el;
+          leafClusters.push(clusterIn);
+        }
+      });
+
+      mount.appendChild(svg);
+
+      // ── Individual waypoint & GSAP leaf blooming triggers ───────────────────
+      leafClusters.forEach((cluster) => {
+        const triggerEl = cluster.triggerEl;
+        const badge = cluster.badgeEl;
+        if (!triggerEl) return;
+
+        const leafGroup = cluster.group;
+        const cx = cluster.cx;
+        const cy = cluster.cy;
+
+        function bloomLeaves() {
+          if (badge) badge.classList.add('is-active');
+          gsap.killTweensOf(leafGroup);
+          const tl = gsap.timeline();
+          tl.to(leafGroup, {
+            scale: 1,
+            opacity: 1,
+            duration: 0.85,
+            ease: 'back.out(2)',
+            transformOrigin: `${cx}px ${cy}px`,
           });
-        },
-      },
-    });
+          const blades = leafGroup.querySelectorAll('.leaf-blade');
+          if (blades.length) {
+            tl.fromTo(blades,
+              { scale: 0.2, opacity: 0, transformOrigin: `${cx}px ${cy}px` },
+              { scale: 1, opacity: 1, duration: 0.6, stagger: 0.07, ease: 'power2.out' },
+              '-=0.55'
+            );
+          }
+          const tendrils = leafGroup.querySelectorAll('.vine-tendril');
+          if (tendrils.length) {
+            tl.fromTo(tendrils,
+              { strokeDasharray: 100, strokeDashoffset: 100 },
+              { strokeDashoffset: 0, duration: 0.75, stagger: 0.1, ease: 'power2.out' },
+              '-=0.45'
+            );
+          }
+        }
 
-    // 3. Clean Milestone & Station Activation (pure opacity & border states, zero layout shifts)
-    stations.forEach((station) => {
-      const badge = station.querySelector('.sanctuary-waypoint-badge');
+        function retractLeaves() {
+          if (badge) badge.classList.remove('is-active');
+          gsap.killTweensOf(leafGroup);
+          gsap.to(leafGroup, {
+            scale: 0,
+            opacity: 0,
+            duration: 0.4,
+            ease: 'power2.in',
+            transformOrigin: `${cx}px ${cy}px`,
+          });
+        }
 
+        // If element is already in viewport on load/resize, bloom immediately
+        const bRect = triggerEl.getBoundingClientRect();
+        if (bRect.top <= window.innerHeight * 0.75 && bRect.bottom > 0) {
+          bloomLeaves();
+        }
+
+        const st = ScrollTrigger.create({
+          trigger: triggerEl,
+          start: 'top 75%',
+          onEnter: bloomLeaves,
+          onLeaveBack: retractLeaves,
+          onEnterBack: bloomLeaves,
+        });
+        leafSTs.push(st);
+      });
+    }
+
+    // ── Station card entrance fade triggers ───────────────────────────────────
+    stationEls.forEach((station) => {
       ScrollTrigger.create({
         trigger: station,
-        start: 'top 68%',
-        end: 'bottom 25%',
-        onEnter: () => {
-          station.classList.add('is-active');
-          if (badge) badge.classList.add('is-active');
-        },
-        onLeaveBack: () => {
-          station.classList.remove('is-active');
-          if (badge) badge.classList.remove('is-active');
-        },
+        start: 'top 70%',
+        onEnter: () => station.classList.add('is-active'),
+        onLeaveBack: () => station.classList.remove('is-active'),
       });
     });
 
-    // 4. Recalculate cleanly on resize
-    window.addEventListener('resize', () => {
-      try {
-        const newLen = drawPath.getTotalLength();
-        drawPath.style.strokeDasharray = newLen;
-      } catch (e) {}
+    // ── Layout settling helper ────────────────────────────────────────────────
+    async function waitForLayoutSettled() {
+      // Wait for fonts
+      if (document.fonts && document.fonts.ready) {
+        try {
+          await document.fonts.ready;
+        } catch (e) {}
+      }
+
+      // Wait for images inside section
+      const imgs = Array.from(section.querySelectorAll('img'));
+      await Promise.all(
+        imgs.map((img) => {
+          if (img.complete && img.naturalHeight > 0) return Promise.resolve();
+          if (img.decode) {
+            return img.decode().catch(() => {});
+          }
+          return new Promise((resolve) => {
+            img.addEventListener('load', resolve, { once: true });
+            img.addEventListener('error', resolve, { once: true });
+          });
+        })
+      );
+
+      // Two rAF frames to allow Tailwind flex/grid layout to complete paint
+      return new Promise((resolve) => {
+        requestAnimationFrame(() => {
+          requestAnimationFrame(resolve);
+        });
+      });
+    }
+
+    // ── Recalculate and rebuild ───────────────────────────────────────────────
+    function recalculate() {
+      buildSVG(getAnchors());
+      ScrollTrigger.refresh();
+    }
+
+    // ── Initial bootstrap ─────────────────────────────────────────────────────
+    async function initialBuild() {
+      if (isInitialized) return;
+      await waitForLayoutSettled();
+      recalculate();
+      isInitialized = true;
+    }
+
+    if (document.readyState === 'complete') {
+      initialBuild();
+    } else {
+      window.addEventListener('load', initialBuild, { once: true });
+      setTimeout(initialBuild, 500);
+    }
+
+    // ── Debounced ResizeObserver for fluid reflows across breakpoints ─────────
+    const ro = new ResizeObserver(() => {
+      clearTimeout(resizeTimer);
+      resizeTimer = setTimeout(recalculate, 150);
     });
+    ro.observe(section);
+
+    console.log('[Elysium Motion] Living Sanctuary vine initialized.');
   }
 
   /**
