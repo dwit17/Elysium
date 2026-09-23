@@ -2697,19 +2697,28 @@ img {
   background: transparent !important;
 }
 
-.unified-line-container {
+.manifesto-line-container {
   position: absolute;
-  top: -100vh;
-  left: 0;
-  width: 400vw;
-  height: 200vh;
+  inset: 0;
+  width: 100%;
+  height: 100%;
   pointer-events: none;
   z-index: 0 !important;
   overflow: visible !important;
-  opacity: 1;
 }
 
-.unified-svg-line {
+.horizontal-line-container {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 0 !important;
+  overflow: visible !important;
+}
+
+.manifesto-svg-line,
+.horizontal-svg-line {
   display: block;
   width: 100%;
   height: 100%;
@@ -2717,15 +2726,11 @@ img {
   transform: translateZ(0);
 }
 
-.unified-draw-path {
-  fill: none;
-  stroke: url(#purpleRibbonGrad);
-  stroke-width: 36px;
-  stroke-linecap: round;
-  stroke-linejoin: round;
+.manifesto-draw-path,
+.manifesto-draw-path-aura,
+.horizontal-draw-path,
+.horizontal-draw-path-aura {
   will-change: stroke-dashoffset;
-  vector-effect: non-scaling-stroke;
-  filter: drop-shadow(0 10px 30px rgba(124, 58, 237, 0.28));
 }
 
 .manifesto-parallax-content,
@@ -2758,16 +2763,11 @@ img {
   z-index: 10 !important;
 }
 
-@media (max-width: 1023px) {
-  .unified-line-container {
-    top: 0;
-    width: 100%;
-    height: 100%;
-  }
-}
-
 @media (prefers-reduced-motion: reduce) {
-  .unified-draw-path {
+  .manifesto-draw-path,
+  .manifesto-draw-path-aura,
+  .horizontal-draw-path,
+  .horizontal-draw-path-aura {
     stroke-dashoffset: 0 !important;
   }
 }

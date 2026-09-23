@@ -780,6 +780,67 @@ app.get('/', (req, res) => {
       <!-- Ambient Radial Glow Accent -->
       <div class="manifesto-parallax-bg absolute -top-40 -left-40 w-96 h-96 bg-amber-500/10 rounded-full blur-3xl pointer-events-none" data-scroll-speed="-0.15"></div>
 
+      <!-- Interactive Scroll-Triggered SVG Drawing Line Layer (Manifesto Section) -->
+      <div class="manifesto-line-container absolute inset-0 w-full h-full pointer-events-none z-0 overflow-visible" aria-hidden="true">
+        <svg
+          class="manifesto-svg-line w-full h-full overflow-visible"
+          viewBox="0 0 1920 1080"
+          fill="none"
+          preserveAspectRatio="none"
+          xmlns="http://www.w3.org/2000/svg"
+        >
+          <defs>
+            <linearGradient id="manifestoStrokeGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+              <stop offset="0%" stop-color="#7c3aed" stop-opacity="0.3" />
+              <stop offset="25%" stop-color="#a855f7" stop-opacity="0.85" />
+              <stop offset="50%" stop-color="#c084fc" stop-opacity="1" />
+              <stop offset="75%" stop-color="#e9d5ff" stop-opacity="0.9" />
+              <stop offset="100%" stop-color="#fbbf24" stop-opacity="0.8" />
+            </linearGradient>
+            <filter id="manifestoGlow" x="-30%" y="-30%" width="160%" height="160%">
+              <feGaussianBlur in="SourceGraphic" stdDeviation="8" result="blur1" />
+              <feGaussianBlur in="SourceGraphic" stdDeviation="18" result="blur2" />
+              <feMerge>
+                <feMergeNode in="blur2" />
+                <feMergeNode in="blur1" />
+                <feMergeNode in="SourceGraphic" />
+              </feMerge>
+            </filter>
+          </defs>
+
+          <!-- Diffuse Glowing Aura Path -->
+          <path
+            class="manifesto-draw-path-aura"
+            d="M 1850 60 C 1450 140, 950 50, 480 180 C 120 280, 20 480, 140 640 C 300 820, 820 760, 1220 660 C 1600 560, 1880 720, 1750 900 C 1620 1040, 1180 1000, 960 1080"
+            fill="none"
+            stroke="url(#manifestoStrokeGrad)"
+            stroke-width="18"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            filter="url(#manifestoGlow)"
+            opacity="0.4"
+          />
+
+          <!-- Core Precision Vector Stroke -->
+          <path
+            class="manifesto-draw-path"
+            d="M 1850 60 C 1450 140, 950 50, 480 180 C 120 280, 20 480, 140 640 C 300 820, 820 760, 1220 660 C 1600 560, 1880 720, 1750 900 C 1620 1040, 1180 1000, 960 1080"
+            fill="none"
+            stroke="url(#manifestoStrokeGrad)"
+            stroke-width="4"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          />
+
+          <!-- Luminous Leading Edge Light Particle / Orb -->
+          <g class="manifesto-path-head" style="opacity: 0;">
+            <circle cx="0" cy="0" r="14" fill="#c084fc" opacity="0.4" filter="url(#manifestoGlow)" />
+            <circle cx="0" cy="0" r="6" fill="#e9d5ff" opacity="0.9" />
+            <circle cx="0" cy="0" r="2.5" fill="#ffffff" />
+          </g>
+        </svg>
+      </div>
+
       <div class="max-w-7xl mx-auto w-full relative z-10">
         <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-16 items-center">
           
@@ -868,43 +929,66 @@ app.get('/', (req, res) => {
         <!-- Horizontal Slides Track (GSAP translates x smoothly on desktop, carrying the SVG line along with it) -->
         <div class="horizontal-slides-wrapper flex h-full flex-nowrap will-change-transform relative overflow-visible" id="horizontal-track">
           
-          <!-- SINGLE CONTINUOUS LUSION-STYLE PURPLE RIBBON PATH -->
-          <div class="unified-line-container absolute pointer-events-none z-0" aria-hidden="true">
+          <!-- Interactive Scroll-Triggered Horizontal SVG Drawing Line Layer (Horizontal Atelier Expedition) -->
+          <div class="horizontal-line-container absolute inset-0 w-full h-full pointer-events-none z-0 overflow-visible" aria-hidden="true">
             <svg
-              class="unified-svg-line w-full h-full overflow-visible"
-              viewBox="0 0 7680 2160"
+              class="horizontal-svg-line w-full h-full overflow-visible"
+              viewBox="0 0 7680 1080"
               fill="none"
               preserveAspectRatio="none"
               xmlns="http://www.w3.org/2000/svg"
             >
               <defs>
-                <linearGradient id="purpleRibbonGrad" x1="0%" y1="0%" x2="100%" y2="35%">
-                  <stop offset="0%" stop-color="#581c87" />
-                  <stop offset="5%" stop-color="#7c3aed" />
-                  <stop offset="12%" stop-color="#a855f7" />
-                  <stop offset="20%" stop-color="#ddd6fe" />
-                  <stop offset="26%" stop-color="#6d28d9" />
-                  <stop offset="35%" stop-color="#9333ea" />
-                  <stop offset="45%" stop-color="#c084fc" />
-                  <stop offset="52%" stop-color="#e9d5ff" />
-                  <stop offset="60%" stop-color="#7c3aed" />
-                  <stop offset="72%" stop-color="#a855f7" />
-                  <stop offset="82%" stop-color="#ddd6fe" />
-                  <stop offset="92%" stop-color="#9333ea" />
-                  <stop offset="100%" stop-color="#ede9fe" />
+                <linearGradient id="horizontalStrokeGrad" x1="0%" y1="0%" x2="100%" y2="50%">
+                  <stop offset="0%" stop-color="#fbbf24" stop-opacity="0.8" />
+                  <stop offset="15%" stop-color="#a855f7" stop-opacity="0.9" />
+                  <stop offset="35%" stop-color="#c084fc" stop-opacity="1" />
+                  <stop offset="55%" stop-color="#7c3aed" stop-opacity="0.9" />
+                  <stop offset="75%" stop-color="#e9d5ff" stop-opacity="1" />
+                  <stop offset="90%" stop-color="#a855f7" stop-opacity="0.9" />
+                  <stop offset="100%" stop-color="#fbbf24" stop-opacity="0.85" />
                 </linearGradient>
+                <filter id="horizontalGlow" x="-20%" y="-20%" width="140%" height="140%">
+                  <feGaussianBlur in="SourceGraphic" stdDeviation="10" result="blur1" />
+                  <feGaussianBlur in="SourceGraphic" stdDeviation="22" result="blur2" />
+                  <feMerge>
+                    <feMergeNode in="blur2" />
+                    <feMergeNode in="blur1" />
+                    <feMergeNode in="SourceGraphic" />
+                  </feMerge>
+                </filter>
               </defs>
 
-              <!-- Outlined Uniform-Width Purple Ribbon (Curvy, organic, randomized flow across chapters, hidden under images, under text) -->
+              <!-- Diffuse Glowing Aura Path -->
               <path
-                class="unified-draw-path"
-                d="M 1920 440 C 1720 450, 1500 460, 1280 390 C 1060 320, 780 260, 480 290 C 280 310, 90 360, 30 430 C -35 500, 15 620, 95 700 C 185 780, 440 850, 740 870 C 1040 890, 1310 970, 1440 1080 C 1520 1160, 1490 1280, 1380 1360 C 1240 1460, 920 1520, 580 1540 C 300 1560, 60 1630, 20 1760 C -20 1890, 60 2030, 220 2090 C 400 2150, 720 2130, 1040 2020 C 1320 1920, 1540 1740, 1720 1560 C 1920 1360, 2180 1200, 2480 1220 C 2780 1240, 3020 1420, 3240 1580 C 3440 1720, 3620 1860, 3820 1920 C 4040 1980, 4260 2100, 4520 2080 C 4780 2060, 5020 1880, 5200 1680 C 5380 1480, 5580 1320, 5800 1340 C 6040 1360, 6260 1540, 6500 1660 C 6740 1780, 6980 1820, 7220 1720 C 7420 1620, 7580 1480, 7680 1420"
+                class="horizontal-draw-path-aura"
+                d="M 0 160 C 420 220, 850 420, 1280 340 C 1680 260, 1850 560, 2040 520 C 2380 460, 2750 220, 3180 310 C 3580 390, 3780 720, 3980 670 C 4320 610, 4680 320, 5080 410 C 5480 490, 5680 760, 5880 710 C 6220 630, 6600 360, 7000 440 C 7380 510, 7550 780, 7680 740"
                 fill="none"
-                stroke="url(#purpleRibbonGrad)"
-                stroke-width="36"
+                stroke="url(#horizontalStrokeGrad)"
+                stroke-width="20"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                filter="url(#horizontalGlow)"
+                opacity="0.38"
+              />
+
+              <!-- Core Precision Vector Ribbon -->
+              <path
+                class="horizontal-draw-path"
+                d="M 0 160 C 420 220, 850 420, 1280 340 C 1680 260, 1850 560, 2040 520 C 2380 460, 2750 220, 3180 310 C 3580 390, 3780 720, 3980 670 C 4320 610, 4680 320, 5080 410 C 5480 490, 5680 760, 5880 710 C 6220 630, 6600 360, 7000 440 C 7380 510, 7550 780, 7680 740"
+                fill="none"
+                stroke="url(#horizontalStrokeGrad)"
+                stroke-width="4.5"
                 stroke-linecap="round"
                 stroke-linejoin="round"
               />
+
+              <!-- Luminous Leading Edge Light Particle / Orb -->
+              <g class="horizontal-path-head" style="opacity: 0;">
+                <circle cx="0" cy="0" r="16" fill="#c084fc" opacity="0.4" filter="url(#horizontalGlow)" />
+                <circle cx="0" cy="0" r="7" fill="#fef3c7" opacity="0.9" />
+                <circle cx="0" cy="0" r="3" fill="#ffffff" />
+              </g>
             </svg>
           </div>
 

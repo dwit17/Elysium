@@ -68,45 +68,7 @@
   }
 
   /**
-   * LUSION-STYLE PURPLE RIBBON SVG SCROLL-DRIVEN MOTION ENGINE (SECTIONS 1 & 2)
-   * Real-time interactive scroll-scrubbed drawing with zero pre-loading.
-   * Path draws down between text/portrait in Section 1, then glides horizontally through chapters in Section 2.
-   */
-  let ribbonTotalLength = 0;
-  let ribbonS1Length = 0;
-
-  function measureRibbonMasterPath() {
-    const drawPath = document.querySelector('.unified-draw-path');
-    if (!drawPath) return;
-
-    try {
-      ribbonTotalLength = drawPath.getTotalLength();
-      if (ribbonTotalLength > 0) {
-        drawPath.style.strokeDasharray = `${ribbonTotalLength}`;
-        drawPath.style.strokeDashoffset = `${ribbonTotalLength}`;
-
-        // Binary search for exact boundary length at Section 1 exit (Y = 1080)
-        let low = 0;
-        let high = ribbonTotalLength;
-        for (let i = 0; i < 30; i++) {
-          const mid = (low + high) / 2;
-          const pt = drawPath.getPointAtLength(mid);
-          if (pt.y < 1080) {
-            low = mid;
-          } else {
-            high = mid;
-          }
-        }
-        ribbonS1Length = (low + high) / 2;
-        console.log(`[Elysium GSAP] Ribbon Path: Total = ${ribbonTotalLength.toFixed(1)}px, Section 1 = ${ribbonS1Length.toFixed(1)}px`);
-      }
-    } catch (err) {
-      console.warn('[Elysium GSAP] Could not measure ribbon path:', err);
-    }
-  }
-
-  /**
-   * 1. SECTION 1 — THE ATELIER MANIFESTO (REAL-TIME SCROLL-DRIVEN RIBBON DRAWING)
+   * 1. SECTION 1 — THE ATELIER MANIFESTO (REAL-TIME SCROLL-DRIVEN SVG RIBBON DRAWING)
    */
   function initManifestoSection() {
     const section = document.querySelector('.section-manifesto');
@@ -122,7 +84,26 @@
     const divider = section.querySelector('.manifesto-divider');
     const tiltCard = document.getElementById('manifesto-tilt-card');
     const parallaxLayers = section.querySelectorAll('[data-scroll-speed]');
-    const drawPath = document.querySelector('.unified-draw-path');
+    
+    const drawPath = section.querySelector('.manifesto-draw-path');
+    const auraPath = section.querySelector('.manifesto-draw-path-aura');
+    const pathHead = section.querySelector('.manifesto-path-head');
+
+    let s1PathLen = 0;
+    function measureS1Path() {
+      if (!drawPath) return;
+      try {
+        s1PathLen = drawPath.getTotalLength() || 2400;
+        if (s1PathLen > 0) {
+          drawPath.style.strokeDasharray = `${s1PathLen}`;
+          if (auraPath) auraPath.style.strokeDasharray = `${s1PathLen}`;
+        }
+      } catch (err) {
+        s1PathLen = 2400;
+      }
+    }
+
+    measureS1Path();
 
     // Handle Reduced Motion
     if (prefersReducedMotion) {
@@ -135,23 +116,40 @@
       if (eyebrow) gsap.set(eyebrow, { opacity: 1, y: 0 });
       if (divider) gsap.set(divider, { scaleX: 1 });
       if (drawPath) drawPath.style.strokeDashoffset = '0';
+      if (auraPath) auraPath.style.strokeDashoffset = '0';
       return;
     }
 
-    measureRibbonMasterPath();
+    // Initialize strokeDashoffset to hidden
+    if (drawPath && s1PathLen > 0) {
+      drawPath.style.strokeDashoffset = `${s1PathLen}`;
+      if (auraPath) auraPath.style.strokeDashoffset = `${s1PathLen}`;
+    }
 
-    // Section 1: Real-time scroll-scrubbed drawing of the ribbon
-    if (drawPath && ribbonTotalLength > 0 && ribbonS1Length > 0) {
+    // Real-time scroll-scrubbed drawing of the Manifesto ribbon
+    if (drawPath && s1PathLen > 0) {
       ScrollTrigger.create({
         trigger: section,
-        start: 'top 80%',
-        end: 'bottom 10%',
+        start: 'top 85%',
+        end: 'bottom 15%',
         scrub: 1.2,
+        invalidateOnRefresh: true,
         onUpdate: (self) => {
           const p = self.progress;
-          const currentDrawn = p * ribbonS1Length;
-          const currentOffset = ribbonTotalLength - currentDrawn;
+          const currentOffset = s1PathLen * (1 - p);
           drawPath.style.strokeDashoffset = `${currentOffset}`;
+          if (auraPath) auraPath.style.strokeDashoffset = `${currentOffset}`;
+
+          if (pathHead && s1PathLen > 0) {
+            try {
+              const pt = drawPath.getPointAtLength(p * s1PathLen);
+              gsap.set(pathHead, {
+                x: pt.x,
+                y: pt.y,
+                opacity: p > 0.02 && p < 0.98 ? 1 : 0,
+              });
+            } catch (e) {}
+          }
         },
       });
     }
@@ -279,26 +277,50 @@
     const panels = section.querySelectorAll('.horizontal-slide-panel');
     const progressFill = document.getElementById('horizontal-progress-fill');
     const chapterIndicator = document.getElementById('horizontal-active-indicator');
-    const drawPath = document.querySelector('.unified-draw-path');
+    
+    const drawPath = section.querySelector('.horizontal-draw-path');
+    const auraPath = section.querySelector('.horizontal-draw-path-aura');
+    const pathHead = section.querySelector('.horizontal-path-head');
 
     if (!track || panels.length === 0) return;
+
+    let s2PathLen = 0;
+    function measureS2Path() {
+      if (!drawPath) return;
+      try {
+        s2PathLen = drawPath.getTotalLength() || 8000;
+        if (s2PathLen > 0) {
+          drawPath.style.strokeDasharray = `${s2PathLen}`;
+          if (auraPath) auraPath.style.strokeDasharray = `${s2PathLen}`;
+        }
+      } catch (err) {
+        s2PathLen = 8000;
+      }
+    }
+
+    measureS2Path();
 
     // Handle Reduced Motion
     if (prefersReducedMotion) {
       track.style.transform = 'none';
       if (progressFill) progressFill.style.width = '100%';
       if (drawPath) drawPath.style.strokeDashoffset = '0';
+      if (auraPath) auraPath.style.strokeDashoffset = '0';
       return;
     }
 
     const totalPanels = panels.length;
-    measureRibbonMasterPath();
+
+    if (drawPath && s2PathLen > 0) {
+      drawPath.style.strokeDashoffset = `${s2PathLen}`;
+      if (auraPath) auraPath.style.strokeDashoffset = `${s2PathLen}`;
+    }
 
     if (isCompactScreen()) {
       track.style.transform = 'none';
       if (progressFill) progressFill.style.width = '100%';
 
-      if (drawPath && ribbonTotalLength > 0) {
+      if (drawPath && s2PathLen > 0) {
         ScrollTrigger.create({
           trigger: section,
           start: 'top 90%',
@@ -306,8 +328,9 @@
           scrub: 1.2,
           onUpdate: (self) => {
             const p = self.progress;
-            const currentOffset = ribbonTotalLength * (1 - p);
+            const currentOffset = s2PathLen * (1 - p);
             drawPath.style.strokeDashoffset = `${currentOffset}`;
+            if (auraPath) auraPath.style.strokeDashoffset = `${currentOffset}`;
           },
         });
       }
@@ -342,12 +365,22 @@
             chapterIndicator.innerText = `CHAPTER 0${currentIdx} OF 0${totalPanels}`;
           }
 
-          // Real-time horizontal ribbon drawing seamlessly continuing from Section 1 exit
-          if (drawPath && ribbonTotalLength > 0 && ribbonS1Length > 0) {
-            const s2Length = ribbonTotalLength - ribbonS1Length;
-            const currentDrawn = ribbonS1Length + p * s2Length;
-            const currentOffset = ribbonTotalLength - currentDrawn;
+          // Real-time horizontal ribbon drawing synchronized with panel scrub
+          if (drawPath && s2PathLen > 0) {
+            const currentOffset = s2PathLen * (1 - p);
             drawPath.style.strokeDashoffset = `${currentOffset}`;
+            if (auraPath) auraPath.style.strokeDashoffset = `${currentOffset}`;
+
+            if (pathHead && s2PathLen > 0) {
+              try {
+                const pt = drawPath.getPointAtLength(p * s2PathLen);
+                gsap.set(pathHead, {
+                  x: pt.x,
+                  y: pt.y,
+                  opacity: p > 0.01 && p < 0.99 ? 1 : 0,
+                });
+              } catch (e) {}
+            }
           }
         },
       },
@@ -356,7 +389,7 @@
     window.addEventListener(
       'resize',
       () => {
-        measureRibbonMasterPath();
+        measureS2Path();
       },
       { passive: true }
     );
