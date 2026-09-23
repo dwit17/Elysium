@@ -37,12 +37,12 @@
     if (typeof Lenis !== 'undefined') {
       try {
         lenisInstance = new Lenis({
-          duration: 1.15,
+          duration: 1.35,
           easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
           orientation: 'vertical',
           smoothWheel: true,
           smoothTouch: false, // Keep native touch physics on mobile for responsive gestures
-          wheelMultiplier: 1.0,
+          wheelMultiplier: 0.95,
           touchMultiplier: 1.0,
         });
 
@@ -68,8 +68,45 @@
   }
 
   /**
-   * 1. SECTION 1 — THE ATELIER MANIFESTO (PINNED SCRUB LOCK-IN)
-   * Section locks in at top of viewport, scrubs through narrative reveal, then smoothly transitions to Section 2.
+   * LUSION-STYLE PURPLE RIBBON SVG SCROLL-DRIVEN MOTION ENGINE (SECTIONS 1 & 2)
+   * Real-time interactive scroll-scrubbed drawing with zero pre-loading.
+   * Path draws down between text/portrait in Section 1, then glides horizontally through chapters in Section 2.
+   */
+  let ribbonTotalLength = 0;
+  let ribbonS1Length = 0;
+
+  function measureRibbonMasterPath() {
+    const drawPath = document.querySelector('.unified-draw-path');
+    if (!drawPath) return;
+
+    try {
+      ribbonTotalLength = drawPath.getTotalLength();
+      if (ribbonTotalLength > 0) {
+        drawPath.style.strokeDasharray = `${ribbonTotalLength}`;
+        drawPath.style.strokeDashoffset = `${ribbonTotalLength}`;
+
+        // Binary search for exact boundary length at Section 1 exit (Y = 1080)
+        let low = 0;
+        let high = ribbonTotalLength;
+        for (let i = 0; i < 30; i++) {
+          const mid = (low + high) / 2;
+          const pt = drawPath.getPointAtLength(mid);
+          if (pt.y < 1080) {
+            low = mid;
+          } else {
+            high = mid;
+          }
+        }
+        ribbonS1Length = (low + high) / 2;
+        console.log(`[Elysium GSAP] Ribbon Path: Total = ${ribbonTotalLength.toFixed(1)}px, Section 1 = ${ribbonS1Length.toFixed(1)}px`);
+      }
+    } catch (err) {
+      console.warn('[Elysium GSAP] Could not measure ribbon path:', err);
+    }
+  }
+
+  /**
+   * 1. SECTION 1 — THE ATELIER MANIFESTO (REAL-TIME SCROLL-DRIVEN RIBBON DRAWING)
    */
   function initManifestoSection() {
     const section = document.querySelector('.section-manifesto');
@@ -84,8 +121,61 @@
     const eyebrow = section.querySelector('.manifesto-eyebrow');
     const divider = section.querySelector('.manifesto-divider');
     const tiltCard = document.getElementById('manifesto-tilt-card');
+    const parallaxLayers = section.querySelectorAll('[data-scroll-speed]');
+    const drawPath = document.querySelector('.unified-draw-path');
 
-    if (prefersReducedMotion || isCompactScreen()) {
+    // Handle Reduced Motion
+    if (prefersReducedMotion) {
+      if (mask) mask.style.clipPath = 'inset(0 0 0 0)';
+      if (words.length) gsap.set(words, { opacity: 1, y: 0 });
+      if (para1) gsap.set(para1, { opacity: 1, y: 0 });
+      if (para2) gsap.set(para2, { opacity: 1, y: 0 });
+      if (signature) gsap.set(signature, { opacity: 1, y: 0 });
+      if (links.length) gsap.set(links, { opacity: 1, y: 0 });
+      if (eyebrow) gsap.set(eyebrow, { opacity: 1, y: 0 });
+      if (divider) gsap.set(divider, { scaleX: 1 });
+      if (drawPath) drawPath.style.strokeDashoffset = '0';
+      return;
+    }
+
+    measureRibbonMasterPath();
+
+    // Section 1: Real-time scroll-scrubbed drawing of the ribbon
+    if (drawPath && ribbonTotalLength > 0 && ribbonS1Length > 0) {
+      ScrollTrigger.create({
+        trigger: section,
+        start: 'top 80%',
+        end: 'bottom 10%',
+        scrub: 1.2,
+        onUpdate: (self) => {
+          const p = self.progress;
+          const currentDrawn = p * ribbonS1Length;
+          const currentOffset = ribbonTotalLength - currentDrawn;
+          drawPath.style.strokeDashoffset = `${currentOffset}`;
+        },
+      });
+    }
+
+    // Multi-Layer Parallax Floating Depth (Lusion.co Inspired)
+    if (parallaxLayers.length > 0 && !isCompactScreen()) {
+      parallaxLayers.forEach((layer) => {
+        const speed = parseFloat(layer.getAttribute('data-scroll-speed')) || 0;
+        if (speed !== 0) {
+          gsap.to(layer, {
+            yPercent: speed * 80,
+            ease: 'none',
+            scrollTrigger: {
+              trigger: section,
+              start: 'top bottom',
+              end: 'bottom top',
+              scrub: 1.2,
+            },
+          });
+        }
+      });
+    }
+
+    if (isCompactScreen()) {
       if (mask) mask.style.clipPath = 'inset(0 0 0 0)';
       if (words.length) gsap.set(words, { opacity: 1, y: 0 });
       if (para1) gsap.set(para1, { opacity: 1, y: 0 });
@@ -174,12 +264,12 @@
       });
     }
 
-    console.log('[Elysium Motion] Section 1 (Manifesto) initialized with natural height entrance.');
+    console.log('[Elysium Motion] Section 1 (Manifesto) initialized with real-time scroll-scrubbed ribbon drawing.');
   }
 
   /**
-   * 2. SECTION 2 — THE PINNED HORIZONTAL ATELIER EXPEDITION (PINNED SCRUB LOCK-IN)
-   * Locks in at top of viewport, scrubs through all 4 chapters, then smoothly hands over to Section 3.
+   * 2. SECTION 2 — THE PINNED HORIZONTAL ATELIER EXPEDITION (HORIZONTAL SCROLL-SCRUBBED DRAWING)
+   * Locks in at top of viewport, scrubs through all 4 chapters while the ribbon glides horizontally in lockstep.
    */
   function initHorizontalGallerySection() {
     const section = document.getElementById('horizontal-suite-container');
@@ -189,46 +279,89 @@
     const panels = section.querySelectorAll('.horizontal-slide-panel');
     const progressFill = document.getElementById('horizontal-progress-fill');
     const chapterIndicator = document.getElementById('horizontal-active-indicator');
+    const drawPath = document.querySelector('.unified-draw-path');
 
     if (!track || panels.length === 0) return;
 
-    if (isCompactScreen() || prefersReducedMotion) {
+    // Handle Reduced Motion
+    if (prefersReducedMotion) {
       track.style.transform = 'none';
       if (progressFill) progressFill.style.width = '100%';
+      if (drawPath) drawPath.style.strokeDashoffset = '0';
       return;
     }
 
     const totalPanels = panels.length;
+    measureRibbonMasterPath();
 
-    // Horizontal Scrub Master ScrollTrigger
+    if (isCompactScreen()) {
+      track.style.transform = 'none';
+      if (progressFill) progressFill.style.width = '100%';
+
+      if (drawPath && ribbonTotalLength > 0) {
+        ScrollTrigger.create({
+          trigger: section,
+          start: 'top 90%',
+          end: 'bottom 20%',
+          scrub: 1.2,
+          onUpdate: (self) => {
+            const p = self.progress;
+            const currentOffset = ribbonTotalLength * (1 - p);
+            drawPath.style.strokeDashoffset = `${currentOffset}`;
+          },
+        });
+      }
+      return;
+    }
+
+    // Desktop Horizontal Scrub Master ScrollTrigger: Slides chapters & scrubs ribbon drawing across all 4 chapters
     gsap.to(track, {
       x: () => -(track.scrollWidth - window.innerWidth),
       ease: 'none',
       scrollTrigger: {
         trigger: section,
         start: 'top top',
-        end: () => `+=${(totalPanels - 1) * window.innerWidth * 1.05}`,
+        end: () => `+=${(totalPanels - 1) * window.innerWidth * 1.1}`,
         pin: true,
-        scrub: 0.8,
+        scrub: 1.4,
         anticipatePin: 1,
         invalidateOnRefresh: true,
         onUpdate: (self) => {
+          const p = self.progress;
+
+          // Update chapter indicator
           if (progressFill) {
-            const pct = Math.max(25, self.progress * 100);
+            const pct = Math.max(25, p * 100);
             progressFill.style.width = `${pct}%`;
           }
           if (chapterIndicator) {
             const currentIdx = Math.min(
-              Math.floor(self.progress * totalPanels) + 1,
+              Math.floor(p * totalPanels) + 1,
               totalPanels
             );
             chapterIndicator.innerText = `CHAPTER 0${currentIdx} OF 0${totalPanels}`;
+          }
+
+          // Real-time horizontal ribbon drawing seamlessly continuing from Section 1 exit
+          if (drawPath && ribbonTotalLength > 0 && ribbonS1Length > 0) {
+            const s2Length = ribbonTotalLength - ribbonS1Length;
+            const currentDrawn = ribbonS1Length + p * s2Length;
+            const currentOffset = ribbonTotalLength - currentDrawn;
+            drawPath.style.strokeDashoffset = `${currentOffset}`;
           }
         },
       },
     });
 
-    console.log(`[Elysium Motion] Section 2 (Horizontal Expedition) initialized with ${totalPanels} panels.`);
+    window.addEventListener(
+      'resize',
+      () => {
+        measureRibbonMasterPath();
+      },
+      { passive: true }
+    );
+
+    console.log(`[Elysium Motion] Section 2 (Horizontal Expedition) initialized with ${totalPanels} panels & synced real-time ribbon scrub.`);
   }
 
   /**

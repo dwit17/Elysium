@@ -77,7 +77,7 @@ html.lenis body {
 }
 
 body {
-  background-color: #da1f1f;
+  background-color: #000000;
   color: #ffffff;
   font-family: var(--font-content);
   overflow-x: hidden;
@@ -139,6 +139,7 @@ th,
   height: 100dvh;
   background-color: #000000;
   overflow: hidden;
+  z-index: 30;
 }
 
 .hero-sticky-viewport {
@@ -2669,4 +2670,68 @@ img {
   transform: translateY(-3px);
   border-color: rgba(255, 255, 255, 0.45);
   box-shadow: 0 24px 48px -12px rgba(0, 0, 0, 0.95), 0 0 24px rgba(255, 255, 255, 0.06);
+}
+
+/* ==========================================================================
+   LUSION-STYLE PURPLE RIBBON VECTOR PATH — CLEAN OUTLINED STROKE
+   ========================================================================== */
+
+#manifesto-expedition-super-wrapper,
+.section-manifesto,
+.section-horizontal-gallery,
+#horizontal-suite-container,
+.horizontal-pinned-track,
+#horizontal-track {
+  overflow: visible !important;
+}
+
+.unified-line-container {
+  position: absolute;
+  top: -100vh;
+  left: 0;
+  width: 400vw;
+  height: 200vh;
+  pointer-events: none;
+  z-index: 0;
+  overflow: visible !important;
+  opacity: 1;
+}
+
+.unified-svg-line {
+  display: block;
+  width: 100%;
+  height: 100%;
+  overflow: visible !important;
+  transform: translateZ(0);
+}
+
+.unified-draw-path {
+  fill: none;
+  stroke: url(#purpleRibbonGrad);
+  stroke-width: 36px;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  will-change: stroke-dashoffset;
+  vector-effect: non-scaling-stroke;
+  filter: drop-shadow(0 10px 30px rgba(124, 58, 237, 0.28));
+}
+
+.manifesto-parallax-content,
+.manifesto-parallax-card,
+.manifesto-parallax-bg {
+  will-change: transform;
+}
+
+@media (max-width: 1023px) {
+  .unified-line-container {
+    top: 0;
+    width: 100%;
+    height: 100%;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .unified-draw-path {
+    stroke-dashoffset: 0 !important;
+  }
 }

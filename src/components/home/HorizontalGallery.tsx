@@ -63,8 +63,65 @@ export const HorizontalGallery: React.FC = () => {
 
   return (
     <section className="section-horizontal-gallery relative bg-black border-t border-stone-800 overflow-hidden" id="horizontal-suite-container">
+      {/* Interactive Scroll-Triggered SVG Drawing Line Layer (Vavdi Atelier, Rajkot) */}
+      <div className="horizontal-line-container absolute inset-0 w-full h-full pointer-events-none z-0 overflow-hidden" aria-hidden="true">
+        <svg
+          className="horizontal-svg-line w-full h-full"
+          viewBox="0 0 2135 1318"
+          fill="none"
+          preserveAspectRatio="xMidYMid meet"
+          xmlns="http://www.w3.org/2000/svg"
+        >
+          <defs>
+            <linearGradient id="horizontalStrokeGradReact" x1="0%" y1="0%" x2="100%" y2="100%">
+              <stop offset="0%" stopColor="#f59e0b" stopOpacity="0.25" />
+              <stop offset="25%" stopColor="#fbbf24" stopOpacity="0.9" />
+              <stop offset="60%" stopColor="#f59e0b" stopOpacity="1" />
+              <stop offset="85%" stopColor="#d97706" stopOpacity="0.85" />
+              <stop offset="100%" stopColor="#fef3c7" stopOpacity="0.4" />
+            </linearGradient>
+
+            <filter id="horizontalGlowReact" x="-20%" y="-20%" width="140%" height="140%">
+              <feGaussianBlur in="SourceGraphic" stdDeviation="6" result="blur1" />
+              <feGaussianBlur in="SourceGraphic" stdDeviation="16" result="blur2" />
+              <feMerge>
+                <feMergeNode in="blur2" />
+                <feMergeNode in="blur1" />
+                <feMergeNode in="SourceGraphic" />
+              </feMerge>
+            </filter>
+          </defs>
+
+          <path
+            className="horizontal-draw-path-aura"
+            d="M8.81226 17.9429C8.81226 17.9429 1005.34 507.443 879.812 836.443C828.301 971.455 468.264 1202.77 329.312 1242.44C162.887 1289.96 -4.06923 923.35 226.812 788.443C481.813 639.443 645.734 1197.94 994.812 1197.94C1117.31 1197.94 1227.81 1102.44 1346.31 1015.94C1490.53 910.667 1600.81 1108.44 1658.31 1242.44C1736.5 1424.65 2100.67 1082.64 2114.31 1280.44"
+            stroke="url(#horizontalStrokeGradReact)"
+            strokeWidth="14"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            filter="url(#horizontalGlowReact)"
+            opacity="0.32"
+          />
+
+          <path
+            className="horizontal-draw-path"
+            d="M8.81226 17.9429C8.81226 17.9429 1005.34 507.443 879.812 836.443C828.301 971.455 468.264 1202.77 329.312 1242.44C162.887 1289.96 -4.06923 923.35 226.812 788.443C481.813 639.443 645.734 1197.94 994.812 1197.94C1117.31 1197.94 1227.81 1102.44 1346.31 1015.94C1490.53 910.667 1600.81 1108.44 1658.31 1242.44C1736.5 1424.65 2100.67 1082.64 2114.31 1280.44"
+            stroke="url(#horizontalStrokeGradReact)"
+            strokeWidth="3"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+          />
+
+          <g className="horizontal-path-head" style={{ opacity: 0 }}>
+            <circle cx="0" cy="0" r="16" fill="#fbbf24" opacity="0.35" filter="url(#horizontalGlowReact)" />
+            <circle cx="0" cy="0" r="7" fill="#fef3c7" opacity="0.8" />
+            <circle cx="0" cy="0" r="3" fill="#ffffff" />
+          </g>
+        </svg>
+      </div>
+
       {/* Pinned Viewport Container */}
-      <div className="horizontal-pinned-track w-full min-h-screen lg:h-screen flex flex-col justify-center overflow-hidden">
+      <div className="horizontal-pinned-track w-full min-h-screen lg:h-screen flex flex-col justify-center overflow-hidden relative z-10">
         {/* Horizontal Slides Track */}
         <div className="horizontal-slides-wrapper flex h-full flex-nowrap will-change-transform" id="horizontal-track">
           {horizontalChapters.map((ch, idx) => (

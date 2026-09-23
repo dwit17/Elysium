@@ -722,95 +722,8 @@ app.get('/', (req, res) => {
     </div>
   </div>`;
 
-  // SECTION 1: THE ATELIER MANIFESTO & 3D INTERACTIVE TILT SCULPTURE
-  // Calibrated for natural height & breathing room (Preserving 100% of copy, signature, and links)
+  // SECTION 1 & 2: COMBINED ATELIER MANIFESTO & HORIZONTAL EXPEDITION (SINGLE CONTINUOUS SVG PATH)
   const manifestoHeadingWords = "Every Piece Begins With a Name.".split(" ");
-  const sectionManifesto = `
-  <section class="section-manifesto relative bg-[#030303] border-t border-stone-800 text-white z-10 overflow-hidden py-20 sm:py-24 lg:py-28 px-6 md:px-12 lg:px-20">
-    
-    <!-- Ambient Radial Glow Accent -->
-    <div class="absolute -top-40 -left-40 w-96 h-96 bg-amber-500/10 rounded-full blur-3xl pointer-events-none"></div>
-
-    <div class="max-w-7xl mx-auto w-full">
-      <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-16 items-center">
-        
-        <!-- Left 7 Cols: Split-Text Manifesto -->
-        <div class="lg:col-span-7 space-y-5 sm:space-y-6 relative">
-          
-          <div class="flex items-center justify-between">
-            <span class="manifesto-eyebrow text-[10px] font-mono tracking-[0.45em] uppercase text-amber-500 block">
-              THE ATELIER PHILOSOPHY • RAJKOT
-            </span>
-          </div>
-
-          <h2 class="manifesto-heading text-2xl sm:text-4xl lg:text-5xl font-light tracking-wide text-white uppercase font-serif leading-tight">
-            ${manifestoHeadingWords.map(w => `<span class="manifesto-word inline-block">${w}&nbsp;</span>`).join('')}
-          </h2>
-
-          <div class="manifesto-divider w-16 h-px bg-gradient-to-r from-amber-500 via-stone-600 to-transparent"></div>
-
-          <div class="space-y-3 sm:space-y-4 text-xs sm:text-sm text-stone-300 font-light leading-relaxed max-w-xl">
-            <p class="manifesto-para manifesto-para-1">
-              I began working with raw stone and untamed clay because I could no longer endure surfaces designed to conceal their origin. Synthetic sealants, chemical lacquers, industrial veneers—they silence the medium. At Elysium, we listen first. We let the stone fissure where it must, let the unglazed clay breathe, and let the white oak reveal decades of patient growth rings.
-            </p>
-            <p class="manifesto-para manifesto-para-2">
-              Rajkot is where this quiet reverence lives. In our 4,500 sq. ft. Vavdi sanctuary, generational stone-carvers and master sculptors know the temper of a raw block before the chisel ever strikes.
-            </p>
-          </div>
-
-          <!-- Signature Line with Coordinates -->
-          <div class="manifesto-signature pt-1 border-l-2 border-amber-500/50 pl-4 space-y-0.5">
-            <span class="text-xs sm:text-sm text-stone-200 font-light italic block leading-snug">— Lead Artisan &amp; Founder, Elysium Atelier</span>
-            <div class="flex items-center gap-3 text-[9px] font-mono tracking-widest text-stone-500 uppercase">
-              <span>Vavdi, Rajkot</span>
-              <span>•</span>
-              <span class="text-amber-400/80">22.2587° N, 70.8022° E</span>
-            </div>
-          </div>
-
-          <!-- Links -->
-          <div class="manifesto-links pt-1 flex flex-wrap items-center gap-4 text-[10.5px] font-medium uppercase tracking-[0.25em]">
-            <a href="/our-story" class="manifesto-link btn-slide-white px-4 py-2 text-[10px] font-semibold tracking-[0.2em] shadow-md">
-              <span>Read Our Full Story</span>
-              <span class="btn-arrow ml-2">&rarr;</span>
-            </a>
-            <a href="/philosophy" class="manifesto-link btn-slide-subtle px-4 py-2 text-[10px] font-semibold tracking-[0.2em]">
-              <span>Read Philosophy</span>
-              <span class="btn-arrow ml-2">&rarr;</span>
-            </a>
-          </div>
-        </div>
-
-        <!-- Right 5 Cols: Interactive 3D Perspective Tilt Card with Specular Glare -->
-        <div class="lg:col-span-5 relative flex justify-center">
-          <div class="manifesto-tilt-container relative w-full max-w-sm perspective-[1200px]" id="manifesto-tilt-card">
-            <div class="manifesto-portrait-wrap relative overflow-hidden bg-stone-950 shadow-2xl transition-transform duration-200 ease-out will-change-transform rounded-sm">
-              
-              <div class="manifesto-portrait-clip aspect-[4/5] sm:aspect-[3/4] relative overflow-hidden max-h-[50vh] img-skeleton-wrap">
-                <div class="img-skeleton-placeholder"></div>
-                <img
-                  src="/images/maker_portrait.jpg"
-                  alt="Lead Artisan at work in the Elysium Rajkot Atelier"
-                  class="manifesto-portrait-img image-blur-up w-full h-full object-cover filter contrast-105 brightness-95"
-                  style="object-position: center 25%;"
-                  loading="lazy"
-                />
-                <div class="absolute inset-0 bg-gradient-to-t from-black/85 via-transparent to-transparent pointer-events-none z-10"></div>
-                <!-- Dynamic Mouse Glare Element -->
-                <div class="tilt-glare absolute inset-0 pointer-events-none opacity-0 transition-opacity duration-300 z-20"></div>
-                <!-- Initial clip-path overlay mask -->
-                <div class="manifesto-portrait-mask absolute inset-0 bg-[#030303] z-10" style="clip-path: inset(0 100% 0 0);"></div>
-              </div>
-
-            </div>
-          </div>
-        </div>
-
-      </div>
-    </div>
-  </section>`;
-
-  // SECTION 2: THE PINNED HORIZONTAL ATELIER EXPEDITION (100dvh Pinned Viewport on Desktop, Natural on Mobile)
   const horizontalChapters = [
     {
       index: '01',
@@ -858,70 +771,201 @@ app.get('/', (req, res) => {
     }
   ];
 
-  const sectionHorizontalGallery = `
-  <section class="section-horizontal-gallery relative bg-black border-t border-stone-800 overflow-hidden" id="horizontal-suite-container">
-    
-    <!-- Pinned Viewport Container (100dvh on desktop, natural stack on compact) -->
-    <div class="horizontal-pinned-track w-full min-h-screen lg:h-screen flex flex-col justify-center overflow-hidden">
+  const sectionManifestoAndExpedition = `
+  <div id="manifesto-expedition-super-wrapper" class="relative bg-black overflow-visible">
 
-      <!-- Horizontal Slides Track (GSAP translates x smoothly on desktop, stacks responsively on mobile) -->
-      <div class="horizontal-slides-wrapper flex h-full flex-nowrap will-change-transform" id="horizontal-track">
-        ${horizontalChapters.map((ch, idx) => `
-          <div class="horizontal-slide-panel flex-shrink-0 w-full lg:w-screen lg:min-w-[100vw] lg:max-w-[100vw] h-full flex items-center px-6 sm:px-12 md:px-16 lg:px-20 py-8 lg:py-6 relative" data-panel="${idx}">
+    <!-- SECTION 1: THE ATELIER MANIFESTO (Every Piece Begins With a Name.) -->
+    <section class="section-manifesto relative bg-transparent border-t border-stone-800 text-white z-10 min-h-screen lg:h-screen flex items-center py-16 lg:py-0 px-6 md:px-12 lg:px-20 overflow-visible">
+      
+      <!-- Ambient Radial Glow Accent -->
+      <div class="manifesto-parallax-bg absolute -top-40 -left-40 w-96 h-96 bg-amber-500/10 rounded-full blur-3xl pointer-events-none" data-scroll-speed="-0.15"></div>
+
+      <div class="max-w-7xl mx-auto w-full relative z-10">
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-16 items-center">
+          
+          <!-- Left 7 Cols: Split-Text Manifesto (with subtle Lusion Parallax Float) -->
+          <div class="lg:col-span-7 space-y-5 sm:space-y-6 relative manifesto-parallax-content" data-scroll-speed="0.06">
             
-            <div class="max-w-7xl mx-auto w-full grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-16 items-center">
-              
-              <!-- Left Column: Chapter Description & Telemetry -->
-              <div class="lg:col-span-5 space-y-4">
-                <h3 class="text-2xl sm:text-4xl font-light text-white uppercase font-serif tracking-wide leading-tight">
-                  ${ch.title}
-                </h3>
-                <span class="text-[11px] font-mono text-amber-400 uppercase tracking-widest block">${ch.subtitle}</span>
+            <div class="flex items-center justify-between">
+              <span class="manifesto-eyebrow text-[10px] font-mono tracking-[0.45em] uppercase text-amber-500 block">
+                THE ATELIER PHILOSOPHY • RAJKOT
+              </span>
+            </div>
 
-                <p class="text-xs sm:text-sm text-stone-300 font-light leading-relaxed max-w-md">
-                  ${ch.description}
-                </p>
+            <h2 class="manifesto-heading text-2xl sm:text-4xl lg:text-5xl font-light tracking-wide text-white uppercase font-serif leading-tight">
+              ${manifestoHeadingWords.map(w => `<span class="manifesto-word inline-block">${w}&nbsp;</span>`).join('')}
+            </h2>
 
-                <!-- Spec Pill List -->
-                <div class="space-y-1.5 pt-1">
-                  ${ch.specs.map(spec => `
-                    <div class="flex items-center gap-2.5 text-[10px] font-mono tracking-wider text-stone-400">
-                      <span class="w-1.5 h-1.5 rounded-full bg-amber-400"></span>
-                      <span>${spec}</span>
-                    </div>
-                  `).join('')}
-                </div>
+            <div class="manifesto-divider w-16 h-px bg-gradient-to-r from-amber-500 via-stone-600 to-transparent"></div>
 
-                <div class="pt-2">
-                  <a href="${ch.ctaHref}" target="${ch.ctaHref.includes('http') ? '_blank' : '_self'}" rel="noopener noreferrer" class="btn-slide-white inline-flex items-center gap-3 px-6 py-2.5 text-[10px] font-semibold uppercase tracking-[0.25em] shadow-lg">
-                    <span>${ch.ctaText}</span>
-                    <span class="btn-arrow">&rarr;</span>
-                  </a>
-                </div>
+            <div class="space-y-3 sm:space-y-4 text-xs sm:text-sm text-stone-300 font-light leading-relaxed max-w-xl">
+              <p class="manifesto-para manifesto-para-1">
+                I began working with raw stone and untamed clay because I could no longer endure surfaces designed to conceal their origin. Synthetic sealants, chemical lacquers, industrial veneers—they silence the medium. At Elysium, we listen first. We let the stone fissure where it must, let the unglazed clay breathe, and let the white oak reveal decades of patient growth rings.
+              </p>
+              <p class="manifesto-para manifesto-para-2">
+                Rajkot is where this quiet reverence lives. In our 4,500 sq. ft. Vavdi sanctuary, generational stone-carvers and master sculptors know the temper of a raw block before the chisel ever strikes.
+              </p>
+            </div>
+
+            <!-- Signature Line with Coordinates -->
+            <div class="manifesto-signature pt-1 border-l-2 border-amber-500/50 pl-4 space-y-0.5">
+              <span class="text-xs sm:text-sm text-stone-200 font-light italic block leading-snug">— Lead Artisan &amp; Founder, Elysium Atelier</span>
+              <div class="flex items-center gap-3 text-[9px] font-mono tracking-widest text-stone-500 uppercase">
+                <span>Vavdi, Rajkot</span>
+                <span>•</span>
+                <span class="text-amber-400/80">22.2587° N, 70.8022° E</span>
               </div>
+            </div>
 
-              <!-- Right Column: Widescreen Architectural Frame -->
-              <div class="lg:col-span-7 flex justify-center">
-                <div class="horizontal-img-frame relative aspect-[16/10] max-h-[50vh] w-full overflow-hidden bg-stone-950 shadow-2xl rounded-sm group img-skeleton-wrap">
+            <!-- Links -->
+            <div class="manifesto-links pt-1 flex flex-wrap items-center gap-4 text-[10.5px] font-medium uppercase tracking-[0.25em]">
+              <a href="/our-story" class="manifesto-link btn-slide-white px-4 py-2 text-[10px] font-semibold tracking-[0.2em] shadow-md">
+                <span>Read Our Full Story</span>
+                <span class="btn-arrow ml-2">&rarr;</span>
+              </a>
+              <a href="/philosophy" class="manifesto-link btn-slide-subtle px-4 py-2 text-[10px] font-semibold tracking-[0.2em]">
+                <span>Read Philosophy</span>
+                <span class="btn-arrow ml-2">&rarr;</span>
+              </a>
+            </div>
+          </div>
+
+          <!-- Right 5 Cols: Interactive 3D Perspective Tilt Card with Specular Glare -->
+          <div class="lg:col-span-5 relative flex justify-center manifesto-parallax-card" data-scroll-speed="-0.06">
+            <div class="manifesto-tilt-container relative w-full max-w-sm perspective-[1200px]" id="manifesto-tilt-card">
+              <div class="manifesto-portrait-wrap relative overflow-hidden bg-stone-950 shadow-2xl transition-transform duration-200 ease-out will-change-transform rounded-sm">
+                
+                <div class="manifesto-portrait-clip aspect-[4/5] sm:aspect-[3/4] relative overflow-hidden max-h-[50vh] img-skeleton-wrap">
                   <div class="img-skeleton-placeholder"></div>
                   <img
-                    src="${ch.image}"
-                    alt="${ch.title} - Elysium Atelier Handcrafted Decor"
-                    class="image-blur-up w-full h-full object-cover object-center filter contrast-105 transition-transform duration-700 group-hover:scale-105"
+                    src="/images/maker_portrait.jpg"
+                    alt="Lead Artisan at work in the Elysium Rajkot Atelier"
+                    class="manifesto-portrait-img image-blur-up w-full h-full object-cover filter contrast-105 brightness-95"
+                    style="object-position: center 25%;"
                     loading="lazy"
                   />
-                  <div class="absolute inset-0 bg-gradient-to-t from-black/75 via-transparent to-transparent pointer-events-none z-10"></div>
+                  <div class="absolute inset-0 bg-gradient-to-t from-black/85 via-transparent to-transparent pointer-events-none z-10"></div>
+                  <!-- Dynamic Mouse Glare Element -->
+                  <div class="tilt-glare absolute inset-0 pointer-events-none opacity-0 transition-opacity duration-300 z-20"></div>
+                  <!-- Initial clip-path overlay mask -->
+                  <div class="manifesto-portrait-mask absolute inset-0 bg-[#030303] z-10" style="clip-path: inset(0 100% 0 0);"></div>
                 </div>
+
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+    <!-- SECTION 2: THE PINNED HORIZONTAL ATELIER EXPEDITION (Vavdi Atelier, Rajkot) -->
+    <section class="section-horizontal-gallery relative bg-transparent overflow-visible" id="horizontal-suite-container">
+      
+      <!-- Pinned Viewport Container (100dvh on desktop, natural stack on compact) -->
+      <div class="horizontal-pinned-track w-full min-h-screen lg:h-screen flex flex-col justify-center overflow-visible relative z-10">
+
+        <!-- Horizontal Slides Track (GSAP translates x smoothly on desktop, carrying the SVG line along with it) -->
+        <div class="horizontal-slides-wrapper flex h-full flex-nowrap will-change-transform relative overflow-visible" id="horizontal-track">
+          
+          <!-- SINGLE CONTINUOUS LUSION-STYLE PURPLE RIBBON PATH -->
+          <div class="unified-line-container absolute pointer-events-none z-0" aria-hidden="true">
+            <svg
+              class="unified-svg-line w-full h-full overflow-visible"
+              viewBox="0 0 7680 2160"
+              fill="none"
+              preserveAspectRatio="none"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <defs>
+                <linearGradient id="purpleRibbonGrad" x1="0%" y1="0%" x2="100%" y2="35%">
+                  <stop offset="0%" stop-color="#581c87" />
+                  <stop offset="5%" stop-color="#7c3aed" />
+                  <stop offset="12%" stop-color="#a855f7" />
+                  <stop offset="20%" stop-color="#ddd6fe" />
+                  <stop offset="26%" stop-color="#6d28d9" />
+                  <stop offset="35%" stop-color="#9333ea" />
+                  <stop offset="45%" stop-color="#c084fc" />
+                  <stop offset="52%" stop-color="#e9d5ff" />
+                  <stop offset="60%" stop-color="#7c3aed" />
+                  <stop offset="72%" stop-color="#a855f7" />
+                  <stop offset="82%" stop-color="#ddd6fe" />
+                  <stop offset="92%" stop-color="#9333ea" />
+                  <stop offset="100%" stop-color="#ede9fe" />
+                </linearGradient>
+              </defs>
+
+              <!-- Outlined Uniform-Width Purple Ribbon (No Taper, Fully Rounded Caps & Joins, No Text Overlap) -->
+              <path
+                class="unified-draw-path"
+                d="M 980 20 C 990 240, 1030 460, 1060 680 C 1080 840, 1090 980, 1090 1080 C 1090 1280, 960 1440, 680 1520 C 360 1610, 80 1720, 80 1900 C 80 2060, 260 2130, 480 2110 C 780 2080, 1100 1850, 1420 1550 C 1740 1350, 1980 2110, 2380 2110 C 2780 2110, 3020 1780, 3340 1550 C 3660 1350, 3900 2110, 4300 2110 C 4700 2110, 4940 1780, 5260 1550 C 5580 1350, 5820 2110, 6220 2110 C 6620 2110, 6860 1780, 7180 1550"
+                fill="none"
+                stroke="url(#purpleRibbonGrad)"
+                stroke-width="36"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              />
+            </svg>
+          </div>
+
+          ${horizontalChapters.map((ch, idx) => `
+            <div class="horizontal-slide-panel flex-shrink-0 w-full lg:w-screen lg:min-w-[100vw] lg:max-w-[100vw] h-full flex items-center px-6 sm:px-12 md:px-16 lg:px-20 py-8 lg:py-6 relative z-10" data-panel="${idx}">
+              
+              <div class="max-w-7xl mx-auto w-full grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-16 items-center">
+                
+                <!-- Left Column: Chapter Description & Telemetry -->
+                <div class="lg:col-span-5 space-y-4">
+                  <h3 class="text-2xl sm:text-4xl font-light text-white uppercase font-serif tracking-wide leading-tight">
+                    ${ch.title}
+                  </h3>
+                  <span class="text-[11px] font-mono text-amber-400 uppercase tracking-widest block">${ch.subtitle}</span>
+
+                  <p class="text-xs sm:text-sm text-stone-300 font-light leading-relaxed max-w-md">
+                    ${ch.description}
+                  </p>
+
+                  <!-- Spec Pill List -->
+                  <div class="space-y-1.5 pt-1">
+                    ${ch.specs.map(spec => `
+                      <div class="flex items-center gap-2.5 text-[10px] font-mono tracking-wider text-stone-400">
+                        <span class="w-1.5 h-1.5 rounded-full bg-amber-400"></span>
+                        <span>${spec}</span>
+                      </div>
+                    `).join('')}
+                  </div>
+
+                  <div class="pt-2">
+                    <a href="${ch.ctaHref}" target="${ch.ctaHref.includes('http') ? '_blank' : '_self'}" rel="noopener noreferrer" class="btn-slide-white inline-flex items-center gap-3 px-6 py-2.5 text-[10px] font-semibold uppercase tracking-[0.25em] shadow-lg">
+                      <span>${ch.ctaText}</span>
+                      <span class="btn-arrow">&rarr;</span>
+                    </a>
+                  </div>
+                </div>
+
+                <!-- Right Column: Widescreen Architectural Frame -->
+                <div class="lg:col-span-7 flex justify-center">
+                  <div class="horizontal-img-frame relative aspect-[16/10] max-h-[50vh] w-full overflow-hidden bg-stone-950 shadow-2xl rounded-sm group img-skeleton-wrap">
+                    <div class="img-skeleton-placeholder"></div>
+                    <img
+                      src="${ch.image}"
+                      alt="${ch.title} - Elysium Atelier Handcrafted Decor"
+                      class="image-blur-up w-full h-full object-cover object-center filter contrast-105 transition-transform duration-700 group-hover:scale-105"
+                      loading="lazy"
+                    />
+                    <div class="absolute inset-0 bg-gradient-to-t from-black/75 via-transparent to-transparent pointer-events-none z-10"></div>
+                  </div>
+                </div>
+
               </div>
 
             </div>
+          `).join('')}
+        </div>
 
-          </div>
-        `).join('')}
       </div>
+    </section>
 
-    </div>
-  </section>`;
+  </div>`;
 
   // SECTION 3: THE TACTILE MATERIALITY LAB (Sticky 100dvh Viewport on desktop, natural on mobile)
   const sectionMaterialityInterlude = `
@@ -1794,7 +1838,7 @@ app.get('/', (req, res) => {
     title: 'Elysium | Artisan Minimalist Home Decor, Handcrafted in India',
     description: BRAND.heroStatement,
     path: '/',
-    content: heroSection + sectionManifesto + sectionHorizontalGallery + sectionMaterialityInterlude + sectionLivingSanctuary + sectionCraftJourney + sectionFeaturedPieces + sectionTrustVoice,
+    content: heroSection + sectionManifestoAndExpedition + sectionMaterialityInterlude + sectionLivingSanctuary + sectionCraftJourney + sectionFeaturedPieces + sectionTrustVoice,
     isHeroPage: true,
   }));
 });

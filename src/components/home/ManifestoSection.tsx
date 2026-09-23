@@ -6,12 +6,74 @@ export const ManifestoSection: React.FC = () => {
   return (
     <section className="section-manifesto relative bg-[#030303] border-t border-stone-800 text-white z-10 overflow-hidden py-20 sm:py-24 lg:py-28 px-6 md:px-12 lg:px-20">
       {/* Ambient Radial Glow Accent */}
-      <div className="absolute -top-40 -left-40 w-96 h-96 bg-amber-500/10 rounded-full blur-3xl pointer-events-none"></div>
+      <div className="manifesto-parallax-bg absolute -top-40 -left-40 w-96 h-96 bg-amber-500/10 rounded-full blur-3xl pointer-events-none" data-scroll-speed="-0.15"></div>
 
-      <div className="max-w-7xl mx-auto w-full">
+      {/* Interactive Scroll-Triggered SVG Drawing Line Layer (Lusion.co Inspired) */}
+      <div className="manifesto-line-container absolute inset-0 w-full h-full pointer-events-none z-0 overflow-hidden" aria-hidden="true">
+        <svg
+          className="manifesto-svg-line w-full h-full"
+          viewBox="0 0 2135 1318"
+          fill="none"
+          preserveAspectRatio="xMidYMid meet"
+          xmlns="http://www.w3.org/2000/svg"
+        >
+          <defs>
+            {/* Lusion-inspired Gold/Amber Luxury Gradient */}
+            <linearGradient id="manifestoStrokeGradReact" x1="0%" y1="0%" x2="100%" y2="100%">
+              <stop offset="0%" stopColor="#f59e0b" stopOpacity="0.25" />
+              <stop offset="25%" stopColor="#fbbf24" stopOpacity="0.9" />
+              <stop offset="60%" stopColor="#f59e0b" stopOpacity="1" />
+              <stop offset="85%" stopColor="#d97706" stopOpacity="0.85" />
+              <stop offset="100%" stopColor="#fef3c7" stopOpacity="0.4" />
+            </linearGradient>
+
+            {/* Multi-stage Glow Filter */}
+            <filter id="manifestoGlowReact" x="-20%" y="-20%" width="140%" height="140%">
+              <feGaussianBlur in="SourceGraphic" stdDeviation="6" result="blur1" />
+              <feGaussianBlur in="SourceGraphic" stdDeviation="16" result="blur2" />
+              <feMerge>
+                <feMergeNode in="blur2" />
+                <feMergeNode in="blur1" />
+                <feMergeNode in="SourceGraphic" />
+              </feMerge>
+            </filter>
+          </defs>
+
+          {/* Ambient Diffuse Glowing Aura Path */}
+          <path
+            className="manifesto-draw-path-aura"
+            d="M8.81226 17.9429C8.81226 17.9429 1005.34 507.443 879.812 836.443C828.301 971.455 468.264 1202.77 329.312 1242.44C162.887 1289.96 -4.06923 923.35 226.812 788.443C481.813 639.443 645.734 1197.94 994.812 1197.94C1117.31 1197.94 1227.81 1102.44 1346.31 1015.94C1490.53 910.667 1600.81 1108.44 1658.31 1242.44C1736.5 1424.65 2100.67 1082.64 2114.31 1280.44"
+            stroke="url(#manifestoStrokeGradReact)"
+            strokeWidth="14"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            filter="url(#manifestoGlowReact)"
+            opacity="0.32"
+          />
+
+          {/* Core Precision Vector Stroke */}
+          <path
+            className="manifesto-draw-path"
+            d="M8.81226 17.9429C8.81226 17.9429 1005.34 507.443 879.812 836.443C828.301 971.455 468.264 1202.77 329.312 1242.44C162.887 1289.96 -4.06923 923.35 226.812 788.443C481.813 639.443 645.734 1197.94 994.812 1197.94C1117.31 1197.94 1227.81 1102.44 1346.31 1015.94C1490.53 910.667 1600.81 1108.44 1658.31 1242.44C1736.5 1424.65 2100.67 1082.64 2114.31 1280.44"
+            stroke="url(#manifestoStrokeGradReact)"
+            strokeWidth="3"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+          />
+
+          {/* Luminous Leading Edge Light Particle / Orb */}
+          <g className="manifesto-path-head" style={{ opacity: 0 }}>
+            <circle cx="0" cy="0" r="16" fill="#fbbf24" opacity="0.35" filter="url(#manifestoGlowReact)" />
+            <circle cx="0" cy="0" r="7" fill="#fef3c7" opacity="0.8" />
+            <circle cx="0" cy="0" r="3" fill="#ffffff" />
+          </g>
+        </svg>
+      </div>
+
+      <div className="max-w-7xl mx-auto w-full relative z-10">
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-16 items-center">
           {/* Left 7 Cols: Split-Text Manifesto */}
-          <div className="lg:col-span-7 space-y-5 sm:space-y-6 relative">
+          <div className="lg:col-span-7 space-y-5 sm:space-y-6 relative manifesto-parallax-content" data-scroll-speed="0.06">
             <div className="flex items-center justify-between">
               <span className="manifesto-eyebrow text-[10px] font-mono tracking-[0.45em] uppercase text-amber-500 block">
                 THE ATELIER PHILOSOPHY • RAJKOT
@@ -59,7 +121,7 @@ export const ManifestoSection: React.FC = () => {
           </div>
 
           {/* Right 5 Cols: Interactive 3D Perspective Tilt Card with Specular Glare */}
-          <div className="lg:col-span-5 relative flex justify-center">
+          <div className="lg:col-span-5 relative flex justify-center manifesto-parallax-card" data-scroll-speed="-0.06">
             <div className="manifesto-tilt-container relative w-full max-w-sm perspective-[1200px]" id="manifesto-tilt-card">
               <div className="manifesto-portrait-wrap relative overflow-hidden bg-stone-950 shadow-2xl transition-transform duration-200 ease-out will-change-transform rounded-sm">
                 <div className="manifesto-portrait-clip aspect-[4/5] sm:aspect-[3/4] relative overflow-hidden max-h-[50vh] img-skeleton-wrap">
