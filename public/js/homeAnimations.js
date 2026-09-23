@@ -68,201 +68,154 @@
   }
 
   /**
-   * 1. SECTION 1 — THE ATELIER MANIFESTO (REAL-TIME SCROLL-DRIVEN SVG RIBBON DRAWING)
+   * 1. SECTION 1 — ATELIER REVEAL (LUSION.CO PINNED IMAGE-TO-FULL-BLEED SCROLL SYSTEM)
+   * Pin for 2.5x viewport height with master timeline:
+   *   - 0% → 20%: Intro text fades out + translateY(-40px)
+   *   - 0% → 55%: SVG path strokeDashoffset draws len → 0
+   *   - 10% → 85%: Card expands from 44vw x 54vh (rounded 28px) to 100vw x 100vh (rounded 0px)
+   *   - 10% → 85%: Image scales down from 1.15 to 1.0 (parallax counter-zoom)
+   *   - 55% → 75%: SVG path fades out as card goes full-bleed
+   *   - 80% → 100%: Corner markers fade in with staggered entry
+   *   - Interactive: Velocity-based elastic skew on scroll
    */
-  function initManifestoSection() {
-    const section = document.querySelector('.section-manifesto');
-    if (!section || typeof gsap === 'undefined' || typeof ScrollTrigger === 'undefined') return;
+  function initAtelierRevealSection() {
+    const section = document.getElementById('atelier-reveal-section') || document.querySelector('.atelier-reveal');
+    const pin = document.getElementById('atelier-reveal-pin') || document.querySelector('.atelier-reveal__pin');
+    if (!section || !pin || typeof gsap === 'undefined' || typeof ScrollTrigger === 'undefined') return;
 
-    const mask = section.querySelector('.manifesto-portrait-mask');
-    const words = section.querySelectorAll('.manifesto-word');
-    const para1 = section.querySelector('.manifesto-para-1');
-    const para2 = section.querySelector('.manifesto-para-2');
-    const signature = section.querySelector('.manifesto-signature');
-    const links = section.querySelectorAll('.manifesto-link');
-    const eyebrow = section.querySelector('.manifesto-eyebrow');
-    const divider = section.querySelector('.manifesto-divider');
-    const tiltCard = document.getElementById('manifesto-tilt-card');
-    const parallaxLayers = section.querySelectorAll('[data-scroll-speed]');
-    
-    const drawPath = section.querySelector('.manifesto-draw-path');
-    const auraPath = section.querySelector('.manifesto-draw-path-aura');
-    const pathHead = section.querySelector('.manifesto-path-head');
+    const intro = section.querySelector('.atelier-reveal__intro');
+    const card = section.querySelector('.atelier-reveal__card');
+    const img = section.querySelector('.atelier-reveal__img');
+    const path = section.querySelector('#atelier-reveal-path');
+    const aura = section.querySelector('.atelier-reveal__path-aura');
+    const svg = section.querySelector('.atelier-reveal__path');
+    const markers = section.querySelectorAll('.atelier-marker');
 
-    let s1PathLen = 0;
-    function measureS1Path() {
-      if (!drawPath) return;
+    if (prefersReducedMotion || isCompactScreen()) {
+      if (intro) gsap.set(intro, { opacity: 1, y: 0 });
+      if (card) gsap.set(card, { width: '100%', height: '52vh', right: 'auto', bottom: 'auto', borderRadius: '16px' });
+      if (img) gsap.set(img, { scale: 1 });
+      if (path) gsap.set(path, { strokeDashoffset: 0, opacity: 0 });
+      if (aura) gsap.set(aura, { strokeDashoffset: 0, opacity: 0 });
+      return;
+    }
+
+    // 1. Measure SVG path length
+    let pathLen = 3200;
+    if (path) {
       try {
-        s1PathLen = drawPath.getTotalLength() || 2400;
-        if (s1PathLen > 0) {
-          drawPath.style.strokeDasharray = `${s1PathLen}`;
-          if (auraPath) auraPath.style.strokeDasharray = `${s1PathLen}`;
+        pathLen = path.getTotalLength() || 3200;
+        path.style.strokeDasharray = `${pathLen}`;
+        path.style.strokeDashoffset = `${pathLen}`;
+        if (aura) {
+          aura.style.strokeDasharray = `${pathLen}`;
+          aura.style.strokeDashoffset = `${pathLen}`;
         }
-      } catch (err) {
-        s1PathLen = 2400;
+      } catch (e) {
+        pathLen = 3200;
       }
     }
 
-    measureS1Path();
+    // Set initial desktop states
+    gsap.set(intro, { opacity: 1, y: 0 });
+    gsap.set(card, {
+      width: '42vw',
+      height: '32vh',
+      right: '7%',
+      bottom: '12%',
+      borderRadius: '18px',
+      skewY: 0,
+    });
+    gsap.set(img, { scale: 1.18 });
+    gsap.set(svg, { opacity: 1 });
+    gsap.set(markers, { opacity: 0, y: 8 });
 
-    // Handle Reduced Motion
-    if (prefersReducedMotion) {
-      if (mask) mask.style.clipPath = 'inset(0 0 0 0)';
-      if (words.length) gsap.set(words, { opacity: 1, y: 0 });
-      if (para1) gsap.set(para1, { opacity: 1, y: 0 });
-      if (para2) gsap.set(para2, { opacity: 1, y: 0 });
-      if (signature) gsap.set(signature, { opacity: 1, y: 0 });
-      if (links.length) gsap.set(links, { opacity: 1, y: 0 });
-      if (eyebrow) gsap.set(eyebrow, { opacity: 1, y: 0 });
-      if (divider) gsap.set(divider, { scaleX: 1 });
-      if (drawPath) drawPath.style.strokeDashoffset = '0';
-      if (auraPath) auraPath.style.strokeDashoffset = '0';
-      return;
+    // 2. Master Timeline (0 to 1 progress)
+    const masterTl = gsap.timeline({
+      defaults: { ease: 'none' },
+    });
+
+    // a. 0% → 18%: Intro text fades out + translateY(-35px)
+    masterTl.to(intro, {
+      opacity: 0,
+      y: -35,
+      duration: 0.18,
+      ease: 'power2.inOut',
+    }, 0);
+
+    // b. 0% → 60%: Path strokeDashoffset draws len → 0
+    if (path) {
+      masterTl.to([path, aura], {
+        strokeDashoffset: 0,
+        duration: 0.60,
+        ease: 'power1.inOut',
+      }, 0);
     }
 
-    // Initialize strokeDashoffset to hidden
-    if (drawPath && s1PathLen > 0) {
-      drawPath.style.strokeDashoffset = `${s1PathLen}`;
-      if (auraPath) auraPath.style.strokeDashoffset = `${s1PathLen}`;
-    }
+    // c. 12% → 88%: Card expands from 42vw x 32vh to 100vw x 100vh full bleed
+    masterTl.to(card, {
+      width: '100vw',
+      height: '100vh',
+      right: '0%',
+      bottom: '0%',
+      borderRadius: '0px',
+      duration: 0.76,
+      ease: 'power2.inOut',
+    }, 0.12);
 
-    // Real-time scroll-scrubbed drawing of the Manifesto ribbon
-    if (drawPath && s1PathLen > 0) {
-      ScrollTrigger.create({
-        trigger: section,
-        start: 'top 85%',
-        end: 'bottom 15%',
-        scrub: 1.2,
-        invalidateOnRefresh: true,
-        onUpdate: (self) => {
-          const p = self.progress;
-          const currentOffset = s1PathLen * (1 - p);
-          drawPath.style.strokeDashoffset = `${currentOffset}`;
-          if (auraPath) auraPath.style.strokeDashoffset = `${currentOffset}`;
+    // d. 12% → 88%: Image scale 1.18 → 1.0 (parallax counter-zoom)
+    masterTl.to(img, {
+      scale: 1.0,
+      duration: 0.76,
+      ease: 'power2.inOut',
+    }, 0.12);
 
-          if (pathHead && s1PathLen > 0) {
-            try {
-              const pt = drawPath.getPointAtLength(p * s1PathLen);
-              gsap.set(pathHead, {
-                x: pt.x,
-                y: pt.y,
-                opacity: p > 0.02 && p < 0.98 ? 1 : 0,
-              });
-            } catch (e) {}
-          }
-        },
-      });
-    }
+    // e. 60% → 80%: SVG path opacity 1 → 0 as image becomes full bleed
+    masterTl.to(svg, {
+      opacity: 0,
+      duration: 0.20,
+      ease: 'power2.inOut',
+    }, 0.60);
 
-    // Multi-Layer Parallax Floating Depth (Lusion.co Inspired)
-    if (parallaxLayers.length > 0 && !isCompactScreen()) {
-      parallaxLayers.forEach((layer) => {
-        const speed = parseFloat(layer.getAttribute('data-scroll-speed')) || 0;
-        if (speed !== 0) {
-          gsap.to(layer, {
-            yPercent: speed * 80,
-            ease: 'none',
-            scrollTrigger: {
-              trigger: section,
-              start: 'top bottom',
-              end: 'bottom top',
-              scrub: 1.2,
-            },
-          });
-        }
-      });
-    }
+    // f. 82% → 100%: Corner markers stagger in
+    masterTl.to(markers, {
+      opacity: 1,
+      y: 0,
+      stagger: 0.025,
+      duration: 0.18,
+      ease: 'power2.out',
+    }, 0.82);
 
-    if (isCompactScreen()) {
-      if (mask) mask.style.clipPath = 'inset(0 0 0 0)';
-      if (words.length) gsap.set(words, { opacity: 1, y: 0 });
-      if (para1) gsap.set(para1, { opacity: 1, y: 0 });
-      if (para2) gsap.set(para2, { opacity: 1, y: 0 });
-      if (signature) gsap.set(signature, { opacity: 1, y: 0 });
-      if (links.length) gsap.set(links, { opacity: 1, y: 0 });
-      if (eyebrow) gsap.set(eyebrow, { opacity: 1, y: 0 });
-      if (divider) gsap.set(divider, { scaleX: 1 });
-      return;
-    }
+    // 3. One Master ScrollTrigger pinned for 3.2x viewport scroll distance
+    let skewTween = null;
+    ScrollTrigger.create({
+      trigger: section,
+      start: 'top top',
+      end: '+=320%',
+      pin: pin,
+      scrub: 1.2,
+      anticipatePin: 1,
+      invalidateOnRefresh: true,
+      animation: masterTl,
+      onUpdate: (self) => {
+        const v = self.getVelocity();
+        const clampedV = gsap.utils.clamp(-1, 1, v / 1800);
+        const skewAngle = clampedV * 3.5;
 
-    // Natural Height Progressive Entrance Timeline for Manifesto
-    const manifestoTl = gsap.timeline({
-      scrollTrigger: {
-        trigger: section,
-        start: 'top 75%',
-        toggleActions: 'play none none none',
+        if (skewTween) skewTween.kill();
+        skewTween = gsap.to(card, {
+          skewY: skewAngle,
+          duration: 0.35,
+          ease: 'power3.out',
+          overwrite: 'auto',
+          onComplete: () => {
+            gsap.to(card, { skewY: 0, duration: 0.35, ease: 'power2.out' });
+          },
+        });
       },
     });
 
-    // Initial states
-    gsap.set(eyebrow, { opacity: 0, y: 15 });
-    gsap.set(words, { opacity: 0.15, y: 18 });
-    gsap.set(divider, { scaleX: 0, transformOrigin: 'left center' });
-    gsap.set([para1, para2], { opacity: 0, y: 20 });
-    gsap.set(signature, { opacity: 0, y: 15 });
-    gsap.set(links, { opacity: 0, y: 12 });
-
-    // Coordinated entrance sequence
-    manifestoTl
-      .to(eyebrow, { opacity: 1, y: 0, duration: 0.45, ease: 'power2.out' }, 0)
-      .to(divider, { scaleX: 1, duration: 0.5, ease: 'power2.out' }, 0.1)
-      .to(words, { opacity: 1, y: 0, stagger: 0.02, duration: 0.6, ease: 'power2.out' }, 0.15)
-      .fromTo(mask, { clipPath: 'inset(0 100% 0 0)' }, { clipPath: 'inset(0 0% 0 0)', duration: 0.85, ease: 'power3.inOut' }, 0.25)
-      .to(para1, { opacity: 1, y: 0, duration: 0.55, ease: 'power2.out' }, 0.45)
-      .to(para2, { opacity: 1, y: 0, duration: 0.55, ease: 'power2.out' }, 0.6)
-      .to(signature, { opacity: 1, y: 0, duration: 0.45, ease: 'power2.out' }, 0.75)
-      .to(links, { opacity: 1, y: 0, stagger: 0.1, duration: 0.45, ease: 'power2.out' }, 0.85);
-
-    // 3D Perspective Tilt on Mousemove
-    const isFinePointer = window.matchMedia('(hover: hover) and (pointer: fine)').matches;
-    if (tiltCard && isFinePointer && !isCompactScreen()) {
-      const cardWrap = tiltCard.querySelector('.manifesto-portrait-wrap');
-      const glare = tiltCard.querySelector('.tilt-glare');
-
-      tiltCard.addEventListener('mousemove', (e) => {
-        const rect = tiltCard.getBoundingClientRect();
-        const x = e.clientX - rect.left;
-        const y = e.clientY - rect.top;
-        const centerX = rect.width / 2;
-        const centerY = rect.height / 2;
-
-        const rotateX = ((y - centerY) / centerY) * -10;
-        const rotateY = ((x - centerX) / centerX) * 10;
-
-        if (cardWrap) {
-          gsap.to(cardWrap, {
-            rotationX: rotateX,
-            rotationY: rotateY,
-            transformPerspective: 1200,
-            duration: 0.35,
-            ease: 'power2.out',
-          });
-        }
-
-        if (glare) {
-          const glareX = (x / rect.width) * 100;
-          const glareY = (y / rect.height) * 100;
-          glare.style.background = `radial-gradient(circle at ${glareX}% ${glareY}%, rgba(255, 255, 255, 0.4) 0%, rgba(255, 255, 255, 0) 70%)`;
-          glare.style.opacity = '1';
-        }
-      });
-
-      tiltCard.addEventListener('mouseleave', () => {
-        if (cardWrap) {
-          gsap.to(cardWrap, {
-            rotationX: 0,
-            rotationY: 0,
-            duration: 0.6,
-            ease: 'power3.out',
-          });
-        }
-        if (glare) {
-          glare.style.opacity = '0';
-        }
-      });
-    }
-
-    console.log('[Elysium Motion] Section 1 (Manifesto) initialized with real-time scroll-scrubbed ribbon drawing.');
+    console.log('[Elysium Motion] Section 1 (Atelier Reveal - Lusion.co effect) initialized.');
   }
 
   /**
@@ -1734,8 +1687,8 @@
     // 0. Initialize Lenis smooth scroller
     initLenisSmoothScroll();
 
-    // 1. Homepage Body Sections (Manifesto, Horizontal Suite, Materiality, Process Trace, Featured, Trust)
-    initManifestoSection();
+    // 1. Homepage Body Sections (Atelier Reveal, Horizontal Suite, Materiality, Process Trace, Featured, Trust)
+    initAtelierRevealSection();
     initHorizontalGallerySection();
     initMaterialityInterludeSection();
     initLivingSanctuarySection();

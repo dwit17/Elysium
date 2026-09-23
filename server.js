@@ -774,32 +774,23 @@ app.get('/', (req, res) => {
   const sectionManifestoAndExpedition = `
   <div id="manifesto-expedition-super-wrapper" class="relative bg-black overflow-visible">
 
-    <!-- SECTION 1: THE ATELIER MANIFESTO (Every Piece Begins With a Name.) -->
-    <section class="section-manifesto relative bg-transparent border-t border-stone-800 text-white z-20 min-h-screen lg:h-screen flex items-center py-16 lg:py-0 px-6 md:px-12 lg:px-20 overflow-visible">
-      
-      <!-- Ambient Radial Glow Accent -->
-      <div class="manifesto-parallax-bg absolute -top-40 -left-40 w-96 h-96 bg-amber-500/10 rounded-full blur-3xl pointer-events-none" data-scroll-speed="-0.15"></div>
-
-      <!-- Interactive Scroll-Triggered SVG Drawing Line Layer (Manifesto Section) -->
-      <div class="manifesto-line-container absolute inset-0 w-full h-full pointer-events-none z-0 overflow-visible" aria-hidden="true">
-        <svg
-          class="manifesto-svg-line w-full h-full overflow-visible"
-          viewBox="0 0 1920 1080"
-          fill="none"
-          preserveAspectRatio="none"
-          xmlns="http://www.w3.org/2000/svg"
-        >
+    <!-- SECTION 1: THE ATELIER MANIFESTO (LUSION.CO SCROLL-REVEAL EFFECT) -->
+    <section class="atelier-reveal relative bg-black text-white z-20 overflow-visible" id="atelier-reveal-section">
+      <div class="atelier-reveal__pin relative w-full h-screen overflow-hidden flex items-center" id="atelier-reveal-pin">
+        
+        <!-- Animated SVG Drawing Line Layer Behind Elements (Lusion.co Path Geometry) -->
+        <svg class="atelier-reveal__path absolute inset-0 w-full h-full pointer-events-none z-0" id="atelier-reveal-svg" viewBox="0 0 2135 1318" preserveAspectRatio="xMidYMid slice" fill="none" xmlns="http://www.w3.org/2000/svg">
           <defs>
-            <linearGradient id="manifestoStrokeGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-              <stop offset="0%" stop-color="#7c3aed" stop-opacity="0.3" />
-              <stop offset="25%" stop-color="#a855f7" stop-opacity="0.85" />
-              <stop offset="50%" stop-color="#c084fc" stop-opacity="1" />
-              <stop offset="75%" stop-color="#e9d5ff" stop-opacity="0.9" />
-              <stop offset="100%" stop-color="#fbbf24" stop-opacity="0.8" />
+            <!-- Warm Terracotta-Gold Luxury Palette -->
+            <linearGradient id="atelierStrokeGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+              <stop offset="0%" stop-color="#B5804B" stop-opacity="0.35" />
+              <stop offset="25%" stop-color="#D4AF37" stop-opacity="0.9" />
+              <stop offset="65%" stop-color="#B5804B" stop-opacity="0.95" />
+              <stop offset="100%" stop-color="#E2B774" stop-opacity="0.6" />
             </linearGradient>
-            <filter id="manifestoGlow" x="-30%" y="-30%" width="160%" height="160%">
-              <feGaussianBlur in="SourceGraphic" stdDeviation="8" result="blur1" />
-              <feGaussianBlur in="SourceGraphic" stdDeviation="18" result="blur2" />
+            <filter id="atelierGlow" x="-20%" y="-20%" width="140%" height="140%">
+              <feGaussianBlur in="SourceGraphic" stdDeviation="10" result="blur1" />
+              <feGaussianBlur in="SourceGraphic" stdDeviation="24" result="blur2" />
               <feMerge>
                 <feMergeNode in="blur2" />
                 <feMergeNode in="blur1" />
@@ -808,50 +799,37 @@ app.get('/', (req, res) => {
             </filter>
           </defs>
 
-          <!-- Diffuse Glowing Aura Path -->
+          <!-- Diffuse Glowing Aura -->
           <path
-            class="manifesto-draw-path-aura"
-            d="M 1850 60 C 1450 140, 950 50, 480 180 C 120 280, 20 480, 140 640 C 300 820, 820 760, 1220 660 C 1600 560, 1880 720, 1750 900 C 1620 1040, 1180 1000, 960 1080"
-            fill="none"
-            stroke="url(#manifestoStrokeGrad)"
-            stroke-width="18"
+            class="atelier-reveal__path-aura"
+            d="M8.81226 17.9429C8.81226 17.9429 1005.34 507.443 879.812 836.443C828.301 971.455 468.264 1202.77 329.312 1242.44C162.887 1289.96 -4.06923 923.35 226.812 788.443C481.813 639.443 645.734 1197.94 994.812 1197.94C1117.31 1197.94 1227.81 1102.44 1346.31 1015.94C1490.53 910.667 1600.81 1108.44 1658.31 1242.44C1736.5 1424.65 2100.67 1082.64 2114.31 1280.44"
+            stroke="url(#atelierStrokeGrad)"
+            stroke-width="50"
             stroke-linecap="round"
             stroke-linejoin="round"
-            filter="url(#manifestoGlow)"
-            opacity="0.4"
+            filter="url(#atelierGlow)"
+            opacity="0.32"
           />
 
           <!-- Core Precision Vector Stroke -->
           <path
-            class="manifesto-draw-path"
-            d="M 1850 60 C 1450 140, 950 50, 480 180 C 120 280, 20 480, 140 640 C 300 820, 820 760, 1220 660 C 1600 560, 1880 720, 1750 900 C 1620 1040, 1180 1000, 960 1080"
-            fill="none"
-            stroke="url(#manifestoStrokeGrad)"
-            stroke-width="4"
+            id="atelier-reveal-path"
+            class="atelier-reveal__path-core"
+            d="M8.81226 17.9429C8.81226 17.9429 1005.34 507.443 879.812 836.443C828.301 971.455 468.264 1202.77 329.312 1242.44C162.887 1289.96 -4.06923 923.35 226.812 788.443C481.813 639.443 645.734 1197.94 994.812 1197.94C1117.31 1197.94 1227.81 1102.44 1346.31 1015.94C1490.53 910.667 1600.81 1108.44 1658.31 1242.44C1736.5 1424.65 2100.67 1082.64 2114.31 1280.44"
+            stroke="#B5804B"
+            stroke-width="40"
             stroke-linecap="round"
             stroke-linejoin="round"
+            fill="none"
           />
-
-          <!-- Luminous Leading Edge Light Particle / Orb -->
-          <g class="manifesto-path-head" style="opacity: 0;">
-            <circle cx="0" cy="0" r="14" fill="#c084fc" opacity="0.4" filter="url(#manifestoGlow)" />
-            <circle cx="0" cy="0" r="6" fill="#e9d5ff" opacity="0.9" />
-            <circle cx="0" cy="0" r="2.5" fill="#ffffff" />
-          </g>
         </svg>
-      </div>
 
-      <div class="max-w-7xl mx-auto w-full relative z-10">
-        <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-16 items-center">
-          
-          <!-- Left 7 Cols: Split-Text Manifesto (with subtle Lusion Parallax Float) -->
-          <div class="lg:col-span-7 space-y-5 sm:space-y-6 relative z-10 manifesto-parallax-content" data-scroll-speed="0.06">
-            
-            <div class="flex items-center justify-between">
-              <span class="manifesto-eyebrow text-[10px] font-mono tracking-[0.45em] uppercase text-amber-500 block">
-                THE ATELIER PHILOSOPHY • RAJKOT
-              </span>
-            </div>
+        <!-- Intro Text Section (Fades up & out during scroll) -->
+        <div class="atelier-reveal__intro max-w-7xl mx-auto w-full px-6 md:px-12 lg:px-20 relative z-10" id="atelier-reveal-intro">
+          <div class="max-w-2xl space-y-5 sm:space-y-6">
+            <span class="manifesto-eyebrow text-[10px] font-mono tracking-[0.45em] uppercase text-amber-500 block">
+              THE ATELIER PHILOSOPHY • RAJKOT
+            </span>
 
             <h2 class="manifesto-heading text-2xl sm:text-4xl lg:text-5xl font-light tracking-wide text-white uppercase font-serif leading-tight">
               ${manifestoHeadingWords.map(w => `<span class="manifesto-word inline-block">${w}&nbsp;</span>`).join('')}
@@ -890,33 +868,38 @@ app.get('/', (req, res) => {
               </a>
             </div>
           </div>
-
-          <!-- Right 5 Cols: Interactive 3D Perspective Tilt Card with Specular Glare -->
-          <div class="lg:col-span-5 relative z-10 flex justify-center manifesto-parallax-card" data-scroll-speed="-0.06">
-            <div class="manifesto-tilt-container relative z-10 w-full max-w-sm perspective-[1200px]" id="manifesto-tilt-card">
-              <div class="manifesto-portrait-wrap relative z-10 overflow-hidden bg-stone-950 shadow-2xl transition-transform duration-200 ease-out will-change-transform rounded-sm">
-                
-                <div class="manifesto-portrait-clip aspect-[4/5] sm:aspect-[3/4] relative z-10 overflow-hidden max-h-[50vh] img-skeleton-wrap bg-stone-950">
-                  <div class="img-skeleton-placeholder"></div>
-                  <img
-                    src="/images/maker_portrait.jpg"
-                    alt="Lead Artisan at work in the Elysium Rajkot Atelier"
-                    class="manifesto-portrait-img image-blur-up w-full h-full object-cover filter contrast-105 brightness-95 relative z-10"
-                    style="object-position: center 25%;"
-                    loading="lazy"
-                  />
-                  <div class="absolute inset-0 bg-gradient-to-t from-black/85 via-transparent to-transparent pointer-events-none z-10"></div>
-                  <!-- Dynamic Mouse Glare Element -->
-                  <div class="tilt-glare absolute inset-0 pointer-events-none opacity-0 transition-opacity duration-300 z-20"></div>
-                  <!-- Initial clip-path overlay mask -->
-                  <div class="manifesto-portrait-mask absolute inset-0 bg-[#030303] z-10" style="clip-path: inset(0 100% 0 0);"></div>
-                </div>
-
-              </div>
-            </div>
-          </div>
-
         </div>
+
+        <!-- Floating Card that expands to 100vw x 100vh Full Bleed -->
+        <div class="atelier-reveal__card absolute overflow-hidden shadow-2xl z-20" id="atelier-reveal-card">
+          <img
+            src="/images/atelier-immersive.jpg"
+            alt="Elysium Artisan Atelier Workshop"
+            class="atelier-reveal__img w-full h-full object-cover object-center"
+            id="atelier-reveal-img"
+            loading="eager"
+          />
+          <div class="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-black/20 pointer-events-none"></div>
+        </div>
+
+        <!-- Lusion-Style Corner & Edge Markers (5 Top + 5 Bottom) -->
+        <div class="atelier-reveal__markers absolute inset-0 pointer-events-none z-30 flex flex-col justify-between p-6 sm:p-8" id="atelier-reveal-markers">
+          <div class="flex justify-between items-center w-full">
+            <span class="atelier-marker text-[10px] font-mono text-amber-400/90 tracking-widest">+ 01</span>
+            <span class="atelier-marker text-[10px] font-mono text-stone-400/70 tracking-widest hidden sm:inline">+ 02</span>
+            <span class="atelier-marker text-[10px] font-mono text-amber-400/90 tracking-widest font-semibold">ELYSIUM ATELIER • SANCTUARY</span>
+            <span class="atelier-marker text-[10px] font-mono text-stone-400/70 tracking-widest hidden sm:inline">+ 04</span>
+            <span class="atelier-marker text-[10px] font-mono text-amber-400/90 tracking-widest">+ 05</span>
+          </div>
+          <div class="flex justify-between items-center w-full">
+            <span class="atelier-marker text-[9.5px] font-mono text-stone-400/80 tracking-widest">22.2587° N, 70.8022° E</span>
+            <span class="atelier-marker text-[9.5px] font-mono text-stone-400/70 tracking-widest hidden sm:inline">+ STONE &amp; CLAY</span>
+            <span class="atelier-marker text-[9.5px] font-mono text-amber-400/90 tracking-widest font-mono">SANCTUARY PROVENANCE</span>
+            <span class="atelier-marker text-[9.5px] font-mono text-stone-400/70 tracking-widest hidden sm:inline">+ UNGLAZED PURITY</span>
+            <span class="atelier-marker text-[9.5px] font-mono text-stone-400/80 tracking-widest">VOLTERRA • RAJKOT</span>
+          </div>
+        </div>
+
       </div>
     </section>
 

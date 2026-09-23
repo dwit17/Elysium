@@ -2697,14 +2697,131 @@ img {
   background: transparent !important;
 }
 
-.manifesto-line-container {
+/* ═══════════════════════════════════════════════════════════════
+   ATELIER REVEAL PINNED SCROLL-EXPANSION (LUSION.CO SECTION 2)
+   ═══════════════════════════════════════════════════════════════ */
+.atelier-reveal {
+  position: relative;
+  background-color: #030303;
+  width: 100vw;
+  left: 50%;
+  right: 50%;
+  margin-left: -50vw;
+  margin-right: -50vw;
+  overflow: visible;
+}
+
+.atelier-reveal__pin {
+  position: relative;
+  height: 100vh;
+  width: 100%;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+}
+
+.atelier-reveal__intro {
+  position: relative;
+  z-index: 10;
+  will-change: transform, opacity;
+}
+
+.atelier-reveal__card {
+  position: absolute;
+  right: 7%;
+  bottom: 12%;
+  width: 42vw;
+  height: 32vh;
+  border-radius: 18px;
+  overflow: hidden;
+  will-change: width, height, right, bottom, border-radius, transform;
+  z-index: 20;
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.85);
+  background-color: #0c0a09;
+}
+
+.atelier-reveal__img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transform: scale(1.15);
+  will-change: transform;
+}
+
+.atelier-reveal__path {
   position: absolute;
   inset: 0;
   width: 100%;
   height: 100%;
   pointer-events: none;
-  z-index: 0 !important;
-  overflow: visible !important;
+  z-index: 5;
+  color: #B5804B;
+  overflow: visible;
+}
+
+.atelier-reveal__path-core,
+.atelier-reveal__path-aura {
+  will-change: stroke-dashoffset, opacity;
+}
+
+.atelier-reveal__markers {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: 24px 32px;
+  pointer-events: none;
+  opacity: 1;
+  z-index: 30;
+}
+
+.atelier-marker {
+  opacity: 0;
+  transform: translateY(6px);
+  will-change: opacity, transform;
+}
+
+@media (max-width: 1023px) {
+  .atelier-reveal {
+    width: 100%;
+    left: auto;
+    right: auto;
+    margin-left: 0;
+    margin-right: 0;
+  }
+  .atelier-reveal__pin {
+    height: auto;
+    min-height: auto;
+    overflow: visible;
+    display: block;
+    padding-top: 5rem;
+    padding-bottom: 5rem;
+  }
+  .atelier-reveal__intro {
+    opacity: 1 !important;
+    transform: none !important;
+  }
+  .atelier-reveal__card {
+    position: relative;
+    right: auto;
+    bottom: auto;
+    width: 100%;
+    max-width: 650px;
+    height: 52vh;
+    margin: 2.5rem auto 0 auto;
+    border-radius: 16px;
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.6);
+  }
+  .atelier-reveal__img {
+    transform: scale(1) !important;
+  }
+  .atelier-reveal__path {
+    display: none;
+  }
+  .atelier-reveal__markers {
+    display: none;
+  }
 }
 
 .horizontal-line-container {
@@ -2717,7 +2834,6 @@ img {
   overflow: visible !important;
 }
 
-.manifesto-svg-line,
 .horizontal-svg-line {
   display: block;
   width: 100%;
@@ -2726,38 +2842,25 @@ img {
   transform: translateZ(0);
 }
 
-.manifesto-draw-path,
-.manifesto-draw-path-aura,
 .horizontal-draw-path,
 .horizontal-draw-path-aura {
   will-change: stroke-dashoffset;
 }
 
-.manifesto-parallax-content,
-.manifesto-parallax-card,
-.manifesto-parallax-bg {
-  will-change: transform;
-}
-
-/* Ensure text and image elements are cleanly layered on top of the ribbon */
-.manifesto-parallax-content,
-.manifesto-tilt-container,
-.manifesto-portrait-wrap,
-.manifesto-portrait-clip,
 .horizontal-slide-panel,
 .horizontal-img-frame {
   position: relative;
   z-index: 10 !important;
 }
 
-/* Solid opaque backgrounds on portrait and chapter frames so ribbon is completely hidden behind images */
-.manifesto-portrait-wrap,
-.manifesto-portrait-clip,
 .horizontal-img-frame {
   background-color: #0c0a09 !important;
 }
 
-.manifesto-portrait-img,
+.horizontal-img-frame img {
+  position: relative;
+  z-index: 10 !important;
+}
 .horizontal-img-frame img {
   position: relative;
   z-index: 10 !important;
