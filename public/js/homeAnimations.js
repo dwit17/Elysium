@@ -37,19 +37,19 @@
     if (typeof Lenis !== 'undefined') {
       try {
         lenisInstance = new Lenis({
-          duration: 1.35,
+          duration: 1.15,
           easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
           orientation: 'vertical',
+          gestureOrientation: 'vertical',
           smoothWheel: true,
           smoothTouch: false, // Keep native touch physics on mobile for responsive gestures
-          wheelMultiplier: 0.95,
+          wheelMultiplier: 1.0,
           touchMultiplier: 1.0,
+          infinite: false,
         });
 
         // Sync Lenis scroll updates with ScrollTrigger
-        lenisInstance.on('scroll', () => {
-          ScrollTrigger.update();
-        });
+        lenisInstance.on('scroll', ScrollTrigger.update);
 
         // Drive Lenis via GSAP ticker
         gsap.ticker.add((time) => {
@@ -58,7 +58,8 @@
           }
         });
 
-        gsap.ticker.lagSmoothing(500, 33);
+        // lagSmoothing(0) ensures instant frame synchronization without sluggish lag
+        gsap.ticker.lagSmoothing(0);
         window.__elysiumLenis = lenisInstance;
         console.log('[Elysium GSAP] Lenis smooth scroll initialized & bridged to GSAP ticker.');
       } catch (err) {
@@ -68,15 +69,9 @@
   }
 
   /**
-   * 1. SECTION 1 — ATELIER REVEAL (LUSION.CO PINNED IMAGE-TO-FULL-BLEED SCROLL SYSTEM)
-   * Pin for 2.5x viewport height with master timeline:
-   *   - 0% → 20%: Intro text fades out + translateY(-40px)
-   *   - 0% → 55%: SVG path strokeDashoffset draws len → 0
-   *   - 10% → 85%: Card expands from 44vw x 54vh (rounded 28px) to 100vw x 100vh (rounded 0px)
-   *   - 10% → 85%: Image scales down from 1.15 to 1.0 (parallax counter-zoom)
-   *   - 55% → 75%: SVG path fades out as card goes full-bleed
-   *   - 80% → 100%: Corner markers fade in with staggered entry
-   *   - Interactive: Velocity-based elastic skew on scroll
+   * 1. SECTION 1 — ATELIER REVEAL (LUSION-INSPIRED WEBGL SCROLL-SYNC ARCHITECTURE)
+   * Synchronized WebGL Quad with velocity-driven fluid silk/liquid displacement shader.
+   * Completely continuous, micro-scroll responsive, and 100% reversible.
    */
   function initAtelierRevealSection() {
     const section = document.getElementById('immersive-scene-section') || document.getElementById('atelier-reveal-section') || document.querySelector('.section-immersive-scene') || document.querySelector('.atelier-reveal');
@@ -87,12 +82,226 @@
     const intro = section.querySelector('.scene-intro') || section.querySelector('.atelier-reveal__intro');
     const wrapper = section.querySelector('.scene-image-wrapper') || section.querySelector('.atelier-reveal__card');
     const img = section.querySelector('.scene-image') || section.querySelector('.atelier-reveal__img');
+    const canvas = section.querySelector('#scene-webgl-canvas');
     const svg = section.querySelector('.scene-path') || section.querySelector('.atelier-reveal__path');
     const path = section.querySelector('#scene-svg-path') || section.querySelector('#atelier-reveal-path') || section.querySelector('.scene-path-core');
     const aura = section.querySelector('.scene-path-aura') || section.querySelector('.atelier-reveal__path-aura');
-    const pill = section.querySelector('#scene-pill-btn');
-    const playOverlay = section.querySelector('#scene-play-reel-overlay');
     const crosshairs = section.querySelectorAll('.scene-crosshair');
+
+    // ── WEBGL LIQUID SHADER PIPELINE ──
+    let webglApi = null;
+    function initWebGLShader() {
+      if (!canvas || prefersReducedMotion) return null;
+      let gl = null;
+      try {
+        gl = canvas.getContext('webgl', { alpha: true, antialias: true, premultipliedAlpha: false }) || canvas.getContext('experimental-webgl');
+      } catch (e) {
+        gl = null;
+      }
+      if (!gl) return null;
+
+      const vsSource = `
+        attribute vec2 aPosition;
+        attribute vec2 aTexCoord;
+        varying vec2 vUv;
+        void main() {
+          vUv = aTexCoord;
+          gl_Position = vec4(aPosition, 0.0, 1.0);
+        }
+      `;
+
+      const fsSource = `
+        precision mediump float;
+        varying vec2 vUv;
+        uniform sampler2D uTexture;
+        uniform float uTime;
+        uniform float uVelocity;
+        uniform float uProgress;
+        uniform vec2 uResolution;
+        uniform vec2 uTextureResolution;
+
+        // 2D Simplex Noise for Organic Fluidity
+        vec3 mod289(vec3 x) { return x - floor(x * (1.0 / 289.0)) * 289.0; }
+        vec2 mod289(vec2 x) { return x - floor(x * (1.0 / 289.0)) * 289.0; }
+        vec3 permute(vec3 x) { return mod289(((x*34.0)+1.0)*x); }
+
+        float snoise(vec2 v) {
+          const vec4 C = vec4(0.211324865405187, 0.366025403784439, -0.577350269189626, 0.024390243902439);
+          vec2 i  = floor(v + dot(v, C.yy) );
+          vec2 x0 = v -   i + dot(i, C.xx);
+          vec2 i1 = (x0.x > x0.y) ? vec2(1.0, 0.0) : vec2(0.0, 1.0);
+          vec4 x12 = x0.xyxy + C.xxzz;
+          x12.xy -= i1;
+          i = mod289(i);
+          vec3 p = permute( permute( i.y + vec3(0.0, i1.y, 1.0 )) + i.x + vec3(0.0, i1.x, 1.0 ));
+          vec3 m = max(0.5 - vec3(dot(x0,x0), dot(x12.xy,x12.xy), dot(x12.zw,x12.zw)), 0.0);
+          m = m*m;
+          m = m*m;
+          vec3 x = 2.0 * fract(p * C.www) - 1.0;
+          vec3 h = abs(x) - 0.5;
+          vec3 ox = floor(x + 0.5);
+          vec3 a0 = x - ox;
+          m *= 1.79284291400159 - 0.85373472095314 * ( a0*a0 + h*h );
+          vec3 g;
+          g.x  = a0.x  * x0.x  + h.x  * x0.y;
+          g.yz = a0.yz * x12.xz + h.yz * x12.yw;
+          return 130.0 * dot(m, g);
+        }
+
+        void main() {
+          vec2 s = uResolution;
+          vec2 i = uTextureResolution;
+          float rs = s.x / s.y;
+          float ri = i.x / i.y;
+          vec2 coverUv = vUv;
+          if (rs > ri) {
+            coverUv = vec2(vUv.x, (vUv.y - 0.5) * (ri / rs) + 0.5);
+          } else {
+            coverUv = vec2((vUv.x - 0.5) * (rs / ri) + 0.5, vUv.y);
+          }
+
+          float vel = clamp(abs(uVelocity), 0.0, 1.0);
+          float distFromCenter = length(vUv - vec2(0.5));
+          float edgeMask = smoothstep(0.02, 0.65, distFromCenter);
+
+          // Liquid silk displacement field
+          float n1 = snoise(coverUv * 3.2 + vec2(0.0, uTime * 0.6));
+          float n2 = snoise(coverUv * 6.5 - vec2(uTime * 0.4, 0.0));
+          vec2 displacement = vec2(n1, n2) * (vel * 0.038 * edgeMask);
+
+          // Micro chromatic dispersion
+          vec2 rUv = clamp(coverUv + displacement * 1.05, 0.0, 1.0);
+          vec2 gUv = clamp(coverUv + displacement, 0.0, 1.0);
+          vec2 bUv = clamp(coverUv + displacement * 0.95, 0.0, 1.0);
+
+          float r = texture2D(uTexture, rUv).r;
+          float g = texture2D(uTexture, gUv).g;
+          float b = texture2D(uTexture, bUv).b;
+
+          gl_FragColor = vec4(r, g, b, 1.0);
+        }
+      `;
+
+      function createShader(type, src) {
+        const shader = gl.createShader(type);
+        gl.shaderSource(shader, src);
+        gl.compileShader(shader);
+        if (!gl.getShaderParameter(shader, gl.COMPILE_STATUS)) {
+          console.warn('[WebGL Section 2] Shader compile error:', gl.getShaderInfoLog(shader));
+          gl.deleteShader(shader);
+          return null;
+        }
+        return shader;
+      }
+
+      const vs = createShader(gl.VERTEX_SHADER, vsSource);
+      const fs = createShader(gl.FRAGMENT_SHADER, fsSource);
+      if (!vs || !fs) return null;
+
+      const program = gl.createProgram();
+      gl.attachShader(program, vs);
+      gl.attachShader(program, fs);
+      gl.linkProgram(program);
+      if (!gl.getProgramParameter(program, gl.LINK_STATUS)) {
+        console.warn('[WebGL Section 2] Program link error:', gl.getProgramInfoLog(program));
+        return null;
+      }
+      gl.useProgram(program);
+
+      // Full Quad Geometry
+      const vertices = new Float32Array([
+        -1, -1,  0, 1,
+         1, -1,  1, 1,
+        -1,  1,  0, 0,
+        -1,  1,  0, 0,
+         1, -1,  1, 1,
+         1,  1,  1, 0,
+      ]);
+
+      const buffer = gl.createBuffer();
+      gl.bindBuffer(gl.ARRAY_BUFFER, buffer);
+      gl.bufferData(gl.ARRAY_BUFFER, vertices, gl.STATIC_DRAW);
+
+      const aPosition = gl.getAttribLocation(program, 'aPosition');
+      const aTexCoord = gl.getAttribLocation(program, 'aTexCoord');
+      gl.enableVertexAttribArray(aPosition);
+      gl.vertexAttribPointer(aPosition, 2, gl.FLOAT, false, 16, 0);
+      gl.enableVertexAttribArray(aTexCoord);
+      gl.vertexAttribPointer(aTexCoord, 2, gl.FLOAT, false, 16, 8);
+
+      // Uniform Locations
+      const uTextureLoc = gl.getUniformLocation(program, 'uTexture');
+      const uTimeLoc = gl.getUniformLocation(program, 'uTime');
+      const uVelocityLoc = gl.getUniformLocation(program, 'uVelocity');
+      const uProgressLoc = gl.getUniformLocation(program, 'uProgress');
+      const uResolutionLoc = gl.getUniformLocation(program, 'uResolution');
+      const uTexResLoc = gl.getUniformLocation(program, 'uTextureResolution');
+
+      // Texture Setup
+      const texture = gl.createTexture();
+      gl.bindTexture(gl.TEXTURE_2D, texture);
+      gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
+      gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
+      gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
+      gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
+
+      // Placeholder 1x1 black pixel until image loads
+      gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, 1, 1, 0, gl.RGBA, gl.UNSIGNED_BYTE, new Uint8Array([12, 10, 9, 255]));
+
+      let texWidth = 1920;
+      let texHeight = 1080;
+      let isTextureReady = false;
+
+      const textureImage = new Image();
+      textureImage.crossOrigin = 'anonymous';
+      textureImage.onload = () => {
+        gl.bindTexture(gl.TEXTURE_2D, texture);
+        gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, textureImage);
+        texWidth = textureImage.naturalWidth || 1920;
+        texHeight = textureImage.naturalHeight || 1080;
+        isTextureReady = true;
+
+        canvas.classList.add('active');
+        if (img) img.classList.add('webgl-active');
+      };
+      textureImage.src = canvas.getAttribute('data-src') || '/images/atelier-immersive.jpg';
+
+      function resize() {
+        if (!canvas) return;
+        const dpr = Math.min(window.devicePixelRatio || 1, 2);
+        const rect = canvas.getBoundingClientRect();
+        const displayWidth = Math.max(Math.round(rect.width * dpr), 2);
+        const displayHeight = Math.max(Math.round(rect.height * dpr), 2);
+
+        if (canvas.width !== displayWidth || canvas.height !== displayHeight) {
+          canvas.width = displayWidth;
+          canvas.height = displayHeight;
+          gl.viewport(0, 0, displayWidth, displayHeight);
+        }
+      }
+
+      function render(time, velocity, progress) {
+        if (!isTextureReady) return;
+        resize();
+
+        gl.useProgram(program);
+        gl.uniform1i(uTextureLoc, 0);
+        gl.uniform1f(uTimeLoc, time);
+        gl.uniform1f(uVelocityLoc, velocity);
+        gl.uniform1f(uProgressLoc, progress);
+        gl.uniform2f(uResolutionLoc, canvas.width, canvas.height);
+        gl.uniform2f(uTexResLoc, texWidth, texHeight);
+
+        gl.drawArrays(gl.TRIANGLES, 0, 6);
+      }
+
+      return {
+        render,
+        resize,
+      };
+    }
+
+    webglApi = initWebGLShader();
 
     if (prefersReducedMotion) {
       if (intro) gsap.set(intro, { opacity: 1, y: 0 });
@@ -105,7 +314,7 @@
       return;
     }
 
-    // 1. Dynamic SVG Path Length Measurement & Initial State (Already ~28% visible at start)
+    // Dynamic SVG Path Length Measurement & Initial State (Already ~28% visible at start)
     let pathLen = 3200;
     if (path) {
       try {
@@ -121,11 +330,18 @@
       }
     }
 
+    // Velocity and Smoothed Scroll State
+    let targetProgress = 0;
+    let currentProgress = 0;
+    let rawVelocity = 0;
+    let smoothedVelocity = 0;
+    let lastProgress = 0;
+
     const mm = gsap.matchMedia();
 
     // ── DESKTOP & LAPTOP (>= 1024px) ──
     mm.add('(min-width: 1024px)', () => {
-      // Initial State (Matching Lusion Screenshots 1 & 2)
+      // Initial State
       gsap.set(intro, { opacity: 1, y: 0 });
       gsap.set(wrapper, {
         top: '56vh',
@@ -133,207 +349,140 @@
         width: '44vw',
         height: '28vh',
         borderRadius: '20px',
-        skewY: 0,
       });
-      gsap.set(img, { scale: 1.25, objectPosition: '50% 50%' });
+      gsap.set(img, { scale: 1.20, objectPosition: '50% 50%' });
       gsap.set(svg, { x: '0vw', y: '0vh', scale: 1.0, rotation: 0, opacity: 1, display: 'block' });
-      if (pill) gsap.set(pill, { opacity: 0, top: '58vh', left: '54vw' });
-      if (playOverlay) gsap.set(playOverlay, { opacity: 0, scale: 0.85 });
       if (crosshairs) gsap.set(crosshairs, { opacity: 0.6 });
 
-      // ONE Master ScrollTrigger Timeline: 0.00 to 1.00 Continuous Progress with Instant Micro-Scroll Elasticity
+      // Master ScrollTrigger Timeline: Silky, continuous 0.00 to 1.00 progression
       const masterTl = gsap.timeline({ defaults: { ease: 'power1.inOut' } });
 
-      // ── PHASE 1 (0% → 28%): Instant Micro-Scroll Response (Heading lifts + card begins dynamic expansion) ──
+      // ── PHASE 1 (0% → 30%): Instant Micro-Scroll Response ──
       masterTl.to(intro, {
         opacity: 0,
-        y: -100,
-        duration: 0.28,
+        y: -90,
+        duration: 0.30,
         ease: 'power2.out',
       }, 0.0);
 
       masterTl.to(wrapper, {
-        top: '38vh',
+        top: '36vh',
         left: '6vw',
-        width: '56vw',
-        height: '38vh',
-        borderRadius: '18px',
-        duration: 0.28,
+        width: '58vw',
+        height: '40vh',
+        borderRadius: '16px',
+        duration: 0.30,
         ease: 'power1.inOut',
       }, 0.0);
 
       masterTl.to(img, {
-        scale: 1.18,
-        objectPosition: '49% 51%',
-        duration: 0.28,
-        ease: 'power1.inOut',
-      }, 0.0);
-
-      if (pill) {
-        masterTl.to(pill, {
-          opacity: 1,
-          top: '48vh',
-          left: '56vw',
-          duration: 0.28,
-          ease: 'power1.out',
-        }, 0.0);
-      }
-
-      if (path) {
-        masterTl.to([path, aura], {
-          strokeDashoffset: pathLen * 0.44,
-          duration: 0.28,
-          ease: 'power1.inOut',
-        }, 0.0);
-      }
-      masterTl.to(svg, {
-        x: '-8vw',
-        y: '2vh',
-        scale: 1.06,
-        rotation: -1.2,
-        duration: 0.28,
-        ease: 'power1.inOut',
-      }, 0.0);
-
-      // ── PHASE 2 (28% → 68%): Core Spatial Weave (Card glides to center-left with subtle skew + PLAY REEL reveals) ──
-      masterTl.to(wrapper, {
-        top: '22vh',
-        left: '6.5vw',
-        width: '72vw',
-        height: '50vh',
-        borderRadius: '15px',
-        skewY: -1.2,
-        duration: 0.40,
-        ease: 'power1.inOut',
-      }, 0.28);
-
-      masterTl.to(img, {
-        scale: 1.10,
-        objectPosition: '51% 49%',
-        duration: 0.40,
-        ease: 'power1.inOut',
-      }, 0.28);
-
-      if (pill) {
-        masterTl.to(pill, {
-          top: '16vh',
-          left: '62vw',
-          duration: 0.40,
-          ease: 'power1.inOut',
-        }, 0.28);
-      }
-
-      if (playOverlay) {
-        masterTl.to(playOverlay, {
-          opacity: 0.75,
-          scale: 0.95,
-          duration: 0.40,
-          ease: 'power1.inOut',
-        }, 0.28);
-      }
-
-      if (path) {
-        masterTl.to([path, aura], {
-          strokeDashoffset: pathLen * 0.12,
-          duration: 0.40,
-          ease: 'power1.inOut',
-        }, 0.28);
-      }
-      masterTl.to(svg, {
-        x: '-18vw',
-        y: '-5vh',
         scale: 1.14,
-        rotation: 1.5,
+        duration: 0.30,
+        ease: 'power1.inOut',
+      }, 0.0);
+
+      if (path) {
+        masterTl.to([path, aura], {
+          strokeDashoffset: pathLen * 0.45,
+          duration: 0.30,
+          ease: 'power1.inOut',
+        }, 0.0);
+      }
+      masterTl.to(svg, {
+        x: '-3vw',
+        y: '1vh',
+        scale: 1.03,
+        rotation: -0.5,
+        duration: 0.30,
+        ease: 'power1.inOut',
+      }, 0.0);
+
+      // ── PHASE 2 (30% → 70%): Core Spatial Glide ──
+      masterTl.to(wrapper, {
+        top: '20vh',
+        left: '6.5vw',
+        width: '74vw',
+        height: '52vh',
+        borderRadius: '14px',
         duration: 0.40,
         ease: 'power1.inOut',
-      }, 0.28);
+      }, 0.30);
 
-      // ── PHASE 3 (68% → 100%): Final Centered Majestic Canvas with Full PLAY REEL ──
+      masterTl.to(img, {
+        scale: 1.06,
+        duration: 0.40,
+        ease: 'power1.inOut',
+      }, 0.30);
+
+      if (path) {
+        masterTl.to([path, aura], {
+          strokeDashoffset: pathLen * 0.15,
+          duration: 0.40,
+          ease: 'power1.inOut',
+        }, 0.30);
+      }
+      masterTl.to(svg, {
+        x: '-7vw',
+        y: '-2vh',
+        scale: 1.06,
+        rotation: 0.5,
+        duration: 0.40,
+        ease: 'power1.inOut',
+      }, 0.30);
+
+      // ── PHASE 3 (70% → 100%): Final Centered Majestic Sanctuary Frame ──
       masterTl.to(wrapper, {
-        top: '17vh',
+        top: '16vh',
         left: '7vw',
         width: '86vw',
-        height: '64vh',
-        borderRadius: '12px',
-        skewY: 0,
-        duration: 0.32,
+        height: '66vh',
+        borderRadius: '10px',
+        duration: 0.30,
         ease: 'power2.out',
-      }, 0.68);
+      }, 0.70);
 
       masterTl.to(img, {
         scale: 1.0,
         objectPosition: '50% 50%',
-        duration: 0.32,
+        duration: 0.30,
         ease: 'power2.out',
-      }, 0.68);
-
-      if (playOverlay) {
-        masterTl.to(playOverlay, {
-          opacity: 1,
-          scale: 1.0,
-          duration: 0.32,
-          ease: 'power2.out',
-        }, 0.68);
-      }
+      }, 0.70);
 
       if (path) {
         masterTl.to([path, aura], {
           strokeDashoffset: 0,
-          duration: 0.32,
+          duration: 0.30,
           ease: 'power2.out',
-        }, 0.68);
+        }, 0.70);
       }
       masterTl.to(svg, {
-        x: '-24vw',
-        y: '-9vh',
-        scale: 1.18,
+        x: '-10vw',
+        y: '-4vh',
+        scale: 1.08,
         rotation: 0,
-        opacity: 0.85,
-        duration: 0.32,
+        opacity: 0.9,
+        duration: 0.30,
         ease: 'power2.out',
-      }, 0.68);
+      }, 0.70);
 
-      if (crosshairs) {
-        masterTl.to(crosshairs, {
-          opacity: 1,
-          duration: 0.32,
-          ease: 'power1.out',
-        }, 0.68);
-      }
-
-      // Master ScrollTrigger with 320% Scroll Distance, Smooth 1.2s Scrub & Elastic Inertia Skew
-      let skewTween = null;
+      // Master ScrollTrigger calibrated with Lenis smooth scrolling (scrub: 0.5 for instant responsiveness)
       const st = ScrollTrigger.create({
         trigger: section,
         start: 'top top',
-        end: '+=320%',
+        end: '+=220%',
         pin: stage,
-        scrub: 1.2,
+        scrub: 0.5,
         anticipatePin: 1,
         fastScrollEnd: true,
         invalidateOnRefresh: true,
         animation: masterTl,
         onUpdate: (self) => {
-          const v = self.getVelocity();
-          const clampedV = gsap.utils.clamp(-1, 1, v / 2000);
-          const skewAngle = clampedV * 2.5;
-
-          if (skewTween) skewTween.kill();
-          skewTween = gsap.to(wrapper, {
-            skewY: skewAngle,
-            duration: 0.35,
-            ease: 'power3.out',
-            overwrite: 'auto',
-            onComplete: () => {
-              gsap.to(wrapper, { skewY: 0, duration: 0.35, ease: 'power2.out' });
-            },
-          });
+          targetProgress = self.progress;
         },
       });
 
       return () => {
         if (st) st.kill();
-        if (skewTween) skewTween.kill();
       };
     });
 
@@ -346,11 +495,9 @@
         width: '88vw',
         height: '28vh',
         borderRadius: '14px',
-        skewY: 0,
       });
-      gsap.set(img, { scale: 1.18 });
+      gsap.set(img, { scale: 1.15 });
       gsap.set(svg, { opacity: 0.85, display: 'block', x: 0, y: 0, scale: 1.0 });
-      if (playOverlay) gsap.set(playOverlay, { opacity: 0, scale: 0.9 });
 
       const mobileTl = gsap.timeline({ defaults: { ease: 'none' } });
 
@@ -360,17 +507,13 @@
         top: '18vh',
         left: '5vw',
         width: '90vw',
-        height: '60vh',
+        height: '62vh',
         borderRadius: '10px',
         duration: 1.0,
         ease: 'power2.inOut',
       }, 0.0);
 
       mobileTl.to(img, { scale: 1.0, duration: 1.0, ease: 'power2.inOut' }, 0.0);
-
-      if (playOverlay) {
-        mobileTl.to(playOverlay, { opacity: 1, scale: 1, duration: 0.40, ease: 'power2.out' }, 0.60);
-      }
 
       if (path) {
         mobileTl.to([path, aura], { strokeDashoffset: 0, duration: 1.0, ease: 'power1.inOut' }, 0.0);
@@ -388,12 +531,15 @@
       const mobileSt = ScrollTrigger.create({
         trigger: section,
         start: 'top top',
-        end: '+=250%',
+        end: '+=180%',
         pin: stage,
-        scrub: 1.0,
+        scrub: 0.4,
         anticipatePin: 1,
         invalidateOnRefresh: true,
         animation: mobileTl,
+        onUpdate: (self) => {
+          targetProgress = self.progress;
+        },
       });
 
       return () => {
@@ -401,7 +547,32 @@
       };
     });
 
-    console.log('[Elysium Motion] Section 2 initialized with exact 5-frame Lusion spatial choreography.');
+    // ── CONTINUOUS GSAP TICKER RENDER LOOP ──
+    let startTime = performance.now();
+    const tickerCallback = () => {
+      if (!webglApi) return;
+      const now = performance.now();
+      const elapsedSeconds = (now - startTime) * 0.001;
+
+      // Frame-rate independent velocity smoothing
+      currentProgress += (targetProgress - currentProgress) * 0.20;
+      rawVelocity = (currentProgress - lastProgress) * 60.0;
+      smoothedVelocity += (rawVelocity - smoothedVelocity) * 0.18;
+      lastProgress = currentProgress;
+
+      // Scale velocity to delicate silk distortion threshold (0.00 to 0.045)
+      const velocityScalar = Math.min(Math.abs(smoothedVelocity) * 0.042, 0.06);
+
+      webglApi.render(elapsedSeconds, velocityScalar, currentProgress);
+    };
+
+    gsap.ticker.add(tickerCallback);
+
+    window.addEventListener('resize', () => {
+      if (webglApi) webglApi.resize();
+    });
+
+    console.log('[Elysium Motion] Section 2 initialized with Lusion WebGL Scroll-Sync architecture.');
   }
 
   /**
@@ -1240,12 +1411,14 @@
     if (!section || typeof gsap === 'undefined' || typeof ScrollTrigger === 'undefined') return;
 
     const scrubLine = document.getElementById('craft-scrub-line');
+    const auraLine = document.getElementById('craft-aura-line');
     const stageItems = section.querySelectorAll('.craft-stage-item');
     const statCounter = document.getElementById('atelier-sqft-counter');
     let hasCountedStat = false;
 
     if (prefersReducedMotion || isCompactScreen()) {
       if (scrubLine) scrubLine.style.strokeDashoffset = '0';
+      if (auraLine) auraLine.style.strokeDashoffset = '0';
       stageItems.forEach((item) => {
         item.classList.add('is-active');
         const stageNum = item.querySelector('.craft-stage-num');

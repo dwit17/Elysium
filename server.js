@@ -330,7 +330,7 @@ function renderPage({ title, description, path, content, isHeroPage = false }) {
   <link rel="preload" href="/fonts/Geist-Light.ttf" as="font" type="font/ttf" crossorigin>
   <link rel="preload" href="/fonts/Geist-Medium.ttf" as="font" type="font/ttf" crossorigin>
   <link rel="stylesheet" href="/css/tailwind.min.css">
-  <link rel="stylesheet" href="/css/elysium.css?v=3.0">
+  <link rel="stylesheet" href="/css/elysium.css?v=3.3">
   <script type="application/ld+json">${JSON.stringify(orgSchema)}</script>
 </head>
 <body class="bg-black text-white selection:bg-white selection:text-black antialiased overflow-x-hidden">
@@ -403,14 +403,10 @@ function renderPage({ title, description, path, content, isHeroPage = false }) {
   <footer class="footer-fullscreen bg-black select-none text-stone-900 font-sans overflow-hidden relative">
     <div id="footer-decor-container" class="footer-decor-fullscreen px-6 sm:px-12 md:px-16 lg:px-24 py-8 sm:py-10 md:py-12 transition-all duration-700">
       
-      <!-- Background Wabi-Sabi Flatlay Image (Full Bleed) -->
+      <!-- Pure Atmospheric Dark Canvas + Volumetric Light Rays -->
       <div class="absolute inset-0 z-0 overflow-hidden pointer-events-none">
-        <img
-          id="footer-bg-img"
-          src="/images/footer-decor-bg.jpg"
-          alt="Elysium Wabi-Sabi Decor Flatlay Background"
-          class="w-full h-full object-cover object-center transition-all duration-700 brightness-[1.04] contrast-[1.02] saturate-[1.05]"
-        />
+        <!-- Volumetric WebGL Light Rays Focused Directly On Hanging Lamp Bulb -->
+        <div id="footer-rays-layer" class="absolute inset-0 z-10 pointer-events-none"></div>
         <div id="footer-light-beam"></div>
       </div>
 
@@ -439,55 +435,55 @@ function renderPage({ title, description, path, content, isHeroPage = false }) {
 
       <!-- Light Control Indicator Banner -->
       <div class="relative z-20 flex items-center justify-between pb-6">
-        <div class="inline-flex items-center gap-2 px-3.5 py-1.5 bg-black/40 backdrop-blur-md rounded-full text-[11px] font-mono uppercase tracking-[0.2em] text-white border border-white/20 shadow-md">
-          <span id="footer-status-dot" class="w-2 h-2 rounded-full bg-amber-400 animate-ping"></span>
+        <div id="footer-status-badge" class="inline-flex items-center gap-2 px-3.5 py-1.5 bg-black/10 backdrop-blur-md rounded-full text-[11px] font-mono uppercase tracking-[0.2em] text-[#181816] border border-black/10 shadow-sm transition-colors duration-500">
+          <span id="footer-status-dot" class="w-2 h-2 rounded-full bg-amber-500 animate-ping"></span>
           <span id="footer-status-text">Studio No. 029 • Atelier Illuminated</span>
         </div>
       </div>
 
       <!-- Content Overlay -->
-      <div class="relative z-20 space-y-12">
-        <div class="max-w-2xl space-y-3">
-          <span id="footer-brand-title" class="text-[10px] font-mono uppercase tracking-[0.3em] block text-stone-700 font-semibold transition-colors duration-500">${BRAND.fullName}</span>
-          <h2 id="footer-hero-head" class="text-3xl sm:text-4xl md:text-5xl font-light tracking-tight leading-[1.15] text-stone-900 font-normal transition-colors duration-500">
+      <div class="relative z-20 space-y-8 lg:space-y-10 my-auto">
+        <div class="max-w-2xl space-y-2.5">
+          <span id="footer-brand-title" class="text-[10px] sm:text-[11px] font-mono uppercase tracking-[0.3em] block font-semibold transition-colors duration-500">${BRAND.fullName}</span>
+          <h2 id="footer-hero-head" class="text-3xl sm:text-4xl md:text-5xl font-light tracking-tight leading-[1.15] font-normal transition-colors duration-500">
             Sculpting raw earth <br />
-            <span id="footer-hero-sub" class="italic font-serif text-stone-800 transition-colors duration-500">into timeless living sanctuaries</span>
+            <span id="footer-hero-sub" class="italic font-serif transition-colors duration-500">into timeless living sanctuaries</span>
           </h2>
         </div>
 
-        <div id="footer-grid-border" class="grid grid-cols-1 md:grid-cols-12 gap-10 pt-8 border-t border-stone-400/60 transition-colors duration-500">
-          <div class="md:col-span-5 space-y-5">
-            <span class="footer-lbl text-xs uppercase tracking-[0.3em] font-mono block font-semibold text-stone-800">Atelier Display</span>
-            <p class="footer-txt text-xs font-light leading-relaxed max-w-sm text-stone-800 font-normal">${BRAND.showroomSize}. Curated handcrafted decor pieces for discerning interiors in India and worldwide.</p>
-            <div class="space-y-2 pt-2">
-              <span class="footer-lbl text-[10px] uppercase tracking-[0.25em] font-mono block text-stone-700 font-semibold">Atelier Address</span>
-              <p class="footer-txt text-xs font-light leading-relaxed max-w-sm text-stone-900 font-normal">📍 ${BRAND.address}</p>
+        <div id="footer-grid-border" class="grid grid-cols-1 md:grid-cols-12 gap-8 lg:gap-10 pt-6 lg:pt-8 border-t transition-colors duration-500">
+          <div class="md:col-span-5 space-y-4">
+            <span class="footer-lbl text-xs uppercase tracking-[0.3em] font-mono block font-semibold">Atelier Display</span>
+            <p class="footer-txt text-xs font-light leading-relaxed max-w-sm font-normal">${BRAND.showroomSize}. Curated handcrafted decor pieces for discerning interiors in India and worldwide.</p>
+            <div class="space-y-1.5 pt-1">
+              <span class="footer-lbl text-[10px] uppercase tracking-[0.25em] font-mono block font-semibold">Atelier Address</span>
+              <p class="footer-txt text-xs font-light leading-relaxed max-w-sm font-normal">📍 ${BRAND.address}</p>
             </div>
           </div>
 
-          <div class="md:col-span-4 space-y-5">
-            <span class="footer-lbl text-[10px] uppercase tracking-[0.25em] font-mono block text-stone-700 font-semibold">Enquiries & Contact</span>
-            <div class="text-xs space-y-2.5 font-light">
-              <p class="footer-txt text-stone-900 font-normal">📞 <a href="tel:${BRAND.phoneDisplay}" class="hover:underline font-medium">+91 ${BRAND.phoneDisplay}</a></p>
-              <p class="footer-txt text-stone-800">Email: ${BRAND.email}</p>
+          <div class="md:col-span-4 space-y-4">
+            <span class="footer-lbl text-[10px] uppercase tracking-[0.25em] font-mono block font-semibold">Enquiries & Contact</span>
+            <div class="text-xs space-y-2 font-light">
+              <p class="footer-txt font-normal">📞 <a href="tel:${BRAND.phoneDisplay}" class="hover:underline font-medium">+91 ${BRAND.phoneDisplay}</a></p>
+              <p class="footer-txt">Email: ${BRAND.email}</p>
             </div>
-            <div class="space-y-2 pt-2">
-              <span class="footer-lbl text-[10px] uppercase tracking-[0.25em] font-mono block text-stone-700 font-semibold">Showroom Hours</span>
-              <p class="footer-txt text-xs text-stone-900 font-normal">⏰ ${BRAND.timing}</p>
+            <div class="space-y-1.5 pt-1">
+              <span class="footer-lbl text-[10px] uppercase tracking-[0.25em] font-mono block font-semibold">Showroom Hours</span>
+              <p class="footer-txt text-xs font-normal">⏰ ${BRAND.timing}</p>
             </div>
           </div>
 
-          <div class="md:col-span-3 space-y-5">
-            <span class="footer-lbl text-[10px] uppercase tracking-[0.25em] font-mono block text-stone-700 font-semibold">Navigation</span>
-            <ul class="space-y-2.5 text-xs text-stone-800 font-medium">
-              <li><a href="/philosophy" class="hover:underline">Philosophy</a></li>
-              <li><a href="/artisan-pieces" class="hover:underline">Artisan Collection</a></li>
-              <li><a href="/materiality" class="hover:underline">Tactile Materiality</a></li>
-              <li><a href="/our-story" class="hover:underline">Our Story</a></li>
-              <li><a href="/contact" class="hover:underline">Contact & Enquiries</a></li>
+          <div class="md:col-span-3 space-y-4">
+            <span class="footer-lbl text-[10px] uppercase tracking-[0.25em] font-mono block font-semibold">Navigation</span>
+            <ul class="space-y-2 text-xs font-medium">
+              <li><a href="/philosophy" class="hover:underline transition-colors">Philosophy</a></li>
+              <li><a href="/artisan-pieces" class="hover:underline transition-colors">Artisan Collection</a></li>
+              <li><a href="/materiality" class="hover:underline transition-colors">Tactile Materiality</a></li>
+              <li><a href="/our-story" class="hover:underline transition-colors">Our Story</a></li>
+              <li><a href="/contact" class="hover:underline transition-colors">Contact & Enquiries</a></li>
             </ul>
             <div class="pt-2">
-              <a href="${whatsappUrl}" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-2 px-5 py-2.5 bg-stone-900 text-white rounded-lg text-[10px] uppercase tracking-[0.2em] shadow-md hover:bg-black">
+              <a href="${whatsappUrl}" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-2 px-5 py-2.5 bg-[#181816] text-white rounded-lg text-[10px] uppercase tracking-[0.2em] font-semibold shadow-md hover:bg-black transition-all">
                 WhatsApp Direct &rarr;
               </a>
             </div>
@@ -495,7 +491,7 @@ function renderPage({ title, description, path, content, isHeroPage = false }) {
         </div>
       </div>
 
-      <div id="footer-bottom-strip" class="relative z-20 pt-8 mt-10 border-t border-stone-400/60 flex flex-col sm:flex-row items-center justify-between text-[10px] uppercase tracking-[0.2em] font-mono text-stone-800 font-semibold gap-4">
+      <div id="footer-bottom-strip" class="relative z-20 pt-6 mt-6 border-t flex flex-col sm:flex-row items-center justify-between text-[10px] uppercase tracking-[0.2em] font-mono font-semibold gap-4 transition-colors duration-500">
         <div class="flex items-center gap-2">
           <span class="w-2 h-2 rounded-full bg-emerald-600 animate-pulse"></span>
           <span>© ${new Date().getFullYear()} ${BRAND.fullName}. ALL RIGHTS RESERVED.</span>
@@ -514,7 +510,6 @@ function renderPage({ title, description, path, content, isHeroPage = false }) {
       var btn = document.getElementById('footer-bulb-btn');
       var bell = document.getElementById('footer-bell-container');
       var container = document.getElementById('footer-decor-container');
-      var img = document.getElementById('footer-bg-img');
       var beam = document.getElementById('footer-light-beam');
       var statusTxt = document.getElementById('footer-status-text');
       var statusDot = document.getElementById('footer-status-dot');
@@ -532,18 +527,23 @@ function renderPage({ title, description, path, content, isHeroPage = false }) {
           }
         }
 
+        if (typeof window.setFooterLightRaysActive === 'function') {
+          window.setFooterLightRaysActive(isLit);
+        }
+
+        var badge = document.getElementById('footer-status-badge');
         if (isLit) {
           if(container) container.classList.remove('footer-night-mode');
-          if(img) img.style.filter = 'brightness(1.04) contrast(1.02) saturate(1.05)';
           if(beam) beam.style.opacity = '1';
           if(statusTxt) statusTxt.innerText = 'Studio No. 029 • Atelier Illuminated';
-          if(statusDot) statusDot.className = 'w-2 h-2 rounded-full bg-amber-400 animate-ping';
+          if(statusDot) statusDot.className = 'w-2 h-2 rounded-full bg-amber-500 animate-ping';
+          if(badge) badge.className = 'inline-flex items-center gap-2 px-3.5 py-1.5 bg-black/10 backdrop-blur-md rounded-full text-[11px] font-mono uppercase tracking-[0.2em] text-[#181816] border border-black/10 shadow-sm transition-colors duration-500';
         } else {
           if(container) container.classList.add('footer-night-mode');
-          if(img) img.style.filter = 'brightness(0.3) contrast(1.15) saturate(0.8)';
           if(beam) beam.style.opacity = '0';
           if(statusTxt) statusTxt.innerText = 'Studio No. 029 • Night Mode (Dimmed)';
-          if(statusDot) statusDot.className = 'w-2 h-2 rounded-full bg-stone-600';
+          if(statusDot) statusDot.className = 'w-2 h-2 rounded-full bg-stone-700';
+          if(badge) badge.className = 'inline-flex items-center gap-2 px-3.5 py-1.5 bg-black/40 backdrop-blur-md rounded-full text-[11px] font-mono uppercase tracking-[0.2em] text-white border border-white/20 shadow-md transition-colors duration-500';
         }
       }
 
@@ -568,8 +568,10 @@ function renderPage({ title, description, path, content, isHeroPage = false }) {
   <script src="/js/vendor/lenis.min.js"></script>
 
   <script src="/js/main.js"></script>
+  <script src="/js/clickSpark.js?v=1.0"></script>
+  <script src="/js/footerLightRays.js"></script>
   ${isHeroPage ? '<script src="/js/heroCanvas.js"></script>' : ''}
-  <script src="/js/homeAnimations.js?v=3.0"></script>
+  <script src="/js/homeAnimations.js?v=3.3"></script>
   <script>
     (function() {
       if (location.hostname === 'localhost' || location.hostname === '127.0.0.1') {
@@ -780,30 +782,24 @@ app.get('/', (req, res) => {
       <!-- Pinned Viewport Camera Stage (100vw x 100vh) -->
       <div class="scene-stage relative w-full h-screen overflow-hidden flex items-center justify-center" id="scene-stage">
         
-        <!-- Top Crosshair Grid Bar -->
-        <div class="scene-grid-bar scene-grid-top absolute top-0 left-0 right-0 z-30 flex justify-between items-center px-6 sm:px-12 py-4 pointer-events-none border-b border-white/5">
-          <span class="scene-crosshair text-[12px] font-mono text-amber-400/90 font-light">+</span>
-          <span class="scene-crosshair text-[12px] font-mono text-amber-400/90 font-light hidden sm:inline">+</span>
-          <span class="text-[9px] font-mono tracking-[0.35em] uppercase text-stone-400/80">SCROLL TO EXPLORE</span>
-          <span class="scene-crosshair text-[12px] font-mono text-amber-400/90 font-light hidden sm:inline">+</span>
-          <span class="scene-crosshair text-[12px] font-mono text-amber-400/90 font-light">+</span>
-        </div>
-
         <!-- Spatial World Canvas (Translates & scales in 2D space) -->
         <div class="scene-world absolute inset-0 w-full h-full pointer-events-none" id="scene-world">
           
-          <!-- Oversized Spatial Decorative SVG Trajectory Layer -->
-          <svg class="scene-path absolute pointer-events-none overflow-visible z-0" id="scene-svg" viewBox="0 0 2135 1318" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <!-- Expansive Spatial Decorative SVG Trajectory Layer -->
+          <svg class="scene-path absolute pointer-events-none overflow-visible z-0" id="scene-svg" viewBox="0 0 2400 1350" fill="none" xmlns="http://www.w3.org/2000/svg" style="shape-rendering:geometricPrecision;">
             <defs>
               <linearGradient id="sceneStrokeGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-                <stop offset="0%" stop-color="#E600FF" stop-opacity="0.9" />
-                <stop offset="35%" stop-color="#B5804B" stop-opacity="0.95" />
-                <stop offset="70%" stop-color="#D4AF37" stop-opacity="1" />
-                <stop offset="100%" stop-color="#E600FF" stop-opacity="0.9" />
+                <stop offset="0%" stop-color="#09090b" stop-opacity="0.95" />
+                <stop offset="18%" stop-color="#27272a" stop-opacity="1" />
+                <stop offset="40%" stop-color="#71717a" stop-opacity="1" />
+                <stop offset="55%" stop-color="#f4f4f5" stop-opacity="1" />
+                <stop offset="70%" stop-color="#a1a1aa" stop-opacity="1" />
+                <stop offset="88%" stop-color="#3f3f46" stop-opacity="1" />
+                <stop offset="100%" stop-color="#09090b" stop-opacity="0.95" />
               </linearGradient>
-              <filter id="sceneGlow" x="-25%" y="-25%" width="150%" height="150%">
-                <feGaussianBlur in="SourceGraphic" stdDeviation="10" result="blur1" />
-                <feGaussianBlur in="SourceGraphic" stdDeviation="26" result="blur2" />
+              <filter id="sceneGlow" x="-20%" y="-20%" width="140%" height="140%">
+                <feGaussianBlur in="SourceGraphic" stdDeviation="12" result="blur1" />
+                <feGaussianBlur in="SourceGraphic" stdDeviation="28" result="blur2" />
                 <feMerge>
                   <feMergeNode in="blur2" />
                   <feMergeNode in="blur1" />
@@ -815,53 +811,42 @@ app.get('/', (req, res) => {
             <!-- Glowing Aura Path -->
             <path
               class="scene-path-aura"
-              d="M8.81226 17.9429C8.81226 17.9429 1005.34 507.443 879.812 836.443C828.301 971.455 468.264 1202.77 329.312 1242.44C162.887 1289.96 -4.06923 923.35 226.812 788.443C481.813 639.443 645.734 1197.94 994.812 1197.94C1117.31 1197.94 1227.81 1102.44 1346.31 1015.94C1490.53 910.667 1600.81 1108.44 1658.31 1242.44C1736.5 1424.65 2100.67 1082.64 2114.31 1280.44"
+              d="M -60 140 C 460 120, 940 380, 1280 660 C 1620 940, 1980 1180, 2320 1040 C 2520 960, 2540 520, 2260 320 C 1980 120, 1420 180, 920 460 C 420 740, 160 1120, 560 1260 C 960 1400, 1740 1280, 2460 1180"
               stroke="url(#sceneStrokeGrad)"
-              stroke-width="54"
+              stroke-width="60"
               stroke-linecap="round"
               stroke-linejoin="round"
               filter="url(#sceneGlow)"
-              opacity="0.5"
+              opacity="0.38"
             />
 
             <!-- Core SVG Path Geometry -->
             <path
               id="scene-svg-path"
               class="scene-path-core"
-              d="M8.81226 17.9429C8.81226 17.9429 1005.34 507.443 879.812 836.443C828.301 971.455 468.264 1202.77 329.312 1242.44C162.887 1289.96 -4.06923 923.35 226.812 788.443C481.813 639.443 645.734 1197.94 994.812 1197.94C1117.31 1197.94 1227.81 1102.44 1346.31 1015.94C1490.53 910.667 1600.81 1108.44 1658.31 1242.44C1736.5 1424.65 2100.67 1082.64 2114.31 1280.44"
-              stroke="#E600FF"
-              stroke-width="38"
+              d="M -60 140 C 460 120, 940 380, 1280 660 C 1620 940, 1980 1180, 2320 1040 C 2520 960, 2540 520, 2260 320 C 1980 120, 1420 180, 920 460 C 420 740, 160 1120, 560 1260 C 960 1400, 1740 1280, 2460 1180"
+              stroke="url(#sceneStrokeGrad)"
+              stroke-width="42"
               stroke-linecap="round"
               stroke-linejoin="round"
               fill="none"
             />
           </svg>
 
-          <!-- Spatial Image Frame Wrapper (Lusion-style Showreel Container) -->
+          <!-- Spatial Image Frame Wrapper (Lusion-style Showreel Container with WebGL Canvas) -->
           <div class="scene-image-wrapper absolute overflow-hidden shadow-2xl z-10 cursor-pointer" id="scene-image-wrapper">
+            <!-- Hardware-Accelerated WebGL Liquid Canvas Layer -->
+            <canvas id="scene-webgl-canvas" class="scene-webgl-canvas absolute inset-0 w-full h-full block z-0" data-src="/images/atelier-immersive.jpg"></canvas>
+
+            <!-- Fallback DOM Image (for no-WebGL environments) -->
             <img
               src="/images/atelier-immersive.jpg"
               alt="Elysium Artisan Interior Sanctuary"
-              class="scene-image w-full h-full object-cover"
+              class="scene-image w-full h-full object-cover z-0"
               id="scene-image"
               loading="eager"
             />
-            <div class="scene-image-vignette absolute inset-0 bg-gradient-to-t from-black/60 via-black/20 to-black/25 pointer-events-none"></div>
-
-            <!-- In-Frame Film Reel Label (Top Left) -->
-            <div class="absolute top-4 left-5 pointer-events-none z-20 flex items-center gap-2">
-              <span class="w-1.5 h-1.5 rounded-full bg-amber-400 animate-pulse"></span>
-              <span class="text-[9px] font-mono tracking-[0.25em] uppercase text-stone-300/80">REEL 01 • VOLTERRA &amp; RAJKOT</span>
-            </div>
-
-            <!-- Large Centered PLAY (▶) REEL Overlay (Matching Lusion Frame 4-5) -->
-            <div class="scene-play-reel-overlay absolute inset-0 flex items-center justify-center pointer-events-none z-20 select-none" id="scene-play-reel-overlay">
-              <span class="reel-word-left text-3xl sm:text-5xl lg:text-6xl font-light text-white tracking-[0.2em] uppercase mr-3 sm:mr-5">PLAY</span>
-              <div class="reel-play-btn w-10 h-10 sm:w-14 sm:h-14 rounded-full bg-white text-black flex items-center justify-center shadow-2xl mx-1 sm:mx-3 transition-transform hover:scale-110">
-                <svg class="w-3.5 h-3.5 sm:w-5 sm:h-5 fill-current translate-x-0.5" viewBox="0 0 24 24"><polygon points="6,4 20,12 6,20" /></svg>
-              </div>
-              <span class="reel-word-right text-3xl sm:text-5xl lg:text-6xl font-light text-white tracking-[0.2em] uppercase ml-3 sm:mr-5">REEL</span>
-            </div>
+            <div class="scene-image-vignette absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-black/20 pointer-events-none z-10"></div>
           </div>
 
         </div>
@@ -888,21 +873,6 @@ app.get('/', (req, res) => {
           </div>
         </div>
 
-        <!-- Floating Interactive Approach Pill Button (Matches Lusion "• OUR APPROACH") -->
-        <a href="/philosophy" class="scene-pill-btn absolute z-30 pointer-events-auto flex items-center gap-2.5 px-5 py-2.5 bg-white text-black rounded-full shadow-2xl text-[11px] font-medium tracking-[0.15em] uppercase hover:bg-stone-200 transition-all hover:scale-105" id="scene-pill-btn">
-          <span class="w-1.5 h-1.5 rounded-full bg-black"></span>
-          <span>OUR PHILOSOPHY</span>
-        </a>
-
-        <!-- Bottom Crosshair Grid Bar -->
-        <div class="scene-grid-bar scene-grid-bottom absolute bottom-0 left-0 right-0 z-30 flex justify-between items-center px-6 sm:px-12 py-4 pointer-events-none border-t border-white/5">
-          <span class="scene-crosshair text-[12px] font-mono text-amber-400/90 font-light">+</span>
-          <span class="scene-crosshair text-[12px] font-mono text-amber-400/90 font-light hidden sm:inline">+</span>
-          <span class="text-[9.5px] font-mono tracking-[0.25em] text-stone-400/80">22.2587° N, 70.8022° E • VOLTERRA &amp; RAJKOT</span>
-          <span class="scene-crosshair text-[12px] font-mono text-amber-400/90 font-light hidden sm:inline">+</span>
-          <span class="scene-crosshair text-[12px] font-mono text-amber-400/90 font-light">+</span>
-        </div>
-
       </div>
     </section>
 
@@ -923,16 +893,17 @@ app.get('/', (req, res) => {
               fill="none"
               preserveAspectRatio="none"
               xmlns="http://www.w3.org/2000/svg"
+              style="shape-rendering:geometricPrecision;"
             >
               <defs>
                 <linearGradient id="horizontalStrokeGrad" x1="0%" y1="0%" x2="100%" y2="50%">
-                  <stop offset="0%" stop-color="#fbbf24" stop-opacity="0.8" />
-                  <stop offset="15%" stop-color="#a855f7" stop-opacity="0.9" />
-                  <stop offset="35%" stop-color="#c084fc" stop-opacity="1" />
-                  <stop offset="55%" stop-color="#7c3aed" stop-opacity="0.9" />
-                  <stop offset="75%" stop-color="#e9d5ff" stop-opacity="1" />
-                  <stop offset="90%" stop-color="#a855f7" stop-opacity="0.9" />
-                  <stop offset="100%" stop-color="#fbbf24" stop-opacity="0.85" />
+                  <stop offset="0%" stop-color="#09090b" stop-opacity="0.95" />
+                  <stop offset="15%" stop-color="#27272a" stop-opacity="1" />
+                  <stop offset="35%" stop-color="#71717a" stop-opacity="1" />
+                  <stop offset="50%" stop-color="#f4f4f5" stop-opacity="1" />
+                  <stop offset="65%" stop-color="#a1a1aa" stop-opacity="1" />
+                  <stop offset="85%" stop-color="#3f3f46" stop-opacity="1" />
+                  <stop offset="100%" stop-color="#09090b" stop-opacity="0.95" />
                 </linearGradient>
                 <filter id="horizontalGlow" x="-20%" y="-20%" width="140%" height="140%">
                   <feGaussianBlur in="SourceGraphic" stdDeviation="10" result="blur1" />
@@ -951,7 +922,7 @@ app.get('/', (req, res) => {
                 d="M 0 160 C 420 220, 850 420, 1280 340 C 1680 260, 1850 560, 2040 520 C 2380 460, 2750 220, 3180 310 C 3580 390, 3780 720, 3980 670 C 4320 610, 4680 320, 5080 410 C 5480 490, 5680 760, 5880 710 C 6220 630, 6600 360, 7000 440 C 7380 510, 7550 780, 7680 740"
                 fill="none"
                 stroke="url(#horizontalStrokeGrad)"
-                stroke-width="20"
+                stroke-width="54"
                 stroke-linecap="round"
                 stroke-linejoin="round"
                 filter="url(#horizontalGlow)"
@@ -964,16 +935,16 @@ app.get('/', (req, res) => {
                 d="M 0 160 C 420 220, 850 420, 1280 340 C 1680 260, 1850 560, 2040 520 C 2380 460, 2750 220, 3180 310 C 3580 390, 3780 720, 3980 670 C 4320 610, 4680 320, 5080 410 C 5480 490, 5680 760, 5880 710 C 6220 630, 6600 360, 7000 440 C 7380 510, 7550 780, 7680 740"
                 fill="none"
                 stroke="url(#horizontalStrokeGrad)"
-                stroke-width="4.5"
+                stroke-width="36"
                 stroke-linecap="round"
                 stroke-linejoin="round"
               />
 
               <!-- Luminous Leading Edge Light Particle / Orb -->
               <g class="horizontal-path-head" style="opacity: 0;">
-                <circle cx="0" cy="0" r="16" fill="#c084fc" opacity="0.4" filter="url(#horizontalGlow)" />
-                <circle cx="0" cy="0" r="7" fill="#fef3c7" opacity="0.9" />
-                <circle cx="0" cy="0" r="3" fill="#ffffff" />
+                <circle cx="0" cy="0" r="18" fill="#e4e4e7" opacity="0.45" filter="url(#horizontalGlow)" />
+                <circle cx="0" cy="0" r="8" fill="#ffffff" opacity="0.95" />
+                <circle cx="0" cy="0" r="3.5" fill="#09090b" />
               </g>
             </svg>
           </div>
