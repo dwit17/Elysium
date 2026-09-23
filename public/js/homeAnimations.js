@@ -90,27 +90,31 @@
     const svg = section.querySelector('.scene-path') || section.querySelector('.atelier-reveal__path');
     const path = section.querySelector('#scene-svg-path') || section.querySelector('#atelier-reveal-path') || section.querySelector('.scene-path-core');
     const aura = section.querySelector('.scene-path-aura') || section.querySelector('.atelier-reveal__path-aura');
-    const markers = section.querySelectorAll('.scene-marker, .atelier-marker');
+    const pill = section.querySelector('#scene-pill-btn');
+    const playOverlay = section.querySelector('#scene-play-reel-overlay');
+    const crosshairs = section.querySelectorAll('.scene-crosshair');
 
     if (prefersReducedMotion) {
       if (intro) gsap.set(intro, { opacity: 1, y: 0 });
-      if (wrapper) gsap.set(wrapper, { width: '100%', height: '52vh', top: 'auto', left: 'auto', borderRadius: '16px' });
+      if (wrapper) gsap.set(wrapper, { width: '86vw', height: '62vh', top: '18vh', left: '7vw', borderRadius: '12px' });
       if (img) gsap.set(img, { scale: 1 });
-      if (path) gsap.set(path, { strokeDashoffset: 0, opacity: 0 });
-      if (aura) gsap.set(aura, { strokeDashoffset: 0, opacity: 0 });
+      if (path) gsap.set(path, { strokeDashoffset: 0, opacity: 0.85 });
+      if (aura) gsap.set(aura, { strokeDashoffset: 0, opacity: 0.5 });
+      if (pill) gsap.set(pill, { opacity: 1, top: '18vh', left: '65vw' });
+      if (playOverlay) gsap.set(playOverlay, { opacity: 1, scale: 1 });
       return;
     }
 
-    // 1. Dynamic SVG Path Length Measurement (single computation)
+    // 1. Dynamic SVG Path Length Measurement & Initial State (Already ~28% visible at start)
     let pathLen = 3200;
     if (path) {
       try {
         pathLen = path.getTotalLength() || 3200;
         path.style.strokeDasharray = `${pathLen}`;
-        path.style.strokeDashoffset = `${pathLen * 0.95}`; // Start with 5% visible
+        path.style.strokeDashoffset = `${pathLen * 0.72}`; // ~28% drawn initially
         if (aura) {
           aura.style.strokeDasharray = `${pathLen}`;
-          aura.style.strokeDashoffset = `${pathLen * 0.95}`;
+          aura.style.strokeDashoffset = `${pathLen * 0.72}`;
         }
       } catch (e) {
         pathLen = 3200;
@@ -121,171 +125,198 @@
 
     // ── DESKTOP & LAPTOP (>= 1024px) ──
     mm.add('(min-width: 1024px)', () => {
-      // Phase 1 (0% - 15%): Initial Composition
+      // Initial State (Matching Lusion Screenshots 1 & 2)
       gsap.set(intro, { opacity: 1, y: 0 });
       gsap.set(wrapper, {
-        top: '34vh',
-        left: '21vw',
-        width: '58vw',
-        height: '30vh',
-        borderRadius: '16px',
+        top: '56vh',
+        left: '6vw',
+        width: '44vw',
+        height: '28vh',
+        borderRadius: '20px',
         skewY: 0,
       });
       gsap.set(img, { scale: 1.25, objectPosition: '50% 50%' });
-      gsap.set(svg, { x: 0, y: 0, scale: 1.0, opacity: 1, display: 'block' });
-      gsap.set(markers, { opacity: 0, y: 8 });
+      gsap.set(svg, { x: '0vw', y: '0vh', scale: 1.0, rotation: 0, opacity: 1, display: 'block' });
+      if (pill) gsap.set(pill, { opacity: 0, top: '58vh', left: '54vw' });
+      if (playOverlay) gsap.set(playOverlay, { opacity: 0, scale: 0.85 });
+      if (crosshairs) gsap.set(crosshairs, { opacity: 0.6 });
 
-      // ONE Master ScrollTrigger Timeline
-      const masterTl = gsap.timeline({ defaults: { ease: 'none' } });
+      // ONE Master ScrollTrigger Timeline: 0.00 to 1.00 Continuous Progress with Instant Micro-Scroll Elasticity
+      const masterTl = gsap.timeline({ defaults: { ease: 'power1.inOut' } });
 
-      // Phase 1 → 2 (15% - 35%): Intro fades out + first spatial movement
-      masterTl.to(intro, { opacity: 0, y: -45, duration: 0.20, ease: 'power2.inOut' }, 0.12);
+      // ── PHASE 1 (0% → 28%): Instant Micro-Scroll Response (Heading lifts + card begins dynamic expansion) ──
+      masterTl.to(intro, {
+        opacity: 0,
+        y: -100,
+        duration: 0.28,
+        ease: 'power2.out',
+      }, 0.0);
 
       masterTl.to(wrapper, {
-        top: '22vh',
-        left: '14vw',
-        width: '72vw',
-        height: '48vh',
-        borderRadius: '12px',
-        duration: 0.20,
+        top: '38vh',
+        left: '6vw',
+        width: '56vw',
+        height: '38vh',
+        borderRadius: '18px',
+        duration: 0.28,
         ease: 'power1.inOut',
-      }, 0.15);
+      }, 0.0);
 
       masterTl.to(img, {
         scale: 1.18,
-        duration: 0.20,
+        objectPosition: '49% 51%',
+        duration: 0.28,
         ease: 'power1.inOut',
-      }, 0.15);
+      }, 0.0);
+
+      if (pill) {
+        masterTl.to(pill, {
+          opacity: 1,
+          top: '48vh',
+          left: '56vw',
+          duration: 0.28,
+          ease: 'power1.out',
+        }, 0.0);
+      }
 
       if (path) {
         masterTl.to([path, aura], {
-          strokeDashoffset: pathLen * 0.55,
-          duration: 0.20,
+          strokeDashoffset: pathLen * 0.44,
+          duration: 0.28,
           ease: 'power1.inOut',
-        }, 0.15);
+        }, 0.0);
       }
-
       masterTl.to(svg, {
-        x: '-5vw',
-        y: '3vh',
-        scale: 1.05,
-        duration: 0.20,
+        x: '-8vw',
+        y: '2vh',
+        scale: 1.06,
+        rotation: -1.2,
+        duration: 0.28,
         ease: 'power1.inOut',
-      }, 0.15);
+      }, 0.0);
 
-      // Phase 3 (35% - 60%): Spatial expansion into dominant visual
+      // ── PHASE 2 (28% → 68%): Core Spatial Weave (Card glides to center-left with subtle skew + PLAY REEL reveals) ──
       masterTl.to(wrapper, {
-        top: '8vh',
-        left: '5vw',
-        width: '90vw',
-        height: '78vh',
-        borderRadius: '6px',
-        duration: 0.25,
-        ease: 'power2.inOut',
-      }, 0.35);
+        top: '22vh',
+        left: '6.5vw',
+        width: '72vw',
+        height: '50vh',
+        borderRadius: '15px',
+        skewY: -1.2,
+        duration: 0.40,
+        ease: 'power1.inOut',
+      }, 0.28);
 
       masterTl.to(img, {
         scale: 1.10,
-        objectPosition: '52% 48%',
-        duration: 0.25,
-        ease: 'power2.inOut',
-      }, 0.35);
-
-      if (path) {
-        masterTl.to([path, aura], {
-          strokeDashoffset: pathLen * 0.20,
-          duration: 0.25,
-          ease: 'power1.inOut',
-        }, 0.35);
-      }
-
-      masterTl.to(svg, {
-        x: '-10vw',
-        y: '6vh',
-        scale: 1.10,
-        duration: 0.25,
+        objectPosition: '51% 49%',
+        duration: 0.40,
         ease: 'power1.inOut',
-      }, 0.35);
+      }, 0.28);
 
-      // Phase 4 (60% - 85%): Immersion into viewport dimensions
-      masterTl.to(wrapper, {
-        top: '0vh',
-        left: '0vw',
-        width: '100vw',
-        height: '100vh',
-        borderRadius: '0px',
-        duration: 0.25,
-        ease: 'power2.inOut',
-      }, 0.60);
+      if (pill) {
+        masterTl.to(pill, {
+          top: '16vh',
+          left: '62vw',
+          duration: 0.40,
+          ease: 'power1.inOut',
+        }, 0.28);
+      }
 
-      masterTl.to(img, {
-        scale: 1.02,
-        duration: 0.25,
-        ease: 'power2.inOut',
-      }, 0.60);
+      if (playOverlay) {
+        masterTl.to(playOverlay, {
+          opacity: 0.75,
+          scale: 0.95,
+          duration: 0.40,
+          ease: 'power1.inOut',
+        }, 0.28);
+      }
 
       if (path) {
         masterTl.to([path, aura], {
-          strokeDashoffset: pathLen * 0.03,
-          duration: 0.25,
+          strokeDashoffset: pathLen * 0.12,
+          duration: 0.40,
           ease: 'power1.inOut',
-        }, 0.60);
+        }, 0.28);
       }
-
       masterTl.to(svg, {
-        x: '-14vw',
-        y: '8vh',
+        x: '-18vw',
+        y: '-5vh',
         scale: 1.14,
-        opacity: 0.25,
-        duration: 0.25,
-        ease: 'power2.inOut',
-      }, 0.60);
+        rotation: 1.5,
+        duration: 0.40,
+        ease: 'power1.inOut',
+      }, 0.28);
 
-      // Phase 5 (85% - 100%): Fullscreen spatial immersion & technical markers
+      // ── PHASE 3 (68% → 100%): Final Centered Majestic Canvas with Full PLAY REEL ──
+      masterTl.to(wrapper, {
+        top: '17vh',
+        left: '7vw',
+        width: '86vw',
+        height: '64vh',
+        borderRadius: '12px',
+        skewY: 0,
+        duration: 0.32,
+        ease: 'power2.out',
+      }, 0.68);
+
       masterTl.to(img, {
         scale: 1.0,
         objectPosition: '50% 50%',
-        duration: 0.15,
-        ease: 'power1.out',
-      }, 0.85);
+        duration: 0.32,
+        ease: 'power2.out',
+      }, 0.68);
+
+      if (playOverlay) {
+        masterTl.to(playOverlay, {
+          opacity: 1,
+          scale: 1.0,
+          duration: 0.32,
+          ease: 'power2.out',
+        }, 0.68);
+      }
 
       if (path) {
         masterTl.to([path, aura], {
           strokeDashoffset: 0,
-          duration: 0.15,
+          duration: 0.32,
+          ease: 'power2.out',
+        }, 0.68);
+      }
+      masterTl.to(svg, {
+        x: '-24vw',
+        y: '-9vh',
+        scale: 1.18,
+        rotation: 0,
+        opacity: 0.85,
+        duration: 0.32,
+        ease: 'power2.out',
+      }, 0.68);
+
+      if (crosshairs) {
+        masterTl.to(crosshairs, {
+          opacity: 1,
+          duration: 0.32,
           ease: 'power1.out',
-        }, 0.85);
+        }, 0.68);
       }
 
-      masterTl.to(svg, {
-        opacity: 0,
-        duration: 0.15,
-        ease: 'power1.out',
-      }, 0.85);
-
-      masterTl.to(markers, {
-        opacity: 1,
-        y: 0,
-        stagger: 0.02,
-        duration: 0.15,
-        ease: 'power2.out',
-      }, 0.85);
-
-      // ScrollTrigger Pinning across 400% scroll distance with Velocity Skew
+      // Master ScrollTrigger with 320% Scroll Distance, Smooth 1.2s Scrub & Elastic Inertia Skew
       let skewTween = null;
       const st = ScrollTrigger.create({
         trigger: section,
         start: 'top top',
-        end: '+=400%',
+        end: '+=320%',
         pin: stage,
-        scrub: 1.0,
+        scrub: 1.2,
         anticipatePin: 1,
+        fastScrollEnd: true,
         invalidateOnRefresh: true,
         animation: masterTl,
         onUpdate: (self) => {
           const v = self.getVelocity();
-          const clampedV = gsap.utils.clamp(-1, 1, v / 1800);
-          const skewAngle = clampedV * 3.5;
+          const clampedV = gsap.utils.clamp(-1, 1, v / 2000);
+          const skewAngle = clampedV * 2.5;
 
           if (skewTween) skewTween.kill();
           skewTween = gsap.to(wrapper, {
@@ -310,39 +341,49 @@
     mm.add('(max-width: 1023px)', () => {
       gsap.set(intro, { opacity: 1, y: 0 });
       gsap.set(wrapper, {
-        top: '38vh',
+        top: '56vh',
         left: '6vw',
         width: '88vw',
         height: '28vh',
-        borderRadius: '12px',
+        borderRadius: '14px',
         skewY: 0,
       });
-      gsap.set(img, { scale: 1.20 });
+      gsap.set(img, { scale: 1.18 });
       gsap.set(svg, { opacity: 0.85, display: 'block', x: 0, y: 0, scale: 1.0 });
-      gsap.set(markers, { opacity: 0, y: 6 });
+      if (playOverlay) gsap.set(playOverlay, { opacity: 0, scale: 0.9 });
 
       const mobileTl = gsap.timeline({ defaults: { ease: 'none' } });
 
-      mobileTl.to(intro, { opacity: 0, y: -30, duration: 0.20, ease: 'power2.inOut' }, 0.10);
+      mobileTl.to(intro, { opacity: 0, y: -60, duration: 0.30, ease: 'power2.inOut' }, 0.0);
 
       mobileTl.to(wrapper, {
-        top: '0vh',
-        left: '0vw',
-        width: '100vw',
-        height: '100vh',
-        borderRadius: '0px',
-        duration: 0.65,
+        top: '18vh',
+        left: '5vw',
+        width: '90vw',
+        height: '60vh',
+        borderRadius: '10px',
+        duration: 1.0,
         ease: 'power2.inOut',
-      }, 0.20);
+      }, 0.0);
 
-      mobileTl.to(img, { scale: 1.0, duration: 0.65, ease: 'power2.inOut' }, 0.20);
+      mobileTl.to(img, { scale: 1.0, duration: 1.0, ease: 'power2.inOut' }, 0.0);
 
-      if (path) {
-        mobileTl.to([path, aura], { strokeDashoffset: 0, duration: 0.65, ease: 'power1.inOut' }, 0.15);
+      if (playOverlay) {
+        mobileTl.to(playOverlay, { opacity: 1, scale: 1, duration: 0.40, ease: 'power2.out' }, 0.60);
       }
 
-      mobileTl.to(svg, { opacity: 0, duration: 0.20, ease: 'power2.inOut' }, 0.65);
-      mobileTl.to(markers, { opacity: 1, y: 0, stagger: 0.03, duration: 0.18, ease: 'power2.out' }, 0.82);
+      if (path) {
+        mobileTl.to([path, aura], { strokeDashoffset: 0, duration: 1.0, ease: 'power1.inOut' }, 0.0);
+      }
+
+      mobileTl.to(svg, {
+        x: '-8vw',
+        y: '-4vh',
+        scale: 1.12,
+        opacity: 0.8,
+        duration: 1.0,
+        ease: 'power2.inOut',
+      }, 0.0);
 
       const mobileSt = ScrollTrigger.create({
         trigger: section,
@@ -360,7 +401,7 @@
       };
     });
 
-    console.log('[Elysium Motion] Section 2 (Dedicated Spatial Immersive Scene) initialized with 5-phase spatial camera trajectory.');
+    console.log('[Elysium Motion] Section 2 initialized with exact 5-frame Lusion spatial choreography.');
   }
 
   /**

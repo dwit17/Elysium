@@ -330,7 +330,7 @@ function renderPage({ title, description, path, content, isHeroPage = false }) {
   <link rel="preload" href="/fonts/Geist-Light.ttf" as="font" type="font/ttf" crossorigin>
   <link rel="preload" href="/fonts/Geist-Medium.ttf" as="font" type="font/ttf" crossorigin>
   <link rel="stylesheet" href="/css/tailwind.min.css">
-  <link rel="stylesheet" href="/css/elysium.css?v=2.6">
+  <link rel="stylesheet" href="/css/elysium.css?v=3.0">
   <script type="application/ld+json">${JSON.stringify(orgSchema)}</script>
 </head>
 <body class="bg-black text-white selection:bg-white selection:text-black antialiased overflow-x-hidden">
@@ -569,7 +569,7 @@ function renderPage({ title, description, path, content, isHeroPage = false }) {
 
   <script src="/js/main.js"></script>
   ${isHeroPage ? '<script src="/js/heroCanvas.js"></script>' : ''}
-  <script src="/js/homeAnimations.js?v=2.6"></script>
+  <script src="/js/homeAnimations.js?v=3.0"></script>
   <script>
     (function() {
       if (location.hostname === 'localhost' || location.hostname === '127.0.0.1') {
@@ -780,6 +780,15 @@ app.get('/', (req, res) => {
       <!-- Pinned Viewport Camera Stage (100vw x 100vh) -->
       <div class="scene-stage relative w-full h-screen overflow-hidden flex items-center justify-center" id="scene-stage">
         
+        <!-- Top Crosshair Grid Bar -->
+        <div class="scene-grid-bar scene-grid-top absolute top-0 left-0 right-0 z-30 flex justify-between items-center px-6 sm:px-12 py-4 pointer-events-none border-b border-white/5">
+          <span class="scene-crosshair text-[12px] font-mono text-amber-400/90 font-light">+</span>
+          <span class="scene-crosshair text-[12px] font-mono text-amber-400/90 font-light hidden sm:inline">+</span>
+          <span class="text-[9px] font-mono tracking-[0.35em] uppercase text-stone-400/80">SCROLL TO EXPLORE</span>
+          <span class="scene-crosshair text-[12px] font-mono text-amber-400/90 font-light hidden sm:inline">+</span>
+          <span class="scene-crosshair text-[12px] font-mono text-amber-400/90 font-light">+</span>
+        </div>
+
         <!-- Spatial World Canvas (Translates & scales in 2D space) -->
         <div class="scene-world absolute inset-0 w-full h-full pointer-events-none" id="scene-world">
           
@@ -787,14 +796,14 @@ app.get('/', (req, res) => {
           <svg class="scene-path absolute pointer-events-none overflow-visible z-0" id="scene-svg" viewBox="0 0 2135 1318" fill="none" xmlns="http://www.w3.org/2000/svg">
             <defs>
               <linearGradient id="sceneStrokeGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-                <stop offset="0%" stop-color="#E600FF" stop-opacity="0.8" />
+                <stop offset="0%" stop-color="#E600FF" stop-opacity="0.9" />
                 <stop offset="35%" stop-color="#B5804B" stop-opacity="0.95" />
                 <stop offset="70%" stop-color="#D4AF37" stop-opacity="1" />
                 <stop offset="100%" stop-color="#E600FF" stop-opacity="0.9" />
               </linearGradient>
-              <filter id="sceneGlow" x="-20%" y="-20%" width="140%" height="140%">
-                <feGaussianBlur in="SourceGraphic" stdDeviation="12" result="blur1" />
-                <feGaussianBlur in="SourceGraphic" stdDeviation="28" result="blur2" />
+              <filter id="sceneGlow" x="-25%" y="-25%" width="150%" height="150%">
+                <feGaussianBlur in="SourceGraphic" stdDeviation="10" result="blur1" />
+                <feGaussianBlur in="SourceGraphic" stdDeviation="26" result="blur2" />
                 <feMerge>
                   <feMergeNode in="blur2" />
                   <feMergeNode in="blur1" />
@@ -808,11 +817,11 @@ app.get('/', (req, res) => {
               class="scene-path-aura"
               d="M8.81226 17.9429C8.81226 17.9429 1005.34 507.443 879.812 836.443C828.301 971.455 468.264 1202.77 329.312 1242.44C162.887 1289.96 -4.06923 923.35 226.812 788.443C481.813 639.443 645.734 1197.94 994.812 1197.94C1117.31 1197.94 1227.81 1102.44 1346.31 1015.94C1490.53 910.667 1600.81 1108.44 1658.31 1242.44C1736.5 1424.65 2100.67 1082.64 2114.31 1280.44"
               stroke="url(#sceneStrokeGrad)"
-              stroke-width="56"
+              stroke-width="54"
               stroke-linecap="round"
               stroke-linejoin="round"
               filter="url(#sceneGlow)"
-              opacity="0.4"
+              opacity="0.5"
             />
 
             <!-- Core SVG Path Geometry -->
@@ -821,15 +830,15 @@ app.get('/', (req, res) => {
               class="scene-path-core"
               d="M8.81226 17.9429C8.81226 17.9429 1005.34 507.443 879.812 836.443C828.301 971.455 468.264 1202.77 329.312 1242.44C162.887 1289.96 -4.06923 923.35 226.812 788.443C481.813 639.443 645.734 1197.94 994.812 1197.94C1117.31 1197.94 1227.81 1102.44 1346.31 1015.94C1490.53 910.667 1600.81 1108.44 1658.31 1242.44C1736.5 1424.65 2100.67 1082.64 2114.31 1280.44"
               stroke="#E600FF"
-              stroke-width="40"
+              stroke-width="38"
               stroke-linecap="round"
               stroke-linejoin="round"
               fill="none"
             />
           </svg>
 
-          <!-- Spatial Image Frame Wrapper -->
-          <div class="scene-image-wrapper absolute overflow-hidden shadow-2xl z-10" id="scene-image-wrapper">
+          <!-- Spatial Image Frame Wrapper (Lusion-style Showreel Container) -->
+          <div class="scene-image-wrapper absolute overflow-hidden shadow-2xl z-10 cursor-pointer" id="scene-image-wrapper">
             <img
               src="/images/atelier-immersive.jpg"
               alt="Elysium Artisan Interior Sanctuary"
@@ -837,41 +846,61 @@ app.get('/', (req, res) => {
               id="scene-image"
               loading="eager"
             />
-            <div class="scene-image-vignette absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-black/10 pointer-events-none"></div>
+            <div class="scene-image-vignette absolute inset-0 bg-gradient-to-t from-black/60 via-black/20 to-black/25 pointer-events-none"></div>
+
+            <!-- In-Frame Film Reel Label (Top Left) -->
+            <div class="absolute top-4 left-5 pointer-events-none z-20 flex items-center gap-2">
+              <span class="w-1.5 h-1.5 rounded-full bg-amber-400 animate-pulse"></span>
+              <span class="text-[9px] font-mono tracking-[0.25em] uppercase text-stone-300/80">REEL 01 • VOLTERRA &amp; RAJKOT</span>
+            </div>
+
+            <!-- Large Centered PLAY (▶) REEL Overlay (Matching Lusion Frame 4-5) -->
+            <div class="scene-play-reel-overlay absolute inset-0 flex items-center justify-center pointer-events-none z-20 select-none" id="scene-play-reel-overlay">
+              <span class="reel-word-left text-3xl sm:text-5xl lg:text-6xl font-light text-white tracking-[0.2em] uppercase mr-3 sm:mr-5">PLAY</span>
+              <div class="reel-play-btn w-10 h-10 sm:w-14 sm:h-14 rounded-full bg-white text-black flex items-center justify-center shadow-2xl mx-1 sm:mx-3 transition-transform hover:scale-110">
+                <svg class="w-3.5 h-3.5 sm:w-5 sm:h-5 fill-current translate-x-0.5" viewBox="0 0 24 24"><polygon points="6,4 20,12 6,20" /></svg>
+              </div>
+              <span class="reel-word-right text-3xl sm:text-5xl lg:text-6xl font-light text-white tracking-[0.2em] uppercase ml-3 sm:mr-5">REEL</span>
+            </div>
           </div>
 
         </div>
 
-        <!-- Minimal Elegant Intro Overlay (Fades out early in Phase 1-2) -->
-        <div class="scene-intro absolute z-20 pointer-events-none text-center px-6 max-w-4xl" id="scene-intro">
-          <span class="text-[10px] font-mono tracking-[0.45em] uppercase text-amber-500 block mb-3">
-            THE ATELIER PHILOSOPHY • RAJKOT
-          </span>
-          <h2 class="text-2xl sm:text-4xl lg:text-5xl font-light tracking-wide text-white uppercase font-serif leading-tight">
-            Every Piece Begins With a Name.
-          </h2>
-          <div class="w-16 h-px mx-auto my-4 bg-gradient-to-r from-transparent via-amber-500 to-transparent"></div>
-          <p class="text-xs sm:text-sm text-stone-300 font-light leading-relaxed max-w-xl mx-auto">
-            Where generational stone sculptors work directly with volcanic silicate ash, unsealed Italian travertine, and aged timber of absolute purity.
-          </p>
+        <!-- Initial Dominant Typography (Left Title + Right Editorial Paragraph) -->
+        <div class="scene-intro absolute inset-0 z-20 pointer-events-none px-6 sm:px-12 pt-20 sm:pt-24 flex flex-col justify-between" id="scene-intro">
+          <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start w-full">
+            <!-- Left Big Heading (Matches Lusion "Bold Ideas, Brought to Life") -->
+            <div class="lg:col-span-7 space-y-2">
+              <span class="text-[10px] font-mono tracking-[0.45em] uppercase text-amber-500 block">
+                THE ATELIER PHILOSOPHY • RAJKOT
+              </span>
+              <h2 class="text-3xl sm:text-5xl lg:text-6xl font-light tracking-tight text-white uppercase font-sans leading-[1.05]">
+                Every Piece<br>Begins with a Name.
+              </h2>
+            </div>
+
+            <!-- Right Paragraph (Matches Lusion Right-Side Explainer) -->
+            <div class="lg:col-span-5 lg:pt-8">
+              <p class="text-xs sm:text-sm text-stone-300 font-light leading-relaxed max-w-md">
+                We combine volcanic silicate ash, unsealed Italian travertine, and aged timber of absolute purity. From architectural stone monoliths to tactile vessels, every creation is hand-sculpted for eternity.
+              </p>
+            </div>
+          </div>
         </div>
 
-        <!-- Technical Corner & Edge Markers (Stagger in upon reaching fullscreen in Phase 5) -->
-        <div class="scene-markers absolute inset-0 pointer-events-none z-30 flex flex-col justify-between p-6 sm:p-8" id="scene-markers">
-          <div class="flex justify-between items-center w-full">
-            <span class="scene-marker text-[10px] font-mono text-amber-400/90 tracking-widest">+ 01</span>
-            <span class="scene-marker text-[10px] font-mono text-stone-400/70 tracking-widest hidden sm:inline">+ 02</span>
-            <span class="scene-marker text-[10px] font-mono text-amber-400/90 tracking-widest font-semibold">ELYSIUM ATELIER • SANCTUARY</span>
-            <span class="scene-marker text-[10px] font-mono text-stone-400/70 tracking-widest hidden sm:inline">+ 04</span>
-            <span class="scene-marker text-[10px] font-mono text-amber-400/90 tracking-widest">+ 05</span>
-          </div>
-          <div class="flex justify-between items-center w-full">
-            <span class="scene-marker text-[9.5px] font-mono text-stone-400/80 tracking-widest">22.2587° N, 70.8022° E</span>
-            <span class="scene-marker text-[9.5px] font-mono text-stone-400/70 tracking-widest hidden sm:inline">+ STONE &amp; CLAY</span>
-            <span class="scene-marker text-[9.5px] font-mono text-amber-400/90 tracking-widest font-mono">SANCTUARY PROVENANCE</span>
-            <span class="scene-marker text-[9.5px] font-mono text-stone-400/70 tracking-widest hidden sm:inline">+ UNGLAZED PURITY</span>
-            <span class="scene-marker text-[9.5px] font-mono text-stone-400/80 tracking-widest">VOLTERRA • RAJKOT</span>
-          </div>
+        <!-- Floating Interactive Approach Pill Button (Matches Lusion "• OUR APPROACH") -->
+        <a href="/philosophy" class="scene-pill-btn absolute z-30 pointer-events-auto flex items-center gap-2.5 px-5 py-2.5 bg-white text-black rounded-full shadow-2xl text-[11px] font-medium tracking-[0.15em] uppercase hover:bg-stone-200 transition-all hover:scale-105" id="scene-pill-btn">
+          <span class="w-1.5 h-1.5 rounded-full bg-black"></span>
+          <span>OUR PHILOSOPHY</span>
+        </a>
+
+        <!-- Bottom Crosshair Grid Bar -->
+        <div class="scene-grid-bar scene-grid-bottom absolute bottom-0 left-0 right-0 z-30 flex justify-between items-center px-6 sm:px-12 py-4 pointer-events-none border-t border-white/5">
+          <span class="scene-crosshair text-[12px] font-mono text-amber-400/90 font-light">+</span>
+          <span class="scene-crosshair text-[12px] font-mono text-amber-400/90 font-light hidden sm:inline">+</span>
+          <span class="text-[9.5px] font-mono tracking-[0.25em] text-stone-400/80">22.2587° N, 70.8022° E • VOLTERRA &amp; RAJKOT</span>
+          <span class="scene-crosshair text-[12px] font-mono text-amber-400/90 font-light hidden sm:inline">+</span>
+          <span class="scene-crosshair text-[12px] font-mono text-amber-400/90 font-light">+</span>
         </div>
 
       </div>
