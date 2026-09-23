@@ -79,37 +79,38 @@
    *   - Interactive: Velocity-based elastic skew on scroll
    */
   function initAtelierRevealSection() {
-    const section = document.getElementById('atelier-reveal-section') || document.querySelector('.atelier-reveal');
-    const pin = document.getElementById('atelier-reveal-pin') || document.querySelector('.atelier-reveal__pin');
-    if (!section || !pin || typeof gsap === 'undefined' || typeof ScrollTrigger === 'undefined') return;
+    const section = document.getElementById('immersive-scene-section') || document.getElementById('atelier-reveal-section') || document.querySelector('.section-immersive-scene') || document.querySelector('.atelier-reveal');
+    const stage = document.getElementById('scene-stage') || document.getElementById('atelier-reveal-pin') || document.querySelector('.scene-stage') || document.querySelector('.atelier-reveal__pin');
+    if (!section || !stage || typeof gsap === 'undefined' || typeof ScrollTrigger === 'undefined') return;
 
-    const intro = section.querySelector('.atelier-reveal__intro');
-    const card = section.querySelector('.atelier-reveal__card');
-    const img = section.querySelector('.atelier-reveal__img');
-    const path = section.querySelector('#atelier-reveal-path');
-    const aura = section.querySelector('.atelier-reveal__path-aura');
-    const svg = section.querySelector('.atelier-reveal__path');
-    const markers = section.querySelectorAll('.atelier-marker');
+    const world = section.querySelector('.scene-world');
+    const intro = section.querySelector('.scene-intro') || section.querySelector('.atelier-reveal__intro');
+    const wrapper = section.querySelector('.scene-image-wrapper') || section.querySelector('.atelier-reveal__card');
+    const img = section.querySelector('.scene-image') || section.querySelector('.atelier-reveal__img');
+    const svg = section.querySelector('.scene-path') || section.querySelector('.atelier-reveal__path');
+    const path = section.querySelector('#scene-svg-path') || section.querySelector('#atelier-reveal-path') || section.querySelector('.scene-path-core');
+    const aura = section.querySelector('.scene-path-aura') || section.querySelector('.atelier-reveal__path-aura');
+    const markers = section.querySelectorAll('.scene-marker, .atelier-marker');
 
     if (prefersReducedMotion) {
       if (intro) gsap.set(intro, { opacity: 1, y: 0 });
-      if (card) gsap.set(card, { width: '100%', height: '52vh', right: 'auto', bottom: 'auto', borderRadius: '16px' });
+      if (wrapper) gsap.set(wrapper, { width: '100%', height: '52vh', top: 'auto', left: 'auto', borderRadius: '16px' });
       if (img) gsap.set(img, { scale: 1 });
       if (path) gsap.set(path, { strokeDashoffset: 0, opacity: 0 });
       if (aura) gsap.set(aura, { strokeDashoffset: 0, opacity: 0 });
       return;
     }
 
-    // 1. Dynamic SVG Path Length Measurement
+    // 1. Dynamic SVG Path Length Measurement (single computation)
     let pathLen = 3200;
     if (path) {
       try {
         pathLen = path.getTotalLength() || 3200;
         path.style.strokeDasharray = `${pathLen}`;
-        path.style.strokeDashoffset = `${pathLen}`;
+        path.style.strokeDashoffset = `${pathLen * 0.95}`; // Start with 5% visible
         if (aura) {
           aura.style.strokeDasharray = `${pathLen}`;
-          aura.style.strokeDashoffset = `${pathLen}`;
+          aura.style.strokeDashoffset = `${pathLen * 0.95}`;
         }
       } catch (e) {
         pathLen = 3200;
@@ -120,57 +121,164 @@
 
     // ── DESKTOP & LAPTOP (>= 1024px) ──
     mm.add('(min-width: 1024px)', () => {
+      // Phase 1 (0% - 15%): Initial Composition
       gsap.set(intro, { opacity: 1, y: 0 });
-      gsap.set(card, {
-        width: '42vw',
-        height: '32vh',
-        right: '7%',
-        left: 'auto',
-        bottom: '12%',
-        borderRadius: '18px',
+      gsap.set(wrapper, {
+        top: '34vh',
+        left: '21vw',
+        width: '58vw',
+        height: '30vh',
+        borderRadius: '16px',
         skewY: 0,
       });
-      gsap.set(img, { scale: 1.18 });
-      gsap.set(svg, { opacity: 1, display: 'block' });
+      gsap.set(img, { scale: 1.25, objectPosition: '50% 50%' });
+      gsap.set(svg, { x: 0, y: 0, scale: 1.0, opacity: 1, display: 'block' });
       gsap.set(markers, { opacity: 0, y: 8 });
 
+      // ONE Master ScrollTrigger Timeline
       const masterTl = gsap.timeline({ defaults: { ease: 'none' } });
 
-      // Phase 1: Intro text fades out
-      masterTl.to(intro, { opacity: 0, y: -35, duration: 0.18, ease: 'power2.inOut' }, 0);
+      // Phase 1 → 2 (15% - 35%): Intro fades out + first spatial movement
+      masterTl.to(intro, { opacity: 0, y: -45, duration: 0.20, ease: 'power2.inOut' }, 0.12);
 
-      // Phase 2: SVG Path draws behind card
+      masterTl.to(wrapper, {
+        top: '22vh',
+        left: '14vw',
+        width: '72vw',
+        height: '48vh',
+        borderRadius: '12px',
+        duration: 0.20,
+        ease: 'power1.inOut',
+      }, 0.15);
+
+      masterTl.to(img, {
+        scale: 1.18,
+        duration: 0.20,
+        ease: 'power1.inOut',
+      }, 0.15);
+
       if (path) {
-        masterTl.to([path, aura], { strokeDashoffset: 0, duration: 0.60, ease: 'power1.inOut' }, 0);
+        masterTl.to([path, aura], {
+          strokeDashoffset: pathLen * 0.55,
+          duration: 0.20,
+          ease: 'power1.inOut',
+        }, 0.15);
       }
 
-      // Phase 3: Card expands to 100vw x 100vh Full Bleed
-      masterTl.to(card, {
+      masterTl.to(svg, {
+        x: '-5vw',
+        y: '3vh',
+        scale: 1.05,
+        duration: 0.20,
+        ease: 'power1.inOut',
+      }, 0.15);
+
+      // Phase 3 (35% - 60%): Spatial expansion into dominant visual
+      masterTl.to(wrapper, {
+        top: '8vh',
+        left: '5vw',
+        width: '90vw',
+        height: '78vh',
+        borderRadius: '6px',
+        duration: 0.25,
+        ease: 'power2.inOut',
+      }, 0.35);
+
+      masterTl.to(img, {
+        scale: 1.10,
+        objectPosition: '52% 48%',
+        duration: 0.25,
+        ease: 'power2.inOut',
+      }, 0.35);
+
+      if (path) {
+        masterTl.to([path, aura], {
+          strokeDashoffset: pathLen * 0.20,
+          duration: 0.25,
+          ease: 'power1.inOut',
+        }, 0.35);
+      }
+
+      masterTl.to(svg, {
+        x: '-10vw',
+        y: '6vh',
+        scale: 1.10,
+        duration: 0.25,
+        ease: 'power1.inOut',
+      }, 0.35);
+
+      // Phase 4 (60% - 85%): Immersion into viewport dimensions
+      masterTl.to(wrapper, {
+        top: '0vh',
+        left: '0vw',
         width: '100vw',
         height: '100vh',
-        right: '0%',
-        bottom: '0%',
         borderRadius: '0px',
-        duration: 0.76,
+        duration: 0.25,
         ease: 'power2.inOut',
-      }, 0.12);
+      }, 0.60);
 
-      // Phase 4: Image Counter-Zoom Parallax
-      masterTl.to(img, { scale: 1.0, duration: 0.76, ease: 'power2.inOut' }, 0.12);
+      masterTl.to(img, {
+        scale: 1.02,
+        duration: 0.25,
+        ease: 'power2.inOut',
+      }, 0.60);
 
-      // Phase 5: Path fades out as card completes expansion
-      masterTl.to(svg, { opacity: 0, duration: 0.20, ease: 'power2.inOut' }, 0.60);
+      if (path) {
+        masterTl.to([path, aura], {
+          strokeDashoffset: pathLen * 0.03,
+          duration: 0.25,
+          ease: 'power1.inOut',
+        }, 0.60);
+      }
 
-      // Phase 6: Technical markers stagger in
-      masterTl.to(markers, { opacity: 1, y: 0, stagger: 0.025, duration: 0.18, ease: 'power2.out' }, 0.82);
+      masterTl.to(svg, {
+        x: '-14vw',
+        y: '8vh',
+        scale: 1.14,
+        opacity: 0.25,
+        duration: 0.25,
+        ease: 'power2.inOut',
+      }, 0.60);
 
+      // Phase 5 (85% - 100%): Fullscreen spatial immersion & technical markers
+      masterTl.to(img, {
+        scale: 1.0,
+        objectPosition: '50% 50%',
+        duration: 0.15,
+        ease: 'power1.out',
+      }, 0.85);
+
+      if (path) {
+        masterTl.to([path, aura], {
+          strokeDashoffset: 0,
+          duration: 0.15,
+          ease: 'power1.out',
+        }, 0.85);
+      }
+
+      masterTl.to(svg, {
+        opacity: 0,
+        duration: 0.15,
+        ease: 'power1.out',
+      }, 0.85);
+
+      masterTl.to(markers, {
+        opacity: 1,
+        y: 0,
+        stagger: 0.02,
+        duration: 0.15,
+        ease: 'power2.out',
+      }, 0.85);
+
+      // ScrollTrigger Pinning across 400% scroll distance with Velocity Skew
       let skewTween = null;
       const st = ScrollTrigger.create({
         trigger: section,
         start: 'top top',
-        end: '+=320%',
-        pin: pin,
-        scrub: 1.2,
+        end: '+=400%',
+        pin: stage,
+        scrub: 1.0,
         anticipatePin: 1,
         invalidateOnRefresh: true,
         animation: masterTl,
@@ -180,13 +288,13 @@
           const skewAngle = clampedV * 3.5;
 
           if (skewTween) skewTween.kill();
-          skewTween = gsap.to(card, {
+          skewTween = gsap.to(wrapper, {
             skewY: skewAngle,
             duration: 0.35,
             ease: 'power3.out',
             overwrite: 'auto',
             onComplete: () => {
-              gsap.to(card, { skewY: 0, duration: 0.35, ease: 'power2.out' });
+              gsap.to(wrapper, { skewY: 0, duration: 0.35, ease: 'power2.out' });
             },
           });
         },
@@ -201,47 +309,46 @@
     // ── TABLET & MOBILE (< 1024px) ──
     mm.add('(max-width: 1023px)', () => {
       gsap.set(intro, { opacity: 1, y: 0 });
-      gsap.set(card, {
-        width: '90vw',
-        height: '32vh',
-        left: '5%',
-        right: '5%',
-        bottom: '8%',
-        borderRadius: '14px',
+      gsap.set(wrapper, {
+        top: '38vh',
+        left: '6vw',
+        width: '88vw',
+        height: '28vh',
+        borderRadius: '12px',
         skewY: 0,
       });
-      gsap.set(img, { scale: 1.15 });
-      gsap.set(svg, { opacity: 0.8, display: 'block' });
+      gsap.set(img, { scale: 1.20 });
+      gsap.set(svg, { opacity: 0.85, display: 'block', x: 0, y: 0, scale: 1.0 });
       gsap.set(markers, { opacity: 0, y: 6 });
 
       const mobileTl = gsap.timeline({ defaults: { ease: 'none' } });
 
-      mobileTl.to(intro, { opacity: 0, y: -25, duration: 0.20, ease: 'power2.inOut' }, 0);
+      mobileTl.to(intro, { opacity: 0, y: -30, duration: 0.20, ease: 'power2.inOut' }, 0.10);
 
-      if (path) {
-        mobileTl.to([path, aura], { strokeDashoffset: 0, duration: 0.65, ease: 'power1.inOut' }, 0);
-      }
-
-      mobileTl.to(card, {
+      mobileTl.to(wrapper, {
+        top: '0vh',
+        left: '0vw',
         width: '100vw',
         height: '100vh',
-        left: '0%',
-        right: '0%',
-        bottom: '0%',
         borderRadius: '0px',
-        duration: 0.70,
+        duration: 0.65,
         ease: 'power2.inOut',
-      }, 0.15);
+      }, 0.20);
 
-      mobileTl.to(img, { scale: 1.0, duration: 0.70, ease: 'power2.inOut' }, 0.15);
+      mobileTl.to(img, { scale: 1.0, duration: 0.65, ease: 'power2.inOut' }, 0.20);
+
+      if (path) {
+        mobileTl.to([path, aura], { strokeDashoffset: 0, duration: 0.65, ease: 'power1.inOut' }, 0.15);
+      }
+
       mobileTl.to(svg, { opacity: 0, duration: 0.20, ease: 'power2.inOut' }, 0.65);
-      mobileTl.to(markers, { opacity: 1, y: 0, stagger: 0.03, duration: 0.20, ease: 'power2.out' }, 0.80);
+      mobileTl.to(markers, { opacity: 1, y: 0, stagger: 0.03, duration: 0.18, ease: 'power2.out' }, 0.82);
 
       const mobileSt = ScrollTrigger.create({
         trigger: section,
         start: 'top top',
-        end: '+=200%',
-        pin: pin,
+        end: '+=250%',
+        pin: stage,
         scrub: 1.0,
         anticipatePin: 1,
         invalidateOnRefresh: true,
@@ -253,7 +360,7 @@
       };
     });
 
-    console.log('[Elysium Motion] Section 1 (Atelier Reveal - Responsive Lusion.co system) initialized.');
+    console.log('[Elysium Motion] Section 2 (Dedicated Spatial Immersive Scene) initialized with 5-phase spatial camera trajectory.');
   }
 
   /**
