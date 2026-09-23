@@ -775,7 +775,7 @@ app.get('/', (req, res) => {
   <div id="manifesto-expedition-super-wrapper" class="relative bg-black overflow-visible">
 
     <!-- SECTION 1: THE ATELIER MANIFESTO (Every Piece Begins With a Name.) -->
-    <section class="section-manifesto relative bg-transparent border-t border-stone-800 text-white z-10 min-h-screen lg:h-screen flex items-center py-16 lg:py-0 px-6 md:px-12 lg:px-20 overflow-visible">
+    <section class="section-manifesto relative bg-transparent border-t border-stone-800 text-white z-20 min-h-screen lg:h-screen flex items-center py-16 lg:py-0 px-6 md:px-12 lg:px-20 overflow-visible">
       
       <!-- Ambient Radial Glow Accent -->
       <div class="manifesto-parallax-bg absolute -top-40 -left-40 w-96 h-96 bg-amber-500/10 rounded-full blur-3xl pointer-events-none" data-scroll-speed="-0.15"></div>
@@ -784,7 +784,7 @@ app.get('/', (req, res) => {
         <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-16 items-center">
           
           <!-- Left 7 Cols: Split-Text Manifesto (with subtle Lusion Parallax Float) -->
-          <div class="lg:col-span-7 space-y-5 sm:space-y-6 relative manifesto-parallax-content" data-scroll-speed="0.06">
+          <div class="lg:col-span-7 space-y-5 sm:space-y-6 relative z-10 manifesto-parallax-content" data-scroll-speed="0.06">
             
             <div class="flex items-center justify-between">
               <span class="manifesto-eyebrow text-[10px] font-mono tracking-[0.45em] uppercase text-amber-500 block">
@@ -831,16 +831,16 @@ app.get('/', (req, res) => {
           </div>
 
           <!-- Right 5 Cols: Interactive 3D Perspective Tilt Card with Specular Glare -->
-          <div class="lg:col-span-5 relative flex justify-center manifesto-parallax-card" data-scroll-speed="-0.06">
-            <div class="manifesto-tilt-container relative w-full max-w-sm perspective-[1200px]" id="manifesto-tilt-card">
-              <div class="manifesto-portrait-wrap relative overflow-hidden bg-stone-950 shadow-2xl transition-transform duration-200 ease-out will-change-transform rounded-sm">
+          <div class="lg:col-span-5 relative z-10 flex justify-center manifesto-parallax-card" data-scroll-speed="-0.06">
+            <div class="manifesto-tilt-container relative z-10 w-full max-w-sm perspective-[1200px]" id="manifesto-tilt-card">
+              <div class="manifesto-portrait-wrap relative z-10 overflow-hidden bg-stone-950 shadow-2xl transition-transform duration-200 ease-out will-change-transform rounded-sm">
                 
-                <div class="manifesto-portrait-clip aspect-[4/5] sm:aspect-[3/4] relative overflow-hidden max-h-[50vh] img-skeleton-wrap">
+                <div class="manifesto-portrait-clip aspect-[4/5] sm:aspect-[3/4] relative z-10 overflow-hidden max-h-[50vh] img-skeleton-wrap bg-stone-950">
                   <div class="img-skeleton-placeholder"></div>
                   <img
                     src="/images/maker_portrait.jpg"
                     alt="Lead Artisan at work in the Elysium Rajkot Atelier"
-                    class="manifesto-portrait-img image-blur-up w-full h-full object-cover filter contrast-105 brightness-95"
+                    class="manifesto-portrait-img image-blur-up w-full h-full object-cover filter contrast-105 brightness-95 relative z-10"
                     style="object-position: center 25%;"
                     loading="lazy"
                   />
@@ -860,7 +860,7 @@ app.get('/', (req, res) => {
     </section>
 
     <!-- SECTION 2: THE PINNED HORIZONTAL ATELIER EXPEDITION (Vavdi Atelier, Rajkot) -->
-    <section class="section-horizontal-gallery relative bg-transparent overflow-visible" id="horizontal-suite-container">
+    <section class="section-horizontal-gallery relative bg-transparent z-10 overflow-visible" id="horizontal-suite-container">
       
       <!-- Pinned Viewport Container (100dvh on desktop, natural stack on compact) -->
       <div class="horizontal-pinned-track w-full min-h-screen lg:h-screen flex flex-col justify-center overflow-visible relative z-10">
@@ -895,10 +895,10 @@ app.get('/', (req, res) => {
                 </linearGradient>
               </defs>
 
-              <!-- Outlined Uniform-Width Purple Ribbon (No Taper, Fully Rounded Caps & Joins, No Text Overlap) -->
+              <!-- Outlined Uniform-Width Purple Ribbon (Curvy, organic, randomized flow across chapters, hidden under images, under text) -->
               <path
                 class="unified-draw-path"
-                d="M 980 20 C 990 240, 1030 460, 1060 680 C 1080 840, 1090 980, 1090 1080 C 1090 1280, 960 1440, 680 1520 C 360 1610, 80 1720, 80 1900 C 80 2060, 260 2130, 480 2110 C 780 2080, 1100 1850, 1420 1550 C 1740 1350, 1980 2110, 2380 2110 C 2780 2110, 3020 1780, 3340 1550 C 3660 1350, 3900 2110, 4300 2110 C 4700 2110, 4940 1780, 5260 1550 C 5580 1350, 5820 2110, 6220 2110 C 6620 2110, 6860 1780, 7180 1550"
+                d="M 1920 440 C 1720 450, 1500 460, 1280 390 C 1060 320, 780 260, 480 290 C 280 310, 90 360, 30 430 C -35 500, 15 620, 95 700 C 185 780, 440 850, 740 870 C 1040 890, 1310 970, 1440 1080 C 1520 1160, 1490 1280, 1380 1360 C 1240 1460, 920 1520, 580 1540 C 300 1560, 60 1630, 20 1760 C -20 1890, 60 2030, 220 2090 C 400 2150, 720 2130, 1040 2020 C 1320 1920, 1540 1740, 1720 1560 C 1920 1360, 2180 1200, 2480 1220 C 2780 1240, 3020 1420, 3240 1580 C 3440 1720, 3620 1860, 3820 1920 C 4040 1980, 4260 2100, 4520 2080 C 4780 2060, 5020 1880, 5200 1680 C 5380 1480, 5580 1320, 5800 1340 C 6040 1360, 6260 1540, 6500 1660 C 6740 1780, 6980 1820, 7220 1720 C 7420 1620, 7580 1480, 7680 1420"
                 fill="none"
                 stroke="url(#purpleRibbonGrad)"
                 stroke-width="36"

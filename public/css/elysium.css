@@ -2685,6 +2685,18 @@ img {
   overflow: visible !important;
 }
 
+.section-manifesto {
+  position: relative;
+  z-index: 20 !important;
+  background: transparent !important;
+}
+
+.section-horizontal-gallery {
+  position: relative;
+  z-index: 10 !important;
+  background: transparent !important;
+}
+
 .unified-line-container {
   position: absolute;
   top: -100vh;
@@ -2692,7 +2704,7 @@ img {
   width: 400vw;
   height: 200vh;
   pointer-events: none;
-  z-index: 0;
+  z-index: 0 !important;
   overflow: visible !important;
   opacity: 1;
 }
@@ -2720,6 +2732,30 @@ img {
 .manifesto-parallax-card,
 .manifesto-parallax-bg {
   will-change: transform;
+}
+
+/* Ensure text and image elements are cleanly layered on top of the ribbon */
+.manifesto-parallax-content,
+.manifesto-tilt-container,
+.manifesto-portrait-wrap,
+.manifesto-portrait-clip,
+.horizontal-slide-panel,
+.horizontal-img-frame {
+  position: relative;
+  z-index: 10 !important;
+}
+
+/* Solid opaque backgrounds on portrait and chapter frames so ribbon is completely hidden behind images */
+.manifesto-portrait-wrap,
+.manifesto-portrait-clip,
+.horizontal-img-frame {
+  background-color: #0c0a09 !important;
+}
+
+.manifesto-portrait-img,
+.horizontal-img-frame img {
+  position: relative;
+  z-index: 10 !important;
 }
 
 @media (max-width: 1023px) {
