@@ -330,7 +330,7 @@ function renderPage({ title, description, path, content, isHeroPage = false }) {
   <link rel="preload" href="/fonts/Geist-Light.ttf" as="font" type="font/ttf" crossorigin>
   <link rel="preload" href="/fonts/Geist-Medium.ttf" as="font" type="font/ttf" crossorigin>
   <link rel="stylesheet" href="/css/tailwind.min.css">
-  <link rel="stylesheet" href="/css/elysium.css?v=3.7">
+  <link rel="stylesheet" href="/css/elysium.css?v=3.8">
   <script type="application/ld+json">${JSON.stringify(orgSchema)}</script>
 </head>
 <body class="bg-black text-white selection:bg-white selection:text-black antialiased overflow-x-hidden">
@@ -571,7 +571,7 @@ function renderPage({ title, description, path, content, isHeroPage = false }) {
   <script src="/js/clickSpark.js?v=1.0"></script>
   <script src="/js/footerLightRays.js"></script>
   ${isHeroPage ? '<script src="/js/heroCanvas.js"></script>' : ''}
-  <script src="/js/homeAnimations.js?v=3.7"></script>
+  <script src="/js/homeAnimations.js?v=3.8"></script>
   <script>
     (function() {
       if (location.hostname === 'localhost' || location.hostname === '127.0.0.1') {
@@ -860,603 +860,354 @@ app.get('/', (req, res) => {
     </div>
   </div>`;
 
-  // SECTION 3: THE TACTILE MATERIALITY LAB (100VH STACKING CARDS DECK)
-  const sectionMaterialityInterlude = `
-  <section class="elysium-stack-section relative bg-[#060608] border-t border-stone-800/80 text-white select-none overflow-hidden" id="materiality-suite-container" aria-label="Tactile Materiality Archive">
+  // SECTION 3: SPATIAL LIVING SANCTUARY • ARCHITECTURAL PROGRESSION (100VH STACKING CARDS DECK)
+  const sectionLivingSanctuary = `
+  <section class="elysium-stack-section relative bg-[#070708] border-t border-stone-800/80 text-white select-none overflow-hidden" id="spatial-sanctuary-container" aria-label="Spatial Living Sanctuary • Architectural Progression">
     
-    <!-- Pinned Stacking Viewport Stage -->
-    <div class="elysium-stack-stage relative w-full h-screen overflow-hidden flex flex-col justify-start" id="stack-cards-stage">
+    <!-- Pinned Stacking Viewport Stage (100vh) -->
+    <div class="elysium-stack-stage relative w-full h-screen overflow-hidden flex flex-col justify-start" id="sanctuary-stack-stage">
       
       <!-- Section Editorial Header (Top Bar) -->
-      <div class="stack-section-header max-w-6xl mx-auto w-full px-6 sm:px-10 pt-5 sm:pt-7 pb-3 flex items-center justify-between gap-4 border-b border-white/10 z-40 flex-shrink-0">
-        <div class="space-y-0.5">
-          <div class="flex items-center gap-2">
-            <span class="inline-block w-2 h-2 rounded-full bg-amber-400 shadow-[0_0_8px_rgba(251,191,36,0.9)]"></span>
-            <span class="text-[10px] sm:text-xs font-mono tracking-[0.35em] uppercase text-amber-400 font-semibold">MATERIALITY ARCHIVE &bull; 05 STACKED CANVASES</span>
+      <div class="sanctuary-stack-header w-full max-w-7xl mx-auto px-6 md:px-12 pt-5 sm:pt-7 pb-3 flex items-end justify-between gap-4 border-b border-white/10 z-40 flex-shrink-0">
+        <div class="space-y-1">
+          <div class="flex items-center gap-2.5">
+            <span class="inline-block w-1.5 h-1.5 rounded-full bg-amber-400 shadow-[0_0_8px_rgba(251,191,36,0.9)]"></span>
+            <span class="text-[10px] sm:text-xs font-mono tracking-[0.35em] uppercase text-amber-400 font-semibold">SPATIAL LIVING SANCTUARY &bull; ARCHITECTURAL PROGRESSION</span>
           </div>
-          <h2 class="text-xl sm:text-2xl lg:text-3xl font-light tracking-wide text-white uppercase font-sans">
-            The Material <span class="italic font-serif text-stone-300">Canvases</span>
+          <h2 class="text-xl sm:text-2xl lg:text-3xl font-light tracking-wide text-white uppercase font-sans leading-tight">
+            Curated Space <span class="italic font-serif text-stone-300">&amp; Tactile Silence</span>
           </h2>
         </div>
-        <div class="flex items-center gap-2 text-[10px] font-mono text-white/80 uppercase tracking-widest px-3.5 py-1.5 bg-white/10 backdrop-blur-md border border-white/15 rounded-full">
-          <span>SCROLL TO STACK</span>
-          <span>&darr;</span>
+        <div class="hidden sm:flex items-center gap-4 text-[10px] font-mono text-stone-400 uppercase tracking-widest">
+          <span>RAJ 22.30&deg;N, 70.80&deg;E</span>
+          <span class="text-stone-600">&bull;</span>
+          <div class="flex items-center gap-1.5 px-3 py-1.5 bg-white/5 backdrop-blur-md border border-white/15 rounded-full text-stone-300">
+            <span>05 ATELIER CHAPTERS</span>
+            <span class="text-amber-400 font-bold">&darr;</span>
+          </div>
         </div>
       </div>
 
       <!-- The 100vh Stacking Cards Arena -->
-      <div class="elysium-stack-arena relative w-full flex-1 overflow-hidden" id="stack-cards-arena">
+      <div class="elysium-stack-arena relative w-full flex-1 overflow-hidden" id="sanctuary-stack-arena">
         
-        <!-- CARD 01: Travertine Stone (Vibrant Orange Amber) -->
-        <div class="stack-card" data-card-idx="0">
-          <div class="stack-card-inner card-mat-travertine">
-            <div class="stack-card-shade"></div>
+        <!-- CARD 01: Solis Travertine Console (Architectural Anchor) -->
+        <article class="elysium-stack-card" data-card-idx="0" aria-label="Chapter 01: Solis Travertine Console">
+          <div class="elysium-stack-slab card-tone-travertine">
+            <div class="elysium-stack-shade"></div>
 
-            <div class="stack-card-content">
-              <div class="inline-flex items-center gap-2 px-3 py-1 bg-black/25 backdrop-blur-md rounded-full border border-white/20 w-fit">
-                <span class="text-[9px] font-mono tracking-widest uppercase font-semibold text-amber-200">01 / 05 &bull; ARCHITECTURAL ANCHOR</span>
+            <!-- Left Column: Editorial Copy (~42%) -->
+            <div class="elysium-stack-content">
+              <div class="elysium-stack-badge">
+                <span class="elysium-badge-num">01</span>
+                <span class="elysium-badge-sep">&bull;</span>
+                <span class="elysium-badge-cat">ARCHITECTURAL ANCHOR</span>
               </div>
               
-              <h3 class="text-2xl sm:text-3xl lg:text-4xl font-bold text-white tracking-tight leading-tight">
-                Unsealed Tivoli Travertine
-              </h3>
-              
-              <p class="text-xs sm:text-sm text-white/90 leading-relaxed font-light max-w-md">
-                Unfilled geomorphic mineral pores and stratified cross-cut veins. Hand-chiseled from single limestone monoliths to absorb incident acoustic reflections while anchoring living spaces with raw tactile gravity.
-              </p>
-
-              <div class="flex flex-wrap gap-2 pt-1">
-                <span class="px-2.5 py-1 bg-black/20 rounded-md text-[10px] font-mono text-white/90 border border-white/10">Tivoli Limestone</span>
-                <span class="px-2.5 py-1 bg-black/20 rounded-md text-[10px] font-mono text-white/90 border border-white/10">Diamond Honed</span>
-                <span class="px-2.5 py-1 bg-black/20 rounded-md text-[10px] font-mono text-white/90 border border-white/10">2,480 kg/m&sup3;</span>
-              </div>
-
-              <div class="pt-2">
-                <a href="/materiality#travertine" class="inline-flex items-center gap-2 px-5 py-2.5 bg-white text-black font-semibold text-xs tracking-widest uppercase rounded-full shadow-lg hover:bg-stone-100 transition-transform">
-                  <span>Explore Travertine &rarr;</span>
-                </a>
-              </div>
-            </div>
-
-            <div class="stack-card-media">
-              <img src="/images/atelier_materials.jpg" alt="Unsealed Tivoli Travertine Stone" class="stack-card-img" loading="lazy" />
-            </div>
-          </div>
-        </div>
-
-        <!-- CARD 02: Organic Silicate Clay (Vibrant Cobalt Blue) -->
-        <div class="stack-card" data-card-idx="1">
-          <div class="stack-card-inner card-mat-clay">
-            <div class="stack-card-shade"></div>
-
-            <div class="stack-card-content">
-              <div class="inline-flex items-center gap-2 px-3 py-1 bg-black/25 backdrop-blur-md rounded-full border border-white/20 w-fit">
-                <span class="text-[9px] font-mono tracking-widest uppercase font-semibold text-blue-200">02 / 05 &bull; TACTILE HARMONY</span>
-              </div>
-              
-              <h3 class="text-2xl sm:text-3xl lg:text-4xl font-bold text-white tracking-tight leading-tight">
-                Pit-Fired Silicate Clay
-              </h3>
-              
-              <p class="text-xs sm:text-sm text-white/90 leading-relaxed font-light max-w-md">
-                Sculpted on manual kickwheels from alluvial riverbed deposits. Deliberately unglazed so its micro-capillary network breathes in natural equilibrium with ambient air, casting soft matte shadows without artificial sheen.
-              </p>
-
-              <div class="flex flex-wrap gap-2 pt-1">
-                <span class="px-2.5 py-1 bg-black/20 rounded-md text-[10px] font-mono text-white/90 border border-white/10">1,240&deg;C Wood Pit</span>
-                <span class="px-2.5 py-1 bg-black/20 rounded-md text-[10px] font-mono text-white/90 border border-white/10">Smoke Suede</span>
-                <span class="px-2.5 py-1 bg-black/20 rounded-md text-[10px] font-mono text-white/90 border border-white/10">Alluvial Core</span>
-              </div>
-
-              <div class="pt-2">
-                <a href="/materiality#clay" class="inline-flex items-center gap-2 px-5 py-2.5 bg-white text-black font-semibold text-xs tracking-widest uppercase rounded-full shadow-lg hover:bg-stone-100 transition-transform">
-                  <span>Explore Organic Clay &rarr;</span>
-                </a>
-              </div>
-            </div>
-
-            <div class="stack-card-media">
-              <img src="/images/story_clay_vessel.jpg" alt="Pit-Fired Silicate Stoneware Vessel" class="stack-card-img" loading="lazy" />
-            </div>
-          </div>
-        </div>
-
-        <!-- CARD 03: Crafted White Oak (Vibrant Coral Red) -->
-        <div class="stack-card" data-card-idx="2">
-          <div class="stack-card-inner card-mat-oak">
-            <div class="stack-card-shade"></div>
-
-            <div class="stack-card-content">
-              <div class="inline-flex items-center gap-2 px-3 py-1 bg-black/25 backdrop-blur-md rounded-full border border-white/20 w-fit">
-                <span class="text-[9px] font-mono tracking-widest uppercase font-semibold text-rose-200">03 / 05 &bull; LIVING TIMBER</span>
-              </div>
-              
-              <h3 class="text-2xl sm:text-3xl lg:text-4xl font-bold text-white tracking-tight leading-tight">
-                Slow-Grown Northern Oak
-              </h3>
-              
-              <p class="text-xs sm:text-sm text-white/90 leading-relaxed font-light max-w-md">
-                Slow-grown white oak celebrating dense fibrous annual rings. Seasoned across multiple winters and buffed exclusively with unrefined desert beeswax and cold-pressed linseed oil for an enduring satin handfeel.
-              </p>
-
-              <div class="flex flex-wrap gap-2 pt-1">
-                <span class="px-2.5 py-1 bg-black/20 rounded-md text-[10px] font-mono text-white/90 border border-white/10">Quercus Alba</span>
-                <span class="px-2.5 py-1 bg-black/20 rounded-md text-[10px] font-mono text-white/90 border border-white/10">Organic Beeswax</span>
-                <span class="px-2.5 py-1 bg-black/20 rounded-md text-[10px] font-mono text-white/90 border border-white/10">Quarter-Sawn</span>
-              </div>
-
-              <div class="pt-2">
-                <a href="/materiality#timber" class="inline-flex items-center gap-2 px-5 py-2.5 bg-white text-black font-semibold text-xs tracking-widest uppercase rounded-full shadow-lg hover:bg-stone-100 transition-transform">
-                  <span>Explore White Oak &rarr;</span>
-                </a>
-              </div>
-            </div>
-
-            <div class="stack-card-media">
-              <img src="/images/maker_tools.jpg" alt="Aged White Oak Hand-Shaped Timber" class="stack-card-img" loading="lazy" />
-            </div>
-          </div>
-        </div>
-
-        <!-- CARD 04: Mineral Lime Plaster (Deep Jade Emerald) -->
-        <div class="stack-card" data-card-idx="3">
-          <div class="stack-card-inner card-mat-plaster">
-            <div class="stack-card-shade"></div>
-
-            <div class="stack-card-content">
-              <div class="inline-flex items-center gap-2 px-3 py-1 bg-black/25 backdrop-blur-md rounded-full border border-white/20 w-fit">
-                <span class="text-[9px] font-mono tracking-widest uppercase font-semibold text-teal-200">04 / 05 &bull; MONOLITHIC RELIEVO</span>
-              </div>
-              
-              <h3 class="text-2xl sm:text-3xl lg:text-4xl font-bold text-white tracking-tight leading-tight">
-                Pulverized Mineral Plaster
-              </h3>
-              
-              <p class="text-xs sm:text-sm text-white/90 leading-relaxed font-light max-w-md">
-                Natural hydraulic lime compounded with fine volcanic silicate ash. Applied by hand trowels in delicate relief sweeps to craft non-reflective sculptural surfaces that softly diffuse room illumination.
-              </p>
-
-              <div class="flex flex-wrap gap-2 pt-1">
-                <span class="px-2.5 py-1 bg-black/20 rounded-md text-[10px] font-mono text-white/90 border border-white/10">Volcanic Pumice</span>
-                <span class="px-2.5 py-1 bg-black/20 rounded-md text-[10px] font-mono text-white/90 border border-white/10">Hand-Troweled</span>
-                <span class="px-2.5 py-1 bg-black/20 rounded-md text-[10px] font-mono text-white/90 border border-white/10">Matte Velvet</span>
-              </div>
-
-              <div class="pt-2">
-                <a href="/materiality#plaster" class="inline-flex items-center gap-2 px-5 py-2.5 bg-white text-black font-semibold text-xs tracking-widest uppercase rounded-full shadow-lg hover:bg-stone-100 transition-transform">
-                  <span>Explore Lime Plaster &rarr;</span>
-                </a>
-              </div>
-            </div>
-
-            <div class="stack-card-media">
-              <img src="/images/story_plaster_relief.jpg" alt="Textured Mineral Lime Plaster Finish" class="stack-card-img" loading="lazy" />
-            </div>
-          </div>
-        </div>
-
-        <!-- CARD 05: Architectural Harmonies (Signature Atelier Royal Blue) -->
-        <div class="stack-card" data-card-idx="4">
-          <div class="stack-card-inner card-mat-harmonies">
-            <div class="stack-card-shade"></div>
-
-            <div class="stack-card-content">
-              <div class="inline-flex items-center gap-2 px-3 py-1 bg-black/25 backdrop-blur-md rounded-full border border-white/20 w-fit">
-                <span class="text-[9px] font-mono tracking-widest uppercase font-semibold text-blue-200">05 / 05 &bull; ATELIER PROVENANCE</span>
-              </div>
-              
-              <h3 class="text-2xl sm:text-3xl lg:text-4xl font-bold text-white tracking-tight leading-tight">
-                Architectural Harmonies
-              </h3>
-              
-              <p class="text-xs sm:text-sm text-white/90 leading-relaxed font-light max-w-md">
-                The confluence of stone, fire-cured clay, brushed bronze, and slow-grown timber. Every piece engineered as a timeless spatial monolith designed to outlive trends and age with unmatched distinction.
-              </p>
-
-              <div class="flex flex-wrap gap-2 pt-1">
-                <span class="px-2.5 py-1 bg-black/20 rounded-md text-[10px] font-mono text-white/90 border border-white/10">Single-Edition</span>
-                <span class="px-2.5 py-1 bg-black/20 rounded-md text-[10px] font-mono text-white/90 border border-white/10">Rajkot Sanctuary</span>
-                <span class="px-2.5 py-1 bg-black/20 rounded-md text-[10px] font-mono text-white/90 border border-white/10">Signed &amp; Numbered</span>
-              </div>
-
-              <div class="pt-2">
-                <a href="/artisan-pieces" class="inline-flex items-center gap-2 px-5 py-2.5 bg-white text-black font-semibold text-xs tracking-widest uppercase rounded-full shadow-lg hover:bg-stone-100 transition-transform">
-                  <span>View Full Catalogue &rarr;</span>
-                </a>
-              </div>
-            </div>
-
-            <div class="stack-card-media">
-              <img src="/images/chapter_living_room.jpg" alt="Elysium Atelier Sanctuary Composition" class="stack-card-img" loading="lazy" />
-            </div>
-          </div>
-        </div>
-
-      </div>
-
-    </div>
-  </section>`;
-
-  // SECTION 3B: ELYSIUM SPATIAL LIVING SANCTUARY (Clean Architectural SVG Path Journey)
-  const sectionLivingSanctuary = `
-  <section class="section-living-sanctuary relative bg-[#040404] border-t border-stone-800/80 text-white py-20 sm:py-28 lg:py-36 px-4 sm:px-8 lg:px-16 overflow-hidden" id="living-sanctuary-container">
-    
-    <div class="max-w-7xl mx-auto w-full relative z-10 space-y-16 sm:space-y-24">
-      
-      <!-- Section Header -->
-      <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-end border-b border-stone-800/70 pb-8">
-        <div class="lg:col-span-8 space-y-2.5">
-          <div class="flex items-center gap-2.5">
-            <span class="inline-block w-1.5 h-1.5 rounded-full bg-amber-500"></span>
-            <span class="text-[10px] sm:text-xs font-mono tracking-[0.4em] uppercase text-amber-500">SPATIAL LIVING SANCTUARY &bull; ARCHITECTURAL PROGRESSION</span>
-          </div>
-          <h2 class="text-3xl sm:text-5xl lg:text-6xl font-light tracking-wide text-white uppercase font-sans leading-[1.1]">
-            Curated Space <span class="italic font-serif text-stone-400">&amp; Tactile Silence</span>
-          </h2>
-        </div>
-        <div class="lg:col-span-4 space-y-2">
-          <p class="text-xs sm:text-sm text-stone-400 font-light leading-relaxed">
-            Traverse our display atelier in Vavdi, Rajkot. An architectural trace connects five material milestones, from monolithic raw travertine to pit-fired stoneware.
-          </p>
-          <div class="flex items-center gap-3 text-[10px] font-mono uppercase text-stone-500 tracking-wider">
-            <span>RAJ 22.30&deg;N, 70.80&deg;E</span>
-            <span>&bull;</span>
-            <span>5 ATELIER STATIONS</span>
-          </div>
-        </div>
-      </div>
-
-      <!-- Main Journey Track Container with Overlay Clean Botanical SVG Branch Canvas -->
-      <div class="sanctuary-journey-track relative w-full pt-4 pb-12" id="sanctuary-journey-track">
-
-
-        <!-- ========================================================================= -->
-        <!-- STATION 01: MONOLITHIC TRAVERTINE THRESHOLD (Left Image Traversal)       -->
-        <!-- ========================================================================= -->
-        <div class="sanctuary-station sanctuary-station-1 relative z-10 min-h-[520px] flex items-center mb-24 sm:mb-32" data-station="1">
-          <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-center w-full">
-            
-            <!-- Left Col 1-7: Showcase Editorial Image (Branch Weaves Directly Across) -->
-            <div class="lg:col-span-7 relative z-10">
-              <!-- Waypoint Milestone 01 Node -->
-              <div id="sanctuary-wp-1" class="sanctuary-waypoint-badge absolute -top-3.5 -left-3.5 sm:top-4 sm:left-4 z-30" data-node="1">
-                <span class="waypoint-num">01</span>
-              </div>
-
-              <div class="sanctuary-card-frame group relative aspect-[16/10] w-full overflow-hidden bg-stone-950 rounded-sm border border-stone-800 shadow-2xl img-skeleton-wrap">
-                <div class="img-skeleton-placeholder"></div>
-                <img
-                  src="/images/chapter_living_room.jpg"
-                  alt="Solis Travertine Console Living Sanctuary"
-                  class="image-blur-up w-full h-full object-cover object-center filter contrast-105 brightness-95 transition-transform duration-700 group-hover:scale-102"
-                  loading="lazy"
-                />
-                <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/10 to-transparent pointer-events-none"></div>
-                
-                <div class="absolute top-4 right-4 flex items-center gap-2 z-30">
-                  <span class="px-2.5 py-1 bg-black/80 backdrop-blur-md border border-stone-800 text-[9px] font-mono uppercase tracking-widest text-white rounded-xs">
-                    Station I &bull; Grounding Center
-                  </span>
-                </div>
-                <div class="absolute bottom-4 left-4 right-4 flex justify-between items-end text-[10px] font-mono uppercase tracking-widest text-stone-300 z-30">
-                  <div>
-                    <span class="block text-stone-500 text-[8.5px]">PRIMARY MEDIUM</span>
-                    <span class="text-white">Roman Travertine Limestone</span>
-                  </div>
-                  <span class="px-2 py-0.5 bg-stone-900/90 backdrop-blur-md border border-stone-800 text-stone-300 rounded-xs">
-                    1800 &times; 450 &times; 720 mm
-                  </span>
-                </div>
-              </div>
-            </div>
-
-            <!-- Right Col 8-12: Narrative Content (Clean & Free From Overlaps) -->
-            <div class="lg:col-span-5 space-y-5 sanctuary-station-text relative z-30">
-              <div class="space-y-1.5">
-                <span class="text-[10px] font-mono text-white/70 tracking-[0.3em] uppercase block">01 / ARCHITECTURAL ANCHOR</span>
-                <h3 class="text-2xl sm:text-3xl font-light text-white uppercase font-sans tracking-wide">
+              <div class="space-y-1">
+                <h3 class="elysium-stack-title">
                   Solis Travertine Console
                 </h3>
-                <p class="text-xs font-mono text-stone-400 uppercase tracking-wider">
+                <p class="elysium-stack-subtitle">
                   Unfilled Geomorphic Pores &bull; Deep Stratified Veins
                 </p>
               </div>
-              <p class="text-xs sm:text-sm text-stone-300 font-light leading-relaxed">
+              
+              <p class="elysium-stack-desc">
                 Every sanctuary begins with an unyielding anchor. Hand-chiseled from a single block of cross-cut limestone, the Solis Console absorbs incident acoustic reflections while establishing the primary spatial axis of the living room.
               </p>
-              <div class="pt-2 border-t border-stone-800/60 grid grid-cols-2 gap-4 text-left">
-                <div class="p-3 bg-stone-950/70 border border-stone-800/60 rounded-xs backdrop-blur-xs">
-                  <span class="text-[9px] font-mono text-stone-500 block uppercase">Mineral Origin</span>
-                  <span class="text-xs text-stone-300 font-light">Tivoli Limestone Strata</span>
+
+              <div class="elysium-stack-specs">
+                <div class="elysium-spec-pill">
+                  <span class="spec-label">MINERAL ORIGIN</span>
+                  <span class="spec-val">Tivoli Limestone Strata</span>
                 </div>
-                <div class="p-3 bg-stone-950/70 border border-stone-800/60 rounded-xs backdrop-blur-xs">
-                  <span class="text-[9px] font-mono text-stone-500 block uppercase">Surface Treatment</span>
-                  <span class="text-xs text-stone-300 font-light">Diamond Honed Matte</span>
+                <div class="elysium-spec-pill">
+                  <span class="spec-label">SURFACE TREATMENT</span>
+                  <span class="spec-val">Diamond Honed Matte</span>
                 </div>
+                <div class="elysium-spec-pill">
+                  <span class="spec-label">DENSITY</span>
+                  <span class="spec-val">2,480 kg/m&sup3;</span>
+                </div>
+              </div>
+
+              <div class="elysium-stack-actions">
+                <a href="/materiality#travertine" class="elysium-btn-plate">
+                  <span>Explore Travertine Monolith</span>
+                  <span class="btn-arrow ml-1.5">&rarr;</span>
+                </a>
               </div>
             </div>
 
+            <!-- Right Column: Expansive Macro Photography (~58%) -->
+            <div class="elysium-stack-media">
+              <div class="elysium-media-inner">
+                <img src="/images/chapter_living_room.jpg" alt="Solis Travertine Console Living Sanctuary" class="elysium-stack-img" loading="eager" />
+                <div class="elysium-media-gradient"></div>
+                <div class="elysium-media-tag">
+                  <span>Station I &bull; Grounding Center</span>
+                </div>
+                <div class="elysium-media-dim">
+                  <span>1800 &times; 450 &times; 720 mm</span>
+                </div>
+              </div>
+            </div>
           </div>
-        </div>
+        </article>
 
-        <!-- ========================================================================= -->
-        <!-- STATION 02: TACTILE RESONANCE & CLAY VESSEL (Right Image Traversal)      -->
-        <!-- ========================================================================= -->
-        <div class="sanctuary-station sanctuary-station-2 relative z-10 min-h-[520px] flex items-center mb-24 sm:mb-32" data-station="2">
-          <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-center w-full">
-            
-            <!-- Left Col 1-5: Narrative Content (Clean & Free From Overlaps) -->
-            <div class="lg:col-span-5 order-2 lg:order-1 space-y-5 sanctuary-station-text relative z-30">
-              <div class="space-y-1.5">
-                <span class="text-[10px] font-mono text-white/70 tracking-[0.3em] uppercase block">02 / TACTILE HARMONY</span>
-                <h3 class="text-2xl sm:text-3xl font-light text-white uppercase font-sans tracking-wide">
+        <!-- CARD 02: Unglazed Stoneware Vessels (Tactile Harmony) -->
+        <article class="elysium-stack-card" data-card-idx="1" aria-label="Chapter 02: Unglazed Stoneware Vessels">
+          <div class="elysium-stack-slab card-tone-clay">
+            <div class="elysium-stack-shade"></div>
+
+            <div class="elysium-stack-content">
+              <div class="elysium-stack-badge">
+                <span class="elysium-badge-num">02</span>
+                <span class="elysium-badge-sep">&bull;</span>
+                <span class="elysium-badge-cat">TACTILE HARMONY</span>
+              </div>
+              
+              <div class="space-y-1">
+                <h3 class="elysium-stack-title">
                   Unglazed Stoneware Vessels
                 </h3>
-                <p class="text-xs font-mono text-stone-400 uppercase tracking-wider">
+                <p class="elysium-stack-subtitle">
                   Iron-Dense Riverbed Clay &bull; 1,240&deg;C Pit Fired
                 </p>
               </div>
-              <p class="text-xs sm:text-sm text-stone-300 font-light leading-relaxed">
+              
+              <p class="elysium-stack-desc">
                 Sculpted on manual kickwheels from Saurashtra alluvial clay, our vessels remain deliberately unglazed. Their microscopic capillary network breathes in equilibrium with ambient air, capturing soft ambient shadows without synthetic gloss.
               </p>
-              <div class="pt-2 border-t border-stone-800/60 grid grid-cols-2 gap-4 text-left">
-                <div class="p-3 bg-stone-950/70 border border-stone-800/60 rounded-xs backdrop-blur-xs">
-                  <span class="text-[9px] font-mono text-stone-500 block uppercase">Firing Profile</span>
-                  <span class="text-xs text-stone-300 font-light">Wood-Reduction Pit</span>
+
+              <div class="elysium-stack-specs">
+                <div class="elysium-spec-pill">
+                  <span class="spec-label">FIRING PROFILE</span>
+                  <span class="spec-val">Wood-Reduction Pit</span>
                 </div>
-                <div class="p-3 bg-stone-950/70 border border-stone-800/60 rounded-xs backdrop-blur-xs">
-                  <span class="text-[9px] font-mono text-stone-500 block uppercase">Tactile Finish</span>
-                  <span class="text-xs text-stone-300 font-light">Smoke-Speckled Suede</span>
+                <div class="elysium-spec-pill">
+                  <span class="spec-label">TACTILE FINISH</span>
+                  <span class="spec-val">Smoke-Speckled Suede</span>
                 </div>
+                <div class="elysium-spec-pill">
+                  <span class="spec-label">ATMOSPHERIC FUNCTION</span>
+                  <span class="spec-val">Breathable Porosity</span>
+                </div>
+              </div>
+
+              <div class="elysium-stack-actions">
+                <a href="/materiality#clay" class="elysium-btn-plate">
+                  <span>Explore Pit-Fired Clay</span>
+                  <span class="btn-arrow ml-1.5">&rarr;</span>
+                </a>
               </div>
             </div>
 
-            <!-- Right Col 6-12: Showcase Image (Branch Weaves Directly Across) -->
-            <div class="lg:col-span-7 order-1 lg:order-2 relative z-10">
-              <!-- Waypoint Milestone 02 Node -->
-              <div id="sanctuary-wp-2" class="sanctuary-waypoint-badge absolute -top-3.5 -right-3.5 sm:top-4 sm:right-4 z-30" data-node="2">
-                <span class="waypoint-num">02</span>
-              </div>
-
-              <div class="sanctuary-card-frame group relative aspect-[16/10] w-full overflow-hidden bg-stone-950 rounded-sm border border-stone-800 shadow-2xl img-skeleton-wrap">
-                <div class="img-skeleton-placeholder"></div>
-                <img
-                  src="/images/story_clay_vessel.jpg"
-                  alt="Unglazed Stoneware Vessel in Living Sanctuary"
-                  class="image-blur-up w-full h-full object-cover object-center filter contrast-105 brightness-95 transition-transform duration-700 group-hover:scale-102"
-                  loading="lazy"
-                />
-                <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/10 to-transparent pointer-events-none"></div>
-                
-                <div class="absolute top-4 left-4 flex items-center gap-2 z-30">
-                  <span class="px-2.5 py-1 bg-black/80 backdrop-blur-md border border-stone-800 text-[9px] font-mono uppercase tracking-widest text-white rounded-xs">
-                    Station II &bull; Earthenware
-                  </span>
+            <div class="elysium-stack-media">
+              <div class="elysium-media-inner">
+                <img src="/images/story_clay_vessel.jpg" alt="Unglazed Stoneware Vessel in Living Sanctuary" class="elysium-stack-img" loading="lazy" />
+                <div class="elysium-media-gradient"></div>
+                <div class="elysium-media-tag">
+                  <span>Station II &bull; Earthenware</span>
                 </div>
-                <div class="absolute bottom-4 left-4 right-4 flex justify-between items-end text-[10px] font-mono uppercase tracking-widest text-stone-300 z-30">
-                  <div>
-                    <span class="block text-stone-500 text-[8.5px]">ATMOSPHERIC FUNCTION</span>
-                    <span class="text-white">Breathable Organic Porosity</span>
-                  </div>
-                  <span class="px-2 py-0.5 bg-stone-900/90 backdrop-blur-md border border-stone-800 text-stone-300 rounded-xs">
-                    Aura Vessel No. 04
-                  </span>
+                <div class="elysium-media-dim">
+                  <span>Aura Vessel No. 04</span>
                 </div>
               </div>
             </div>
-
           </div>
-        </div>
+        </article>
 
-        <!-- ========================================================================= -->
-        <!-- STATION 03: LIGHT & SHADOW RELIEVO (Left Image Traversal)                -->
-        <!-- ========================================================================= -->
-        <div class="sanctuary-station sanctuary-station-3 relative z-10 min-h-[520px] flex items-center mb-24 sm:mb-32" data-station="3">
-          <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-center w-full">
-            
-            <!-- Left Col 1-7: Showcase Editorial Image (Branch Weaves Directly Across) -->
-            <div class="lg:col-span-7 relative z-10">
-              <!-- Waypoint Milestone 03 Node -->
-              <div id="sanctuary-wp-3" class="sanctuary-waypoint-badge absolute -top-3.5 -left-3.5 sm:top-4 sm:left-4 z-30" data-node="3">
-                <span class="waypoint-num">03</span>
+        <!-- CARD 03: Mineral Plaster Relievo (Ambient Shadow) -->
+        <article class="elysium-stack-card" data-card-idx="2" aria-label="Chapter 03: Mineral Plaster Relievo">
+          <div class="elysium-stack-slab card-tone-plaster">
+            <div class="elysium-stack-shade"></div>
+
+            <div class="elysium-stack-content">
+              <div class="elysium-stack-badge">
+                <span class="elysium-badge-num">03</span>
+                <span class="elysium-badge-sep">&bull;</span>
+                <span class="elysium-badge-cat">AMBIENT SHADOW</span>
               </div>
-
-              <div class="sanctuary-card-frame group relative aspect-[16/10] w-full overflow-hidden bg-stone-950 rounded-sm border border-stone-800 shadow-2xl img-skeleton-wrap">
-                <div class="img-skeleton-placeholder"></div>
-                <img
-                  src="/images/story_plaster_relief.jpg"
-                  alt="Mineral Plaster Relievo Wall in Living Sanctuary"
-                  class="image-blur-up w-full h-full object-cover object-center filter contrast-105 brightness-95 transition-transform duration-700 group-hover:scale-102"
-                  loading="lazy"
-                />
-                <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/10 to-transparent pointer-events-none"></div>
-                
-                <div class="absolute top-4 right-4 flex items-center gap-2 z-30">
-                  <span class="px-2.5 py-1 bg-black/80 backdrop-blur-md border border-stone-800 text-[9px] font-mono uppercase tracking-widest text-white rounded-xs">
-                    Station III &bull; Relief Plane
-                  </span>
-                </div>
-                <div class="absolute bottom-4 left-4 right-4 flex justify-between items-end text-[10px] font-mono uppercase tracking-widest text-stone-300 z-30">
-                  <div>
-                    <span class="block text-stone-500 text-[8.5px]">PLANE GEOMETRY</span>
-                    <span class="text-white">Hydraulic Lime &amp; Pumice</span>
-                  </div>
-                  <span class="px-2 py-0.5 bg-stone-900/90 backdrop-blur-md border border-stone-800 text-stone-300 rounded-xs">
-                    Relievo Panel 09
-                  </span>
-                </div>
-              </div>
-            </div>
-
-            <!-- Right Col 8-12: Narrative Content (Clean & Free From Overlaps) -->
-            <div class="lg:col-span-5 space-y-5 sanctuary-station-text relative z-30">
-              <div class="space-y-1.5">
-                <span class="text-[10px] font-mono text-white/70 tracking-[0.3em] uppercase block">03 / AMBIENT SHADOW</span>
-                <h3 class="text-2xl sm:text-3xl font-light text-white uppercase font-sans tracking-wide">
+              
+              <div class="space-y-1">
+                <h3 class="elysium-stack-title">
                   Mineral Plaster Relievo
                 </h3>
-                <p class="text-xs font-mono text-stone-400 uppercase tracking-wider">
+                <p class="elysium-stack-subtitle">
                   Hand-Troweled Strata &bull; Zero Glare Matte Velvet
                 </p>
               </div>
-              <p class="text-xs sm:text-sm text-stone-300 font-light leading-relaxed">
+              
+              <p class="elysium-stack-desc">
                 Applied in successive wet-on-wet layers, our lime relievo surfaces catch low-angle daylight, projecting gentle shifting gradients across the sanctuary interior as the sun tracks across the sky.
               </p>
-              <div class="pt-2 border-t border-stone-800/60 grid grid-cols-2 gap-4 text-left">
-                <div class="p-3 bg-stone-950/70 border border-stone-800/60 rounded-xs backdrop-blur-xs">
-                  <span class="text-[9px] font-mono text-stone-500 block uppercase">Aggregate Blend</span>
-                  <span class="text-xs text-stone-300 font-light">Volcanic Pumice Sand</span>
+
+              <div class="elysium-stack-specs">
+                <div class="elysium-spec-pill">
+                  <span class="spec-label">AGGREGATE BLEND</span>
+                  <span class="spec-val">Volcanic Pumice Sand</span>
                 </div>
-                <div class="p-3 bg-stone-950/70 border border-stone-800/60 rounded-xs backdrop-blur-xs">
-                  <span class="text-[9px] font-mono text-stone-500 block uppercase">Curing Period</span>
-                  <span class="text-xs text-stone-300 font-light">28 Days Carbonation</span>
+                <div class="elysium-spec-pill">
+                  <span class="spec-label">CURING PERIOD</span>
+                  <span class="spec-val">28 Days Carbonation</span>
                 </div>
+                <div class="elysium-spec-pill">
+                  <span class="spec-label">PLANE GEOMETRY</span>
+                  <span class="spec-val">Hydraulic Lime Strata</span>
+                </div>
+              </div>
+
+              <div class="elysium-stack-actions">
+                <a href="/materiality#plaster" class="elysium-btn-plate">
+                  <span>Explore Lime Plaster</span>
+                  <span class="btn-arrow ml-1.5">&rarr;</span>
+                </a>
               </div>
             </div>
 
+            <div class="elysium-stack-media">
+              <div class="elysium-media-inner">
+                <img src="/images/story_plaster_relief.jpg" alt="Mineral Plaster Relievo Wall in Living Sanctuary" class="elysium-stack-img" loading="lazy" />
+                <div class="elysium-media-gradient"></div>
+                <div class="elysium-media-tag">
+                  <span>Station III &bull; Relief Plane</span>
+                </div>
+                <div class="elysium-media-dim">
+                  <span>Relievo Panel 09</span>
+                </div>
+              </div>
+            </div>
           </div>
-        </div>
+        </article>
 
-        <!-- ========================================================================= -->
-        <!-- STATION 04: HONEST JOINERY & OAK TIMBER (Right Image Traversal)          -->
-        <!-- ========================================================================= -->
-        <div class="sanctuary-station sanctuary-station-4 relative z-10 min-h-[520px] flex items-center mb-24 sm:mb-32" data-station="4">
-          <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-center w-full">
-            
-            <!-- Left Col 1-5: Narrative Content (Clean & Free From Overlaps) -->
-            <div class="lg:col-span-5 order-2 lg:order-1 space-y-5 sanctuary-station-text relative z-30">
-              <div class="space-y-1.5">
-                <span class="text-[10px] font-mono text-white/70 tracking-[0.3em] uppercase block">04 / TIMELESS JOINERY</span>
-                <h3 class="text-2xl sm:text-3xl font-light text-white uppercase font-sans tracking-wide">
+        <!-- CARD 04: Aged Oak & Beeswax (Timeless Joinery) -->
+        <article class="elysium-stack-card" data-card-idx="3" aria-label="Chapter 04: Aged Oak & Beeswax">
+          <div class="elysium-stack-slab card-tone-oak">
+            <div class="elysium-stack-shade"></div>
+
+            <div class="elysium-stack-content">
+              <div class="elysium-stack-badge">
+                <span class="elysium-badge-num">04</span>
+                <span class="elysium-badge-sep">&bull;</span>
+                <span class="elysium-badge-cat">TIMELESS JOINERY</span>
+              </div>
+              
+              <div class="space-y-1">
+                <h3 class="elysium-stack-title">
                   Aged Oak &amp; Beeswax
                 </h3>
-                <p class="text-xs font-mono text-stone-400 uppercase tracking-wider">
+                <p class="elysium-stack-subtitle">
                   Blind Mortise &amp; Tenon &bull; Zero Hardware Fasteners
                 </p>
               </div>
-              <p class="text-xs sm:text-sm text-stone-300 font-light leading-relaxed">
+              
+              <p class="elysium-stack-desc">
                 Tolerances calibrated to tenths of a millimeter. Every timber element is united through precision interlocking mortise and tenon joinery—no screws, no metal brackets, and zero toxic adhesives. Finished with warm organic beeswax.
               </p>
-              <div class="pt-2 border-t border-stone-800/60 grid grid-cols-2 gap-4 text-left">
-                <div class="p-3 bg-stone-950/70 border border-stone-800/60 rounded-xs backdrop-blur-xs">
-                  <span class="text-[9px] font-mono text-stone-500 block uppercase">Timber Selection</span>
-                  <span class="text-xs text-stone-300 font-light">Quarter-Sawn White Oak</span>
+
+              <div class="elysium-stack-specs">
+                <div class="elysium-spec-pill">
+                  <span class="spec-label">TIMBER SELECTION</span>
+                  <span class="spec-val">Quarter-Sawn White Oak</span>
                 </div>
-                <div class="p-3 bg-stone-950/70 border border-stone-800/60 rounded-xs backdrop-blur-xs">
-                  <span class="text-[9px] font-mono text-stone-500 block uppercase">Luster Polish</span>
-                  <span class="text-xs text-stone-300 font-light">Organic Desert Wax</span>
+                <div class="elysium-spec-pill">
+                  <span class="spec-label">LUSTER POLISH</span>
+                  <span class="spec-val">Organic Desert Beeswax</span>
                 </div>
+                <div class="elysium-spec-pill">
+                  <span class="spec-label">STRUCTURAL INTEGRITY</span>
+                  <span class="spec-val">Interlocking Grain</span>
+                </div>
+              </div>
+
+              <div class="elysium-stack-actions">
+                <a href="/materiality#timber" class="elysium-btn-plate">
+                  <span>Explore Timber Joinery</span>
+                  <span class="btn-arrow ml-1.5">&rarr;</span>
+                </a>
               </div>
             </div>
 
-            <!-- Right Col 6-12: Showcase Image (Branch Weaves Directly Across) -->
-            <div class="lg:col-span-7 order-1 lg:order-2 relative z-10">
-              <!-- Waypoint Milestone 04 Node -->
-              <div id="sanctuary-wp-4" class="sanctuary-waypoint-badge absolute -top-3.5 -right-3.5 sm:top-4 sm:right-4 z-30" data-node="4">
-                <span class="waypoint-num">04</span>
-              </div>
-
-              <div class="sanctuary-card-frame group relative aspect-[16/10] w-full overflow-hidden bg-stone-950 rounded-sm border border-stone-800 shadow-2xl img-skeleton-wrap">
-                <div class="img-skeleton-placeholder"></div>
-                <img
-                  src="/images/atelier_materials.jpg"
-                  alt="Aged Oak Woodcraft and Joinery in Living Sanctuary"
-                  class="image-blur-up w-full h-full object-cover object-center filter contrast-105 brightness-95 transition-transform duration-700 group-hover:scale-102"
-                  loading="lazy"
-                />
-                <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/10 to-transparent pointer-events-none"></div>
-                
-                <div class="absolute top-4 left-4 flex items-center gap-2 z-30">
-                  <span class="px-2.5 py-1 bg-black/80 backdrop-blur-md border border-stone-800 text-[9px] font-mono uppercase tracking-widest text-white rounded-xs">
-                    Station IV &bull; Woodcraft
-                  </span>
+            <div class="elysium-stack-media">
+              <div class="elysium-media-inner">
+                <img src="/images/atelier_materials.jpg" alt="Aged Oak Woodcraft and Joinery in Living Sanctuary" class="elysium-stack-img" loading="lazy" />
+                <div class="elysium-media-gradient"></div>
+                <div class="elysium-media-tag">
+                  <span>Station IV &bull; Woodcraft</span>
                 </div>
-                <div class="absolute bottom-4 left-4 right-4 flex justify-between items-end text-[10px] font-mono uppercase tracking-widest text-stone-300 z-30">
-                  <div>
-                    <span class="block text-stone-500 text-[8.5px]">STRUCTURAL INTEGRITY</span>
-                    <span class="text-white">Continuous Interlocking Grain</span>
-                  </div>
-                  <span class="px-2 py-0.5 bg-stone-900/90 backdrop-blur-md border border-stone-800 text-stone-300 rounded-xs">
-                    Joinery Bench 02
-                  </span>
+                <div class="elysium-media-dim">
+                  <span>Joinery Bench 02</span>
                 </div>
               </div>
-            </div>
-
-          </div>
-        </div>
-
-        <!-- ========================================================================= -->
-        <!-- STATION 05: HARMONIOUS SANCTUARY CULMINATION (Grand Botanical Terminus)   -->
-        <!-- ========================================================================= -->
-        <div class="sanctuary-station sanctuary-station-5 relative z-10 pt-12 sm:pt-16 pb-4 text-center" data-station="5">
-          
-          <!-- Milestone Badge 05 Centered on the Crown -->
-          <div class="flex justify-center mb-6">
-            <div id="sanctuary-wp-5" class="sanctuary-waypoint-badge relative z-30" data-node="5">
-              <span class="waypoint-num">05</span>
             </div>
           </div>
+        </article>
 
-          <div class="max-w-4xl mx-auto space-y-8 sanctuary-station-text relative z-30">
-            
-            <div class="space-y-3">
-              <span class="text-[10px] sm:text-xs font-mono text-white/70 tracking-[0.35em] uppercase block">
-                05 / SPATIAL SYNTHESIS &bull; THE COMPLETE SANCTUARY
-              </span>
-              <h3 class="text-3xl sm:text-4xl lg:text-5xl font-light text-white uppercase font-sans tracking-wide leading-tight">
-                Where Raw Matter Ceases to Compete <span class="italic font-serif text-stone-400">and Becomes Stillness.</span>
-              </h3>
-              <p class="text-xs sm:text-base text-stone-300 font-light leading-relaxed max-w-2xl mx-auto">
+        <!-- CARD 05: Spatial Synthesis (Culmination / Arrival) -->
+        <article class="elysium-stack-card" data-card-idx="4" aria-label="Chapter 05: Spatial Synthesis">
+          <div class="elysium-stack-slab card-tone-synthesis">
+            <div class="elysium-stack-shade"></div>
+
+            <div class="elysium-stack-content elysium-stack-content-synthesis">
+              <div class="elysium-stack-badge">
+                <span class="elysium-badge-num">05</span>
+                <span class="elysium-badge-sep">&bull;</span>
+                <span class="elysium-badge-cat text-amber-300">SPATIAL SYNTHESIS &bull; THE COMPLETE SANCTUARY</span>
+              </div>
+              
+              <div class="space-y-2">
+                <h3 class="elysium-stack-title text-xl sm:text-2xl lg:text-3xl leading-snug">
+                  Where Raw Matter Ceases to Compete <span class="italic font-serif text-amber-200">and Becomes Stillness.</span>
+                </h3>
+              </div>
+              
+              <p class="elysium-stack-desc">
                 When monolithic travertine, breathable earthenware, and unlacquered timber exist in mutual restraint, a room transitions from decorative architecture into an enduring sanctuary for contemplation.
               </p>
-            </div>
 
-            <!-- Curatorial Pillars Grid -->
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-5 text-left pt-2">
-              <div class="p-5 bg-stone-950/80 border border-stone-800/80 rounded-xs hover:border-white/30 transition-colors backdrop-blur-md">
-                <span class="text-[10px] font-mono text-white/80 block mb-1.5">01 &bull; GROUNDED MASS</span>
-                <h4 class="text-sm font-medium text-white uppercase tracking-wider mb-1.5">Architectural Balance</h4>
-                <p class="text-xs text-stone-400 font-light leading-relaxed">
-                  Low-slung massing that anchors sightlines and dampens visual noise.
-                </p>
+              <div class="elysium-synthesis-pillars grid grid-cols-1 sm:grid-cols-3 gap-2.5 pt-1">
+                <div class="pillar-mini p-2.5 bg-stone-950/70 border border-stone-800/80 rounded-xs">
+                  <span class="text-[8.5px] font-mono text-amber-400 block mb-0.5">01 &bull; GROUNDED MASS</span>
+                  <span class="text-xs text-white font-medium block">Architectural Balance</span>
+                </div>
+                <div class="pillar-mini p-2.5 bg-stone-950/70 border border-stone-800/80 rounded-xs">
+                  <span class="text-[8.5px] font-mono text-amber-400 block mb-0.5">02 &bull; LIVING PATINA</span>
+                  <span class="text-xs text-white font-medium block">Organic Ageing</span>
+                </div>
+                <div class="pillar-mini p-2.5 bg-stone-950/70 border border-stone-800/80 rounded-xs">
+                  <span class="text-[8.5px] font-mono text-amber-400 block mb-0.5">03 &bull; BESPOKE SCALING</span>
+                  <span class="text-xs text-white font-medium block">Private Commissions</span>
+                </div>
               </div>
 
-              <div class="p-5 bg-stone-950/80 border border-stone-800/80 rounded-xs hover:border-white/30 transition-colors backdrop-blur-md">
-                <span class="text-[10px] font-mono text-white/80 block mb-1.5">02 &bull; LIVING PATINA</span>
-                <h4 class="text-sm font-medium text-white uppercase tracking-wider mb-1.5">Organic Ageing</h4>
-                <p class="text-xs text-stone-400 font-light leading-relaxed">
-                  Surfaces that grow richer through touch, sunlight, and time.
-                </p>
-              </div>
-
-              <div class="p-5 bg-stone-950/80 border border-stone-800/80 rounded-xs hover:border-white/30 transition-colors backdrop-blur-md">
-                <span class="text-[10px] font-mono text-white/80 block mb-1.5">03 &bull; BESPOKE SCALING</span>
-                <h4 class="text-sm font-medium text-white uppercase tracking-wider mb-1.5">Private Commissions</h4>
-                <p class="text-xs text-stone-400 font-light leading-relaxed">
-                  Every dimension individually tailored to your residential floorplan.
-                </p>
+              <div class="elysium-stack-actions pt-2 flex flex-wrap items-center gap-3">
+                <a href="/contact" class="elysium-btn-plate elysium-btn-gold">
+                  <span>Commission A Sanctuary Piece</span>
+                  <span class="btn-arrow ml-1.5">&rarr;</span>
+                </a>
+                <a href="/artisan-pieces" class="elysium-btn-subtle">
+                  <span>View Catalogue</span>
+                  <span class="btn-arrow ml-1.5">&rarr;</span>
+                </a>
               </div>
             </div>
 
-            <!-- Action Buttons -->
-            <div class="pt-6 flex flex-wrap items-center justify-center gap-4 sm:gap-6 border-t border-stone-800/70">
-              <a href="/contact" class="btn-slide-white px-8 py-3.5 text-[10px] font-semibold uppercase tracking-[0.25em] shadow-xl">
-                <span>Commission A Sanctuary Piece</span>
-                <span class="btn-arrow ml-2">&rarr;</span>
-              </a>
-              <a href="/materiality" class="btn-slide-subtle px-7 py-3.5 text-[10px] font-semibold uppercase tracking-[0.25em]">
-                <span>Explore Materiality Lab</span>
-                <span class="btn-arrow ml-2">&rarr;</span>
-              </a>
-              <a href="/our-story" class="btn-slide-subtle px-7 py-3.5 text-[10px] font-semibold uppercase tracking-[0.25em]">
-                <span>Our Provenance</span>
-                <span class="btn-arrow ml-2">&rarr;</span>
-              </a>
+            <div class="elysium-stack-media">
+              <div class="elysium-media-inner">
+                <img src="/images/chapter_bedroom.jpg" alt="Elysium Spatial Living Sanctuary Composition" class="elysium-stack-img" loading="lazy" />
+                <div class="elysium-media-gradient"></div>
+                <div class="elysium-media-tag">
+                  <span>Station V &bull; Complete Sanctuary</span>
+                </div>
+                <div class="elysium-media-dim">
+                  <span>Rajkot Atelier Sanctuary</span>
+                </div>
+              </div>
             </div>
-
           </div>
-        </div>
+        </article>
 
       </div>
 
@@ -1880,7 +1631,7 @@ app.get('/', (req, res) => {
     title: 'Elysium | Artisan Minimalist Home Decor, Handcrafted in India',
     description: BRAND.heroStatement,
     path: '/',
-    content: heroSection + sectionManifestoAndExpedition + sectionMaterialityInterlude + sectionLivingSanctuary + sectionCraftJourney + sectionFeaturedPieces + sectionTrustVoice,
+    content: heroSection + sectionManifestoAndExpedition + sectionLivingSanctuary + sectionCraftJourney + sectionFeaturedPieces + sectionTrustVoice,
     isHeroPage: true,
   }));
 });

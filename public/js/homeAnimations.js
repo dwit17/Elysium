@@ -646,12 +646,12 @@
    * Matches 21st.dev / Daniel Petho / Khoa Phan cascading card deck interaction.
    * Symmetrically centered vertically & horizontally with stepped top tabs.
    */
-  function initMaterialityInterludeSection() {
-    const section = document.getElementById('materiality-suite-container') || document.querySelector('.elysium-stack-section') || document.querySelector('.section-stacking-cards');
+  function initSpatialSanctuarySection() {
+    const section = document.getElementById('spatial-sanctuary-container') || document.querySelector('.elysium-stack-section');
     if (!section || typeof gsap === 'undefined' || typeof ScrollTrigger === 'undefined') return;
 
-    const stage = section.querySelector('.elysium-stack-stage') || document.getElementById('stack-cards-stage') || section;
-    const cardItems = Array.from(section.querySelectorAll('.stack-card, .stacking-card-item'));
+    const stage = document.getElementById('sanctuary-stack-stage') || section.querySelector('.elysium-stack-stage') || section;
+    const cardItems = Array.from(section.querySelectorAll('.elysium-stack-card'));
     if (cardItems.length < 2) return;
 
     // Check prefers-reduced-motion
@@ -661,7 +661,7 @@
       return;
     }
 
-    // Kill any existing ScrollTriggers on this section to prevent duplicates
+    // Clean up any existing ScrollTriggers on this section
     ScrollTrigger.getAll().forEach(st => {
       if (st.trigger === section || st.pin === stage) {
         st.kill(true);
@@ -672,76 +672,78 @@
     const isMobile = window.innerWidth < 768;
     const isTablet = window.innerWidth < 1024;
 
-    // Symmetrical vertical step offset around the dead center
-    const stepY = isMobile ? 12 : (isTablet ? 18 : 22);
-    const scaleMultiplier = isMobile ? 0.025 : 0.035;
+    const scaleStep = isMobile ? 0.025 : 0.035;
+    const shiftYStep = isMobile ? -8 : -14;
 
-    // Set initial card states
+    // Initialize Card Positions and Z-Indices
     cardItems.forEach((card, index) => {
-      const inner = card.querySelector('.stack-card-inner, .stacking-card-inner');
-      const shade = card.querySelector('.stack-card-shade');
+      const slab = card.querySelector('.elysium-stack-slab');
+      const shade = card.querySelector('.elysium-stack-shade');
+      const img = card.querySelector('.elysium-stack-img');
 
       card.style.zIndex = (index + 1).toString();
-      if (inner) {
-        inner.style.top = '0px';
-        gsap.set(inner, { scale: 1, y: 0, transformOrigin: 'top center' });
+      if (slab) {
+        gsap.set(slab, { scale: 1, y: 0, transformOrigin: 'top center' });
       }
       if (shade) {
         gsap.set(shade, { opacity: 0 });
       }
+      if (img) {
+        gsap.set(img, { scale: 1, yPercent: 0 });
+      }
 
       if (index === 0) {
-        gsap.set(card, { yPercent: 0 });
+        gsap.set(card, { yPercent: 0, pointerEvents: 'auto' });
       } else {
-        gsap.set(card, { yPercent: 120 });
+        gsap.set(card, { yPercent: 100, pointerEvents: 'none' });
       }
     });
 
-    // Master Timeline for continuous scroll scrubbing
+    // Master Pinned Stacking Timeline
     const masterTl = gsap.timeline({ defaults: { ease: 'power1.inOut' } });
 
     for (let step = 0; step < totalCards - 1; step++) {
       const stepStartTime = step;
-      const nextCard = cardItems[step + 1];
+      const incomingCard = cardItems[step + 1];
 
-      // 1. Next card translates smoothly up into the center
-      if (nextCard) {
-        masterTl.to(nextCard, {
+      // 1. Incoming card rises from below the viewport (yPercent: 100 -> 0)
+      if (incomingCard) {
+        masterTl.to(incomingCard, {
           yPercent: 0,
           duration: 1,
           ease: 'power1.inOut',
+          onStart: () => { incomingCard.style.pointerEvents = 'auto'; },
+          onReverseComplete: () => { incomingCard.style.pointerEvents = 'none'; },
         }, stepStartTime);
 
-        const nextImg = nextCard.querySelector('.stack-card-img');
-        if (nextImg) {
-          masterTl.fromTo(nextImg, {
-            scale: 1.10,
+        const incomingImg = incomingCard.querySelector('.elysium-stack-img');
+        if (incomingImg) {
+          masterTl.fromTo(incomingImg, {
+            scale: 1.06,
+            yPercent: 3,
           }, {
             scale: 1.0,
+            yPercent: 0,
             duration: 1,
             ease: 'power1.out',
           }, stepStartTime);
         }
       }
 
-      // 2. Adjust all cards landed so far into their centered cascading ladder positions
-      const currentActiveCount = step + 2; // e.g. when card 1 lands, active count is 2 (cards 0 and 1)
-      const centerIndex = (currentActiveCount - 1) / 2;
+      // 2. All cards settled so far (0..step) progressively scale down and shift up subtly
+      for (let i = 0; i <= step; i++) {
+        const slab = cardItems[i].querySelector('.elysium-stack-slab');
+        const shade = cardItems[i].querySelector('.elysium-stack-shade');
+        const depth = (step + 1) - i;
 
-      for (let i = 0; i <= step + 1; i++) {
-        const inner = cardItems[i].querySelector('.stack-card-inner, .stacking-card-inner');
-        const shade = cardItems[i].querySelector('.stack-card-shade');
+        const targetScale = Math.max(0.85, 1.0 - (depth * scaleStep));
+        const targetY = depth * shiftYStep;
+        const targetShade = Math.min(0.30, depth * 0.075);
 
-        // Cards closer to 0 (top of deck) shift up, front card shifts down
-        const targetLadderY = (i - centerIndex) * stepY;
-        const stackDepth = (step + 1) - i;
-        const targetScale = stackDepth > 0 ? Math.max(0.84, 1 - (stackDepth * scaleMultiplier)) : 1.0;
-        const targetShadeOpacity = stackDepth > 0 ? Math.min(0.35, stackDepth * 0.08) : 0;
-
-        if (inner) {
-          masterTl.to(inner, {
+        if (slab) {
+          masterTl.to(slab, {
             scale: targetScale,
-            y: targetLadderY,
+            y: targetY,
             duration: 1,
             ease: 'power1.inOut',
           }, stepStartTime);
@@ -749,7 +751,7 @@
 
         if (shade) {
           masterTl.to(shade, {
-            opacity: targetShadeOpacity,
+            opacity: targetShade,
             duration: 1,
             ease: 'power1.inOut',
           }, stepStartTime);
@@ -757,351 +759,26 @@
       }
     }
 
-    // ScrollTrigger Pinned Arena
-    const pinDistance = (totalCards - 1) * (isMobile ? 550 : 750);
+    // Scroll Distance per Card Transition
+    const scrollDistancePerCard = isMobile ? 600 : (isTablet ? 750 : 850);
+    const totalPinDistance = (totalCards - 1) * scrollDistancePerCard;
 
     const st = ScrollTrigger.create({
       trigger: section,
       start: 'top top',
-      end: '+=' + pinDistance,
+      end: '+=' + totalPinDistance,
       pin: stage,
       pinSpacing: true,
-      scrub: 0.6,
+      scrub: 0.5,
       anticipatePin: 1,
       fastScrollEnd: true,
       invalidateOnRefresh: true,
       animation: masterTl,
     });
 
-    console.log('[Elysium Motion] Section 3 Pinned Stacking Cards active across ' + totalCards + ' cards.');
+    console.log('[Elysium Motion] Section 3 Spatial Sanctuary Stacking Deck initialized across ' + totalCards + ' material chapters.');
   }
 
-  function initLivingSanctuarySection() {
-    const section = document.getElementById('living-sanctuary-container');
-    const track   = document.getElementById('sanctuary-journey-track');
-    if (!section || !track || typeof gsap === 'undefined' || typeof ScrollTrigger === 'undefined') return;
-
-    const stationEls = Array.from(track.querySelectorAll('.sanctuary-station'));
-    const WP_IDS     = ['sanctuary-wp-1', 'sanctuary-wp-2', 'sanctuary-wp-3', 'sanctuary-wp-4', 'sanctuary-wp-5'];
-    const SVG_NS     = 'http://www.w3.org/2000/svg';
-
-    // ── Reduced-motion: reveal everything instantly ───────────────────────────
-    if (prefersReducedMotion) {
-      stationEls.forEach((s) => s.classList.add('is-active'));
-      WP_IDS.forEach((id) => {
-        const el = document.getElementById(id);
-        if (el) el.classList.add('is-active');
-      });
-      return;
-    }
-
-    // ── Create vine mount as SECTION-LEVEL child ──────────────────────────────
-    let mount = document.getElementById('sanctuary-vine-mount');
-    if (!mount) {
-      mount = document.createElement('div');
-      mount.id = 'sanctuary-vine-mount';
-      mount.className = 'sanctuary-vine-mount';
-      section.appendChild(mount);
-    }
-
-    // ── Internal state ────────────────────────────────────────────────────────
-    let leafClusters = [];
-    let pathTweens   = [];
-    let leafSTs      = [];
-    let resizeTimer  = null;
-    let isInitialized = false;
-
-    // ── SVG element helper ────────────────────────────────────────────────────
-    function mk(tag, attrs, classes) {
-      const el = document.createElementNS(SVG_NS, tag);
-      if (attrs) {
-        for (const [k, v] of Object.entries(attrs)) el.setAttribute(k, String(v));
-      }
-      if (classes) classes.forEach((c) => el.classList.add(c));
-      return el;
-    }
-
-    // ── Measure anchor points & station image card centers ───────────────────
-    function getAnchors() {
-      const secRect = section.getBoundingClientRect();
-      const anchors = [];
-
-      WP_IDS.forEach((id, i) => {
-        const badge = document.getElementById(id);
-        const st = stationEls[i];
-        if (!badge) return;
-
-        const r = badge.getBoundingClientRect();
-        let bx = (r.left + r.right) / 2 - secRect.left;
-        let by = (r.top + r.bottom) / 2 - secRect.top;
-
-        // Measure the specific image card frame for exact center-to-center green dot anchors
-        const card = st ? (st.querySelector('.sanctuary-card-frame') || st) : null;
-        let cardCx = bx;
-        let cardTop = by;
-        let cardBottom = by + 420;
-
-        if (card) {
-          const cr = card.getBoundingClientRect();
-          cardCx = (cr.left + cr.right) / 2 - secRect.left;
-          cardTop = cr.top - secRect.top;
-          cardBottom = cr.bottom - secRect.top;
-        }
-
-        // Station 5 (Center Crown Section)
-        if (i === 4) {
-          cardCx = secRect.width * 0.5;
-          cardTop = by - 15;
-          cardBottom = by + 20;
-        }
-
-        anchors.push({
-          badgeX: bx,
-          badgeY: by,
-          el: badge,
-          stationEl: st,
-          idx: i,
-          cardCx,
-          cardTop,
-          cardBottom,
-        });
-      });
-
-      return anchors;
-    }
-
-    // ── Full SVG rebuild ──────────────────────────────────────────────────────
-    function buildSVG(anchors) {
-      while (mount.firstChild) mount.removeChild(mount.firstChild);
-      leafSTs.forEach((st) => st.kill());
-      leafSTs = [];
-      pathTweens.forEach((tw) => {
-        if (tw.scrollTrigger) tw.scrollTrigger.kill();
-        tw.kill();
-      });
-      pathTweens = [];
-      leafClusters = [];
-
-      if (!anchors || anchors.length < 2) return;
-
-      const secRect = section.getBoundingClientRect();
-      const secW = Math.max(320, secRect.width);
-      const secH = Math.max(600, secRect.height);
-
-      // Explicit SVG sizing and viewBox to guarantee 1:1 pixel coordinate space
-      const svg = mk('svg', {
-        viewBox: `0 0 ${secW.toFixed(1)} ${secH.toFixed(1)}`,
-        width: `${secW.toFixed(1)}`,
-        height: `${secH.toFixed(1)}`,
-        fill: 'none',
-        xmlns: SVG_NS,
-      }, ['sanctuary-dynamic-svg']);
-
-      // ── Build Segment-by-Segment S-Curves in open space between cards ───────
-      for (let i = 0; i < anchors.length - 1; i++) {
-        const cur = anchors[i];
-        const next = anchors[i + 1];
-
-        // Anchor 1: Horizontal center of bottom edge of current image
-        const startX = cur.cardCx;
-        const startY = cur.cardBottom;
-
-        // Anchor 2: Horizontal center of top edge of next image
-        const endX = next.cardCx;
-        const endY = next.cardTop;
-
-        const dy = Math.max(60, endY - startY);
-
-        // Smooth cubic Bézier S-curve with vertical departure and arrival
-        const cp1x = startX;
-        const cp1y = startY + dy * 0.52;
-        const cp2x = endX;
-        const cp2y = endY - dy * 0.52;
-
-        const segD = `M ${startX.toFixed(1)},${startY.toFixed(1)} C ${cp1x.toFixed(1)},${cp1y.toFixed(1)} ${cp2x.toFixed(1)},${cp2y.toFixed(1)} ${endX.toFixed(1)},${endY.toFixed(1)}`;
-
-        // 1. Subtle dotted guide trace
-        svg.appendChild(mk('path', {
-          d: segD,
-          stroke: 'rgba(255,255,255,0.08)',
-          'stroke-width': '1.2',
-          'stroke-dasharray': '3 10',
-          'vector-effect': 'non-scaling-stroke',
-        }, ['sanctuary-guide-path']));
-
-        // 2. Diffuse glowing aura path
-        const segGlow = mk('path', {
-          d: segD,
-          stroke: 'rgba(255,255,255,0.22)',
-          'stroke-width': '4.5',
-          'stroke-linecap': 'round',
-          'stroke-linejoin': 'round',
-          'vector-effect': 'non-scaling-stroke',
-        }, ['sanctuary-glow-path']);
-        svg.appendChild(segGlow);
-
-        // 3. Sharp core drawing vine path
-        const segDraw = mk('path', {
-          d: segD,
-          stroke: '#ffffff',
-          'stroke-width': '2.0',
-          'stroke-linecap': 'round',
-          'stroke-linejoin': 'round',
-          'vector-effect': 'non-scaling-stroke',
-        }, ['sanctuary-draw-path']);
-        svg.appendChild(segDraw);
-
-        // Measure path length and prepare for scrubbed draw
-        let segLen = 1200;
-        try {
-          segLen = segDraw.getTotalLength() || 1200;
-        } catch (e) {}
-
-        gsap.set(segDraw, { strokeDasharray: segLen, strokeDashoffset: segLen });
-        gsap.set(segGlow, { strokeDasharray: segLen, strokeDashoffset: segLen });
-
-        // Calibrated ScrollTrigger per station gap: draws as gap enters viewport
-        const fromEl = cur.stationEl || cur.el;
-        const toEl = next.stationEl || next.el;
-
-        const twDraw = gsap.to(segDraw, {
-          strokeDashoffset: 0,
-          ease: 'none',
-          scrollTrigger: {
-            trigger: fromEl,
-            start: 'bottom 90%',
-            endTrigger: toEl,
-            end: 'top 35%',
-            scrub: 0.8,
-            invalidateOnRefresh: true,
-          },
-        });
-
-        const twGlow = gsap.to(segGlow, {
-          strokeDashoffset: 0,
-          ease: 'none',
-          scrollTrigger: {
-            trigger: fromEl,
-            start: 'bottom 90%',
-            endTrigger: toEl,
-            end: 'top 35%',
-            scrub: 0.8,
-            invalidateOnRefresh: true,
-          },
-        });
-
-        pathTweens.push(twDraw, twGlow);
-      }
-
-      mount.appendChild(svg);
-
-      // ── Individual waypoint milestone activation triggers ───────────────────
-      anchors.forEach((anchor) => {
-        const triggerEl = anchor.stationEl || anchor.el;
-        const badge = anchor.el;
-        if (!triggerEl || !badge) return;
-
-        function activateBadge() {
-          badge.classList.add('is-active');
-        }
-
-        function deactivateBadge() {
-          badge.classList.remove('is-active');
-        }
-
-        // If element is already in viewport on load/resize, activate immediately
-        const bRect = triggerEl.getBoundingClientRect();
-        if (bRect.top <= window.innerHeight * 0.75 && bRect.bottom > 0) {
-          activateBadge();
-        }
-
-        const st = ScrollTrigger.create({
-          trigger: triggerEl,
-          start: 'top 75%',
-          onEnter: activateBadge,
-          onLeaveBack: deactivateBadge,
-          onEnterBack: activateBadge,
-        });
-        leafSTs.push(st);
-      });
-    }
-
-    // ── Station card entrance fade triggers ───────────────────────────────────
-    stationEls.forEach((station) => {
-      ScrollTrigger.create({
-        trigger: station,
-        start: 'top 70%',
-        onEnter: () => station.classList.add('is-active'),
-        onLeaveBack: () => station.classList.remove('is-active'),
-      });
-    });
-
-    // ── Layout settling helper ────────────────────────────────────────────────
-    async function waitForLayoutSettled() {
-      // Wait for fonts
-      if (document.fonts && document.fonts.ready) {
-        try {
-          await document.fonts.ready;
-        } catch (e) {}
-      }
-
-      // Wait for images inside section
-      const imgs = Array.from(section.querySelectorAll('img'));
-      await Promise.all(
-        imgs.map((img) => {
-          if (img.complete && img.naturalHeight > 0) return Promise.resolve();
-          if (img.decode) {
-            return img.decode().catch(() => {});
-          }
-          return new Promise((resolve) => {
-            img.addEventListener('load', resolve, { once: true });
-            img.addEventListener('error', resolve, { once: true });
-          });
-        })
-      );
-
-      // Two rAF frames to allow Tailwind flex/grid layout to complete paint
-      return new Promise((resolve) => {
-        requestAnimationFrame(() => {
-          requestAnimationFrame(resolve);
-        });
-      });
-    }
-
-    // ── Recalculate and rebuild ───────────────────────────────────────────────
-    function recalculate() {
-      buildSVG(getAnchors());
-      ScrollTrigger.refresh();
-    }
-
-    // ── Initial bootstrap ─────────────────────────────────────────────────────
-    async function initialBuild() {
-      if (isInitialized) return;
-      await waitForLayoutSettled();
-      recalculate();
-      isInitialized = true;
-    }
-
-    if (document.readyState === 'complete') {
-      initialBuild();
-    } else {
-      window.addEventListener('load', initialBuild, { once: true });
-      setTimeout(initialBuild, 500);
-    }
-
-    // ── Debounced ResizeObserver for fluid reflows across breakpoints ─────────
-    const ro = new ResizeObserver(() => {
-      clearTimeout(resizeTimer);
-      resizeTimer = setTimeout(recalculate, 150);
-    });
-    ro.observe(section);
-
-    console.log('[Elysium Motion] Living Sanctuary vine initialized.');
-  }
-
-  /**
-   * 4. SECTION 4 — CRAFT JOURNEY & INTERACTIVE TRANSFORMATION SLIDER (3-Point Timeline)
-   */
   function initCraftJourneySection() {
     const section = document.querySelector('.section-craft-journey');
     if (!section || typeof gsap === 'undefined' || typeof ScrollTrigger === 'undefined') return;
@@ -1745,8 +1422,8 @@
     // 1. Homepage Body Sections (Atelier Reveal, Horizontal Suite, Materiality, Process Trace, Featured, Trust)
     initLusionSection2();
     // initHorizontalGallerySection (Replaced by Section 2 Lusion showreel)
-    initMaterialityInterludeSection();
-    initLivingSanctuarySection();
+    initSpatialSanctuarySection();
+    // initLivingSanctuarySection (Consolidated into Section 3 Spatial Sanctuary)
     initCraftJourneySection();
     initFeaturedPiecesSection();
     initTrustVoiceSection();

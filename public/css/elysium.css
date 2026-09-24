@@ -3589,49 +3589,325 @@ img {
   border: 1px solid rgba(255, 255, 255, 0.2);
 }
 
-.stack-card-shade {
+/* ==========================================================================
+   SECTION 3 — SPATIAL LIVING SANCTUARY • ARCHITECTURAL PROGRESSION
+   100vh Pinned Stacking Cards Deck (Architectural Slabs)
+   ========================================================================== */
+.elysium-stack-section {
+  position: relative;
+  width: 100%;
+  background-color: #070708;
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+  color: #ffffff;
+  user-select: none;
+  overflow: hidden;
+}
+
+.elysium-stack-stage {
+  position: relative;
+  width: 100%;
+  height: 100vh;
+  height: 100dvh;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  box-sizing: border-box;
+}
+
+.sanctuary-stack-header {
+  position: relative;
+  width: 100%;
+  max-width: 1360px;
+  margin: 0 auto;
+  padding: 1.1rem 1.5rem 0.65rem;
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 1.5rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  z-index: 40;
+  flex-shrink: 0;
+  box-sizing: border-box;
+}
+
+.elysium-stack-arena {
+  position: relative;
+  width: 100%;
+  flex: 1 1 auto;
+  height: calc(100% - 75px);
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.elysium-stack-card {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  pointer-events: none;
+  will-change: transform;
+  box-sizing: border-box;
+  padding: 12px 16px 20px;
+}
+
+.elysium-stack-card:first-child {
+  pointer-events: auto;
+}
+
+.elysium-stack-slab {
+  position: relative;
+  width: calc(100vw - 48px);
+  max-width: 1320px;
+  height: calc(100% - 16px);
+  max-height: 680px;
+  min-height: 480px;
+  margin: 0 auto;
+  border-radius: 4px;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  box-shadow: 0 30px 80px -20px rgba(0, 0, 0, 0.85), 0 0 0 1px rgba(255, 255, 255, 0.06);
+  display: flex;
+  flex-direction: row;
+  align-items: stretch;
+  overflow: hidden;
+  transform-origin: top center;
+  will-change: transform;
+  pointer-events: auto;
+  box-sizing: border-box;
+}
+
+/* Subtle Mineral Slab Palettes */
+.card-tone-travertine {
+  background: #11100e;
+  background: linear-gradient(145deg, #161411 0%, #0d0c0b 100%);
+  border-color: rgba(214, 198, 175, 0.22);
+}
+
+.card-tone-clay {
+  background: #13100d;
+  background: linear-gradient(145deg, #18130e 0%, #0e0c0a 100%);
+  border-color: rgba(202, 156, 122, 0.22);
+}
+
+.card-tone-plaster {
+  background: #101214;
+  background: linear-gradient(145deg, #14171a 0%, #0c0d0e 100%);
+  border-color: rgba(180, 190, 195, 0.22);
+}
+
+.card-tone-oak {
+  background: #14100b;
+  background: linear-gradient(145deg, #1a140d 0%, #0d0b07 100%);
+  border-color: rgba(212, 175, 55, 0.24);
+}
+
+.card-tone-synthesis {
+  background: #080809;
+  background: linear-gradient(145deg, #101014 0%, #050506 100%);
+  border-color: rgba(245, 212, 143, 0.35);
+  box-shadow: 0 35px 90px -20px rgba(0, 0, 0, 0.9), 0 0 40px rgba(212, 175, 55, 0.08);
+}
+
+.elysium-stack-shade {
   position: absolute;
   inset: 0;
   background-color: #000000;
-  pointer-events: none;
-  z-index: 15;
   opacity: 0;
+  pointer-events: none;
+  z-index: 25;
   border-radius: inherit;
   will-change: opacity;
 }
 
-/* Vibrant & Luxury Card Palettes matching 21st.dev reference cadence */
-.card-mat-travertine {
-  background: #f97316;
-  background: linear-gradient(135deg, #f97316 0%, #ea580c 100%);
-  color: #ffffff;
+/* Left Column Editorial Content (~45%) */
+.elysium-stack-content {
+  flex: 0 0 45%;
+  width: 45%;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: 2.2rem 2.5rem;
+  z-index: 20;
+  text-align: left;
+  box-sizing: border-box;
+  background: inherit;
 }
 
-.card-mat-clay {
-  background: #2563eb;
-  background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
-  color: #ffffff;
+.elysium-stack-content-synthesis {
+  flex: 0 0 48%;
+  width: 48%;
 }
 
-.card-mat-oak {
-  background: #ef4444;
-  background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
-  color: #ffffff;
+.elysium-stack-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-family: var(--font-mono, monospace);
+  font-size: 0.72rem;
+  letter-spacing: 0.25em;
+  text-transform: uppercase;
+  color: #d4af37;
+  margin-bottom: 0.4rem;
 }
 
-.card-mat-plaster {
-  background: #0f766e;
-  background: linear-gradient(135deg, #0f766e 0%, #115e59 100%);
-  color: #ffffff;
+.elysium-badge-num {
+  font-weight: 700;
+  color: #d4af37;
 }
 
-.card-mat-harmonies {
-  background: #1d4ed8;
-  background: linear-gradient(135deg, #1d4ed8 0%, #0015ff 100%);
-  color: #ffffff;
+.elysium-badge-sep {
+  opacity: 0.5;
 }
 
-.stack-card-img {
+.elysium-badge-cat {
+  font-weight: 500;
+  color: #e7e5e4;
+  letter-spacing: 0.2em;
+}
+
+.elysium-stack-title {
+  font-family: var(--font-sans, sans-serif);
+  font-size: clamp(1.45rem, 2.3vw, 2.15rem);
+  font-weight: 300;
+  letter-spacing: 0.04em;
+  color: #ffffff;
+  line-height: 1.15;
+  margin: 0;
+  text-transform: uppercase;
+}
+
+.elysium-stack-subtitle {
+  font-family: var(--font-serif, serif);
+  font-style: italic;
+  font-size: 0.88rem;
+  color: #a8a29e;
+  letter-spacing: 0.03em;
+  margin-top: 0.3rem;
+  line-height: 1.4;
+}
+
+.elysium-stack-desc {
+  font-size: clamp(0.82rem, 1.0vw, 0.9rem);
+  font-weight: 300;
+  color: #d6d3d1;
+  line-height: 1.55;
+  margin: 0.75rem 0 0.85rem;
+}
+
+.elysium-stack-specs {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 0.5rem;
+  margin: 0.4rem 0 0.9rem;
+}
+
+.elysium-spec-pill {
+  background: rgba(255, 255, 255, 0.035);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  padding: 0.5rem 0.6rem;
+  border-radius: 2px;
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+}
+
+.elysium-spec-pill .spec-label {
+  font-family: var(--font-mono, monospace);
+  font-size: 0.58rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: #a8a29e;
+}
+
+.elysium-spec-pill .spec-val {
+  font-size: 0.72rem;
+  font-weight: 500;
+  color: #ffffff;
+  line-height: 1.25;
+}
+
+.elysium-stack-actions {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-top: auto;
+  padding-top: 0.5rem;
+}
+
+.elysium-btn-plate {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.65rem 1.35rem;
+  background: #ffffff;
+  color: #000000;
+  font-family: var(--font-mono, monospace);
+  font-size: 0.68rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.2em;
+  border-radius: 2px;
+  transition: all 0.25s ease;
+  text-decoration: none;
+}
+
+.elysium-btn-plate:hover {
+  background: #d4af37;
+  color: #000000;
+  transform: translateY(-1px);
+}
+
+.elysium-btn-gold {
+  background: linear-gradient(135deg, #f5d48f 0%, #d4af37 100%);
+  color: #000000;
+  font-weight: 700;
+}
+
+.elysium-btn-subtle {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.65rem 1.15rem;
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  color: #ffffff;
+  font-family: var(--font-mono, monospace);
+  font-size: 0.68rem;
+  text-transform: uppercase;
+  letter-spacing: 0.2em;
+  border-radius: 2px;
+  transition: all 0.25s ease;
+  text-decoration: none;
+}
+
+.elysium-btn-subtle:hover {
+  background: rgba(255, 255, 255, 0.1);
+  border-color: #ffffff;
+}
+
+/* Right Column Media Photography (~55%) */
+.elysium-stack-media {
+  flex: 0 0 55%;
+  width: 55%;
+  height: 100%;
+  position: relative;
+  overflow: hidden;
+  background: #000000;
+}
+
+.elysium-media-inner {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+}
+
+.elysium-stack-img {
   width: 100%;
   height: 100%;
   object-fit: cover;
@@ -3639,60 +3915,127 @@ img {
   will-change: transform;
 }
 
-/* Responsive adjustments */
+.elysium-media-gradient {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to right, rgba(0, 0, 0, 0.35) 0%, transparent 35%, rgba(0, 0, 0, 0.25) 100%);
+  pointer-events: none;
+}
+
+.elysium-media-tag {
+  position: absolute;
+  bottom: 1rem;
+  left: 1.25rem;
+  padding: 0.35rem 0.75rem;
+  background: rgba(0, 0, 0, 0.65);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: 2px;
+  font-family: var(--font-mono, monospace);
+  font-size: 0.62rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: #e7e5e4;
+  pointer-events: none;
+  z-index: 10;
+}
+
+.elysium-media-dim {
+  position: absolute;
+  bottom: 1rem;
+  right: 1.25rem;
+  padding: 0.35rem 0.75rem;
+  background: rgba(0, 0, 0, 0.65);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: 2px;
+  font-family: var(--font-mono, monospace);
+  font-size: 0.62rem;
+  letter-spacing: 0.18em;
+  color: #a8a29e;
+  pointer-events: none;
+  z-index: 10;
+}
+
+/* Tablet & Mobile Layouts */
 @media (max-width: 1023px) {
-  .stack-card-inner {
+  .elysium-stack-slab {
     flex-direction: column !important;
-    height: auto !important;
-    max-height: 68vh;
-    padding: 1.5rem;
-    gap: 1.25rem;
+    height: calc(100% - 10px) !important;
+    max-height: 74vh !important;
+    overflow-y: auto !important;
   }
-  .stack-card-content {
-    width: 100% !important;
+  .elysium-stack-content {
     flex: 1 1 auto !important;
-  }
-  .stack-card-media {
     width: 100% !important;
-    flex: 0 0 auto !important;
-    height: 180px !important;
+    padding: 1.4rem 1.5rem !important;
+  }
+  .elysium-stack-media {
+    flex: 0 0 200px !important;
+    width: 100% !important;
+    height: 200px !important;
+  }
+  .elysium-stack-specs {
+    grid-template-columns: repeat(2, 1fr) !important;
   }
 }
 
 @media (max-width: 767px) {
-  .stack-card-inner {
-    max-height: 72vh;
-    padding: 1.25rem;
-    gap: 0.85rem;
-    border-radius: 20px;
+  .elysium-stack-card {
+    padding: 8px 10px 14px !important;
+  }
+  .elysium-stack-slab {
+    width: calc(100vw - 20px) !important;
+    max-height: 78vh !important;
+  }
+  .elysium-stack-content {
+    padding: 1.1rem 1.15rem !important;
+  }
+  .elysium-stack-media {
+    flex: 0 0 160px !important;
+    height: 160px !important;
+  }
+  .elysium-stack-title {
+    font-size: 1.25rem !important;
+  }
+  .elysium-stack-specs {
+    grid-template-columns: 1fr !important;
+    gap: 0.35rem !important;
   }
 }
 
+/* Reduced Motion Mode */
 @media (prefers-reduced-motion: reduce) {
-  .stack-card {
-    position: relative !important;
-    inset: auto !important;
-    transform: none !important;
-    margin-bottom: 2rem;
-    pointer-events: auto !important;
+  .elysium-stack-section {
+    overflow: visible !important;
   }
-
-  .stack-card-inner {
-    transform: none !important;
-  }
-
   .elysium-stack-stage {
     height: auto !important;
     overflow: visible !important;
   }
-
   .elysium-stack-arena {
     display: flex !important;
     flex-direction: column !important;
+    height: auto !important;
+    gap: 2rem !important;
+    padding: 1.5rem 0 3rem !important;
     overflow: visible !important;
   }
-
-  .stack-card-shade {
+  .elysium-stack-card {
+    position: relative !important;
+    inset: auto !important;
+    width: 100% !important;
+    height: auto !important;
+    transform: none !important;
+    pointer-events: auto !important;
+  }
+  .elysium-stack-slab {
+    transform: none !important;
+    max-height: none !important;
+  }
+  .elysium-stack-shade {
     display: none !important;
   }
 }
