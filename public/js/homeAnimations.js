@@ -218,9 +218,9 @@
           float p = clamp(uProgress, 0.0, 1.0);
           float aspect = uResolution.x / max(uResolution.y, 1.0);
 
-          // Starting card position: bottom-left aligned matching Lusion.co
-          vec2 startCenter = vec2(-0.50, -0.34);
-          vec2 startSize = vec2(0.44, 0.44 / aspect * 1.55);
+          // Starting card position: bottom-left aligned cleanly below title
+          vec2 startCenter = vec2(-0.52, -0.46);
+          vec2 startSize = vec2(0.38, 0.38 / aspect * 1.45);
 
           // Docked card position: centered full viewport frame
           vec2 endCenter = vec2(0.0, 0.0);
@@ -280,12 +280,13 @@
           float crossfade = smoothstep(0.25, 0.65, p);
           vec4 naturalCol = mix(col0, col1, crossfade);
 
+          // Black-grey / monochrome shade transition to natural full color
           float luma = dot(naturalCol.rgb, vec3(0.299, 0.587, 0.114));
-          vec3 duotoneDark = vec3(0.16, 0.20, 0.96);
-          vec3 duotoneLight = vec3(0.88, 0.90, 1.00);
-          vec3 duotoneCol = mix(duotoneDark, duotoneLight, luma);
+          vec3 monoDark = vec3(0.08, 0.08, 0.10);
+          vec3 monoLight = vec3(0.85, 0.85, 0.88);
+          vec3 monoCol = mix(monoDark, monoLight, luma);
 
-          vec3 finalRgb = mix(naturalCol.rgb, duotoneCol, vDuotoneMix * 0.94);
+          vec3 finalRgb = mix(naturalCol.rgb, monoCol, vDuotoneMix * 0.95);
 
           vec2 pixelCoord = (vUv - 0.5) * (vQuadSize * uResolution);
           vec2 halfBox = (vQuadSize * uResolution) * 0.5;
@@ -385,7 +386,7 @@
       gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
       gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
       gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
-      gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, 1, 1, 0, gl.RGBA, gl.UNSIGNED_BYTE, new Uint8Array([79, 67, 244, 255]));
+      gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, 1, 1, 0, gl.RGBA, gl.UNSIGNED_BYTE, new Uint8Array([32, 32, 36, 255]));
 
       const mainImg = new Image();
       mainImg.crossOrigin = 'anonymous';
@@ -403,7 +404,7 @@
       gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
       gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
       gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
-      gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, 1, 1, 0, gl.RGBA, gl.UNSIGNED_BYTE, new Uint8Array([43, 47, 232, 255]));
+      gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, 1, 1, 0, gl.RGBA, gl.UNSIGNED_BYTE, new Uint8Array([24, 24, 28, 255]));
 
       function resize() {
         const dpr = Math.min(window.devicePixelRatio || 1, 2);
@@ -639,192 +640,142 @@
     console.log('[Elysium Motion] Section 2: 1:1 Lusion Recreation Engine initialized.');
   }
 
-function initMaterialityInterludeSection() {
-    const section = document.getElementById('materiality-suite-container') || document.querySelector('.section-materiality-interlude');
+  /**
+   * 2. SECTION 3 — 100VH ARCHITECTURAL STACKING CARDS DECK
+   * Recreates the 100vh stacking card physics natively via GSAP ScrollTrigger + Lenis.
+   * Matches 21st.dev / Daniel Petho / Khoa Phan cascading card deck interaction.
+   * Symmetrically centered vertically & horizontally with stepped top tabs.
+   */
+  function initMaterialityInterludeSection() {
+    const section = document.getElementById('materiality-suite-container') || document.querySelector('.elysium-stack-section') || document.querySelector('.section-stacking-cards');
     if (!section || typeof gsap === 'undefined' || typeof ScrollTrigger === 'undefined') return;
 
-    const slides = [
-      section.querySelector('.mat-slide-0'),
-      section.querySelector('.mat-slide-1'),
-      section.querySelector('.mat-slide-2'),
-      section.querySelector('.mat-slide-3'),
-    ];
-    const images = section.querySelectorAll('.mat-img');
-    const labels = [
-      section.querySelector('.mat-label-0'),
-      section.querySelector('.mat-label-1'),
-      section.querySelector('.mat-label-2'),
-      section.querySelector('.mat-label-3'),
-    ];
-    const chips = section.querySelectorAll('.mat-chip');
-    const indicator = document.getElementById('mat-active-indicator');
+    const stage = section.querySelector('.elysium-stack-stage') || document.getElementById('stack-cards-stage') || section;
+    const cardItems = Array.from(section.querySelectorAll('.stack-card, .stacking-card-item'));
+    if (cardItems.length < 2) return;
 
-    if (!slides[0] || !labels[0]) return;
+    // Check prefers-reduced-motion
+    const prefersReducedMotion = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    if (prefersReducedMotion) {
+      console.log('[Elysium Motion] Reduced motion preference detected. Section 3 Stacking animations disabled.');
+      return;
+    }
 
-    function setActiveMaterial(idx) {
-      slides.forEach((s, i) => {
-        if (s) s.style.opacity = i === idx ? '1' : '0';
-      });
-      labels.forEach((l, i) => {
-        if (l) {
-          l.style.opacity = i === idx ? '1' : '0';
-          l.style.pointerEvents = i === idx ? 'auto' : 'none';
+    // Kill any existing ScrollTriggers on this section to prevent duplicates
+    ScrollTrigger.getAll().forEach(st => {
+      if (st.trigger === section || st.pin === stage) {
+        st.kill(true);
+      }
+    });
+
+    const totalCards = cardItems.length;
+    const isMobile = window.innerWidth < 768;
+    const isTablet = window.innerWidth < 1024;
+
+    // Symmetrical vertical step offset around the dead center
+    const stepY = isMobile ? 12 : (isTablet ? 18 : 22);
+    const scaleMultiplier = isMobile ? 0.025 : 0.035;
+
+    // Set initial card states
+    cardItems.forEach((card, index) => {
+      const inner = card.querySelector('.stack-card-inner, .stacking-card-inner');
+      const shade = card.querySelector('.stack-card-shade');
+
+      card.style.zIndex = (index + 1).toString();
+      if (inner) {
+        inner.style.top = '0px';
+        gsap.set(inner, { scale: 1, y: 0, transformOrigin: 'top center' });
+      }
+      if (shade) {
+        gsap.set(shade, { opacity: 0 });
+      }
+
+      if (index === 0) {
+        gsap.set(card, { yPercent: 0 });
+      } else {
+        gsap.set(card, { yPercent: 120 });
+      }
+    });
+
+    // Master Timeline for continuous scroll scrubbing
+    const masterTl = gsap.timeline({ defaults: { ease: 'power1.inOut' } });
+
+    for (let step = 0; step < totalCards - 1; step++) {
+      const stepStartTime = step;
+      const nextCard = cardItems[step + 1];
+
+      // 1. Next card translates smoothly up into the center
+      if (nextCard) {
+        masterTl.to(nextCard, {
+          yPercent: 0,
+          duration: 1,
+          ease: 'power1.inOut',
+        }, stepStartTime);
+
+        const nextImg = nextCard.querySelector('.stack-card-img');
+        if (nextImg) {
+          masterTl.fromTo(nextImg, {
+            scale: 1.10,
+          }, {
+            scale: 1.0,
+            duration: 1,
+            ease: 'power1.out',
+          }, stepStartTime);
         }
-      });
-      chips.forEach((c, i) => {
-        if (i === idx) {
-          c.classList.add('active', 'border-amber-400/80', 'bg-amber-500/20', 'text-amber-300');
-          c.classList.remove('border-white/15', 'bg-black/40', 'text-stone-400');
-        } else {
-          c.classList.remove('active', 'border-amber-400/80', 'bg-amber-500/20', 'text-amber-300');
-          c.classList.add('border-white/15', 'bg-black/40', 'text-stone-400');
+      }
+
+      // 2. Adjust all cards landed so far into their centered cascading ladder positions
+      const currentActiveCount = step + 2; // e.g. when card 1 lands, active count is 2 (cards 0 and 1)
+      const centerIndex = (currentActiveCount - 1) / 2;
+
+      for (let i = 0; i <= step + 1; i++) {
+        const inner = cardItems[i].querySelector('.stack-card-inner, .stacking-card-inner');
+        const shade = cardItems[i].querySelector('.stack-card-shade');
+
+        // Cards closer to 0 (top of deck) shift up, front card shifts down
+        const targetLadderY = (i - centerIndex) * stepY;
+        const stackDepth = (step + 1) - i;
+        const targetScale = stackDepth > 0 ? Math.max(0.84, 1 - (stackDepth * scaleMultiplier)) : 1.0;
+        const targetShadeOpacity = stackDepth > 0 ? Math.min(0.35, stackDepth * 0.08) : 0;
+
+        if (inner) {
+          masterTl.to(inner, {
+            scale: targetScale,
+            y: targetLadderY,
+            duration: 1,
+            ease: 'power1.inOut',
+          }, stepStartTime);
         }
-      });
-      if (indicator) {
-        indicator.innerText = `MEDIUM 0${idx + 1} OF 04`;
+
+        if (shade) {
+          masterTl.to(shade, {
+            opacity: targetShadeOpacity,
+            duration: 1,
+            ease: 'power1.inOut',
+          }, stepStartTime);
+        }
       }
     }
 
-    setActiveMaterial(0);
+    // ScrollTrigger Pinned Arena
+    const pinDistance = (totalCards - 1) * (isMobile ? 550 : 750);
 
-    chips.forEach((chip) => {
-      chip.addEventListener('click', (e) => {
-        e.preventDefault();
-        const targetIdx = parseInt(chip.getAttribute('data-target-idx'), 10) || 0;
-        setActiveMaterial(targetIdx);
-
-        if (!isCompactScreen() && !prefersReducedMotion && lenisInstance) {
-          const st = ScrollTrigger.getById('materiality-scrolltrigger');
-          if (st) {
-            const targetProgress = targetIdx / 3;
-            const targetScroll = st.start + (st.end - st.start) * targetProgress;
-            lenisInstance.scrollTo(targetScroll, { duration: 1 });
-          }
-        }
-      });
+    const st = ScrollTrigger.create({
+      trigger: section,
+      start: 'top top',
+      end: '+=' + pinDistance,
+      pin: stage,
+      pinSpacing: true,
+      scrub: 0.6,
+      anticipatePin: 1,
+      fastScrollEnd: true,
+      invalidateOnRefresh: true,
+      animation: masterTl,
     });
 
-    // Desktop ScrollTrigger pinning & scrub
-    if (!isCompactScreen() && !prefersReducedMotion) {
-      const scrollDistance = 4 * 400; // 1600px scrub distance
-
-      const masterTl = gsap.timeline({
-        id: 'materiality-scrolltrigger',
-        scrollTrigger: {
-          id: 'materiality-scrolltrigger',
-          trigger: section,
-          start: 'top top',
-          end: `+=${scrollDistance}`,
-          scrub: 0.8,
-          pin: true,
-          anticipatePin: 1,
-          invalidateOnRefresh: true,
-          onUpdate: (self) => {
-            const currentIdx = Math.min(Math.floor(self.progress * 4), 3);
-            chips.forEach((c, i) => {
-              if (i === currentIdx) {
-                c.classList.add('active', 'border-amber-400/80', 'bg-amber-500/20', 'text-amber-300');
-                c.classList.remove('border-white/15', 'bg-black/40', 'text-stone-400');
-              } else {
-                c.classList.remove('active', 'border-amber-400/80', 'bg-amber-500/20', 'text-amber-300');
-                c.classList.add('border-white/15', 'bg-black/40', 'text-stone-400');
-              }
-            });
-            if (indicator) {
-              indicator.innerText = `MEDIUM 0${currentIdx + 1} OF 04`;
-            }
-          },
-        },
-      });
-
-      // Slice 1: Material 0 -> 1 (Travertine -> Clay)
-      masterTl
-        .to(images[0], { scale: 1.12, ease: 'none', duration: 1.0 }, 0)
-        .to(labels[0], { opacity: 0, y: -20, duration: 0.3, ease: 'power2.in' }, 0.7)
-        .to(slides[0], { opacity: 0, duration: 0.4, ease: 'power2.inOut' }, 0.75)
-        .to(slides[1], { opacity: 1, duration: 0.4, ease: 'power2.inOut' }, 0.75)
-        .fromTo(labels[1], { opacity: 0, y: 20 }, { opacity: 1, y: 0, duration: 0.3, ease: 'power2.out' }, 0.8)
-
-        // Slice 2: Material 1 -> 2 (Clay -> Oak)
-        .to(images[1], { scale: 1.12, ease: 'none', duration: 1.0 }, 1.0)
-        .to(labels[1], { opacity: 0, y: -20, duration: 0.3, ease: 'power2.in' }, 1.7)
-        .to(slides[1], { opacity: 0, duration: 0.4, ease: 'power2.inOut' }, 1.75)
-        .to(slides[2], { opacity: 1, duration: 0.4, ease: 'power2.inOut' }, 1.75)
-        .fromTo(labels[2], { opacity: 0, y: 20 }, { opacity: 1, y: 0, duration: 0.3, ease: 'power2.out' }, 1.8)
-
-        // Slice 3: Material 2 -> 3 (Oak -> Plaster)
-        .to(images[2], { scale: 1.12, ease: 'none', duration: 1.0 }, 2.0)
-        .to(labels[2], { opacity: 0, y: -20, duration: 0.3, ease: 'power2.in' }, 2.7)
-        .to(slides[2], { opacity: 0, duration: 0.4, ease: 'power2.inOut' }, 2.75)
-        .to(slides[3], { opacity: 1, duration: 0.4, ease: 'power2.inOut' }, 2.75)
-        .fromTo(labels[3], { opacity: 0, y: 20 }, { opacity: 1, y: 0, duration: 0.3, ease: 'power2.out' }, 2.8)
-
-        // Slice 4: Material 3 final scale
-        .to(images[3], { scale: 1.12, ease: 'none', duration: 1.0 }, 3.0);
-    }
-
-    console.log('[Elysium Motion] Section 3 (Materiality Lab) initialized with pinned scrub.');
+    console.log('[Elysium Motion] Section 3 Pinned Stacking Cards active across ' + totalCards + ' cards.');
   }
 
-  /**
-   * 3B+4. UNIFIED PROCESS TRACE — Wave Bend + Craft Journey merged into one scroll system.
-   * One pinned ScrollTrigger owns all scroll progress:
-   *   — path draw (strokeDashoffset)
-   *   — tracer position (getPointAtLength)
-   *   — 4 node illuminations (data-progress thresholds)
-   *   — 4 craft stage activations (same thresholds)
-   *   — atelier countup (at stage 1 threshold)
-   * Node SVG positions derived from path geometry, never hard-coded coordinates.
-   */
-  /**
-   * 3B+4. UNIFIED PROCESS TRACE — Dynamic Layout-Calibrated Wave Motion System
-   * Wave path and waypoints are calculated directly from physical DOM layout markers:
-   *   — Start Anchor (Editorial frame)
-   *   — 4 Stage Anchors (Raw Sourcing -> Hand Sculpting -> Beeswax Curing -> Atelier Authentication)
-   *   — End Anchor (Transformation Before/After Slider)
-   * SVG coordinates match screen pixels 1:1 with zero distortion.
-   * Path length, thresholds, node positions, and tracer motion are calculated dynamically.
-   */
-  /**
-   * 3B. LIVING SANCTUARY — Vine-Growth Scroll Animation
-   *
-   * Root-cause fixes in this rebuild:
-   *  1. CONTAINER BUG: The vine mount is now created by JS and appended as a
-   *     DIRECT CHILD of #living-sanctuary-container (position:relative, full
-   *     viewport width). Previously it was inside the constrained max-w-7xl
-   *     inner content div, so the SVG was painted in a narrow box while badge
-   *     coordinates measured against the full section — causing the left-edge drift.
-   *
-   *  2. COORDINATE SYSTEM: SVG uses NO viewBox. Width/height = section CSS px.
-   *     Anchors measured via getBoundingClientRect relative to the SECTION rect.
-   *     Since 1 SVG unit = 1 CSS px and mount is absolute inset-0 in section,
-   *     all coordinates are inherently correct at every scroll position.
-   *
-   *  3. VINE X POSITION: Fixed left-gutter position per breakpoint, computed
-   *     from the section's own padding, so the vine always lives in whitespace
-   *     and never crosses image or text content.
-   *
-   *  4. ALL 5 LEAVES: Y positions measured from station container centers
-   *     (full-width block elements), not waypoint badges (which can be outside
-   *     the parent box with negative offsets, drifting the old fixed viewBox).
-   *
-   *  5. IMMEDIATE START: ScrollTrigger start: 'top bottom' — vine begins growing
-   *     the moment the section's top edge enters the viewport bottom.
-   */
-  /**
-   * 3B. LIVING SANCTUARY — Botanical Vine & Blooming Leaves Engine
-   *
-   * Features & Fixes:
-   *  1. FULL-SECTION PATH: Spans from top header (Y ~30px) through all 5 waypoint anchors
-   *     down to section bottom (Y ~height - 30px).
-   *  2. EXPLICIT SVG SIZING: Sets width, height, and viewBox to exact container bounding rect,
-   *     preventing left-edge squeezing or clipping across all viewports.
-   *  3. GSAP SCRUB TIMING: Scrub starts at 'top 70%' and completes at 'bottom 85%' so the growing
-   *     vine tip is continuously visible in viewport during scrolling.
-   *  4. GSAP LEAF BLOOM ANIMATIONS: High-fidelity botanical leaf clusters with blades, veins,
-   *     and tendrils animated directly via GSAP timelines for guaranteed cross-browser motion.
-   *  5. DYNAMIC REFLOW: Debounced ResizeObserver + image/font settle handling.
-   */
   function initLivingSanctuarySection() {
     const section = document.getElementById('living-sanctuary-container');
     const track   = document.getElementById('sanctuary-journey-track');
@@ -919,134 +870,6 @@ function initMaterialityInterludeSection() {
       return anchors;
     }
 
-    // ── Leaf-cluster configurations: radiating into the open space between cards
-    const LEAF_CONFIGS = [
-      // Node 1 (Station 1 bottom-center - radiates down into open gap)
-      [
-        { rot: 45, sz: 16, sweep: 1 },
-        { rot: 135, sz: 16, sweep: -1 },
-        { rot: 90, sz: 14, sweep: 1 },
-        { rot: 0, sz: 13, sweep: -1 },
-        { rot: 180, sz: 13, sweep: 1 },
-      ],
-      // Node 2 (Station 2 top-center - radiates up into open gap)
-      [
-        { rot: -45, sz: 16, sweep: -1 },
-        { rot: -135, sz: 16, sweep: 1 },
-        { rot: -90, sz: 14, sweep: -1 },
-        { rot: 0, sz: 13, sweep: 1 },
-        { rot: -180, sz: 13, sweep: -1 },
-      ],
-      // Node 3 (Station 3 bottom-center - radiates down into open gap)
-      [
-        { rot: 45, sz: 16, sweep: 1 },
-        { rot: 135, sz: 16, sweep: -1 },
-        { rot: 90, sz: 14, sweep: 1 },
-        { rot: 0, sz: 13, sweep: -1 },
-        { rot: 180, sz: 13, sweep: 1 },
-      ],
-      // Node 4 (Station 4 top-center - radiates up into open gap)
-      [
-        { rot: -45, sz: 16, sweep: -1 },
-        { rot: -135, sz: 16, sweep: 1 },
-        { rot: -90, sz: 14, sweep: -1 },
-        { rot: 0, sz: 13, sweep: 1 },
-        { rot: -180, sz: 13, sweep: -1 },
-      ],
-      // Node 5 (Station 5 Center Crown - grand radial crown)
-      [
-        { rot: -60, sz: 19, sweep: 1 },
-        { rot: 60, sz: 19, sweep: -1 },
-        { rot: -15, sz: 17, sweep: 1 },
-        { rot: 15, sz: 17, sweep: -1 },
-        { rot: -140, sz: 15, sweep: 1 },
-        { rot: 140, sz: 15, sweep: -1 },
-        { rot: 180, sz: 14, sweep: 1 },
-      ],
-    ];
-
-    function buildLeafCluster(svg, cx, cy, stationIdx, isTerminal) {
-      const configs = LEAF_CONFIGS[stationIdx] || LEAF_CONFIGS[0];
-
-      const group = mk('g', {}, ['sanctuary-leaf-cluster']);
-
-      // 1. Center glowing green/white pearl node
-      group.appendChild(mk('circle', {
-        cx: cx.toFixed(1),
-        cy: cy.toFixed(1),
-        r: isTerminal ? 4.5 : 3.5,
-        fill: '#ffffff',
-      }, ['node-gem']));
-
-      // 2. Spiraling tendrils (curling into the open gap)
-      const tendrilAngles = isTerminal
-        ? [-60, 60, -140, 140]
-        : (stationIdx % 2 === 0 ? [60, 120] : [-60, -120]);
-
-      tendrilAngles.forEach((angle) => {
-        const rad = (angle * Math.PI) / 180;
-        const len = isTerminal ? 26 : 20;
-        const tEndX = cx + Math.cos(rad) * len;
-        const tEndY = cy + Math.sin(rad) * len;
-        const tCp1X = cx + Math.cos(rad - 0.4) * (len * 0.6);
-        const tCp1Y = cy + Math.sin(rad - 0.4) * (len * 0.6);
-        const tCp2X = cx + Math.cos(rad + 0.3) * (len * 0.9);
-        const tCp2Y = cy + Math.sin(rad + 0.3) * (len * 0.9);
-
-        const tendrilD = `M ${cx.toFixed(1)},${cy.toFixed(1)} C ${tCp1X.toFixed(1)},${tCp1Y.toFixed(1)} ${tCp2X.toFixed(1)},${tCp2Y.toFixed(1)} ${tEndX.toFixed(1)},${tEndY.toFixed(1)}`;
-        const tendril = mk('path', {
-          d: tendrilD,
-          stroke: 'rgba(255,255,255,0.7)',
-          'stroke-width': '0.9',
-          fill: 'none',
-          'vector-effect': 'non-scaling-stroke',
-        }, ['vine-tendril']);
-        group.appendChild(tendril);
-      });
-
-      // 3. Radiating leaf blades
-      configs.forEach(({ rot, sz, sweep }) => {
-        const lg = mk('g', { transform: `rotate(${rot},${cx.toFixed(1)},${cy.toFixed(1)})` });
-
-        const sw = sweep || 1;
-        const bladeD = [
-          `M ${cx.toFixed(1)},${cy.toFixed(1)}`,
-          `C ${(cx + sz * 0.65).toFixed(1)},${(cy - sz * 0.45 * sw).toFixed(1)}`,
-          `  ${(cx + sz * 1.95).toFixed(1)},${(cy - sz * 0.18 * sw).toFixed(1)}`,
-          `  ${(cx + sz * 2.3).toFixed(1)},${cy.toFixed(1)}`,
-          `C ${(cx + sz * 1.95).toFixed(1)},${(cy + sz * 0.18 * sw).toFixed(1)}`,
-          `  ${(cx + sz * 0.65).toFixed(1)},${(cy + sz * 0.45 * sw).toFixed(1)}`,
-          `  ${cx.toFixed(1)},${cy.toFixed(1)} Z`,
-        ].join(' ');
-
-        const veinD = `M ${cx.toFixed(1)},${cy.toFixed(1)} Q ${(cx + sz * 1.15).toFixed(1)},${(cy - sz * 0.05 * sw).toFixed(1)} ${(cx + sz * 2.25).toFixed(1)},${cy.toFixed(1)}`;
-
-        lg.appendChild(mk('path', {
-          d: bladeD,
-          stroke: '#ffffff',
-          'stroke-width': '1.0',
-          fill: 'rgba(255,255,255,0.12)',
-          'vector-effect': 'non-scaling-stroke',
-        }, ['leaf-blade']));
-
-        lg.appendChild(mk('path', {
-          d: veinD,
-          stroke: 'rgba(255,255,255,0.6)',
-          'stroke-width': '0.6',
-          fill: 'none',
-          'vector-effect': 'non-scaling-stroke',
-        }, ['leaf-vein']));
-
-        group.appendChild(lg);
-      });
-
-      // Set initial dormant state for GSAP blooming
-      gsap.set(group, { scale: 0, opacity: 0, transformOrigin: `${cx}px ${cy}px` });
-
-      svg.appendChild(group);
-      return { group, cx, cy, isTerminal };
-    }
-
     // ── Full SVG rebuild ──────────────────────────────────────────────────────
     function buildSVG(anchors) {
       while (mount.firstChild) mount.removeChild(mount.firstChild);
@@ -1079,11 +902,11 @@ function initMaterialityInterludeSection() {
         const cur = anchors[i];
         const next = anchors[i + 1];
 
-        // Green dot 1: Horizontal center of bottom edge of current image
+        // Anchor 1: Horizontal center of bottom edge of current image
         const startX = cur.cardCx;
         const startY = cur.cardBottom;
 
-        // Green dot 2: Horizontal center of top edge of next image
+        // Anchor 2: Horizontal center of top edge of next image
         const endX = next.cardCx;
         const endY = next.cardTop;
 
@@ -1170,89 +993,34 @@ function initMaterialityInterludeSection() {
         pathTweens.push(twDraw, twGlow);
       }
 
-      // ── 4. Render leaf clusters at image card center green dots ──────────────
-      anchors.forEach((anchor, i) => {
-        // Exit node at bottom-center of card
-        if (i < anchors.length - 1) {
-          const clusterOut = buildLeafCluster(svg, anchor.cardCx, anchor.cardBottom, i, false);
-          clusterOut.triggerEl = anchor.stationEl || anchor.el;
-          clusterOut.badgeEl = anchor.el;
-          leafClusters.push(clusterOut);
-        }
-        // Entry node at top-center of card
-        if (i > 0) {
-          const clusterIn = buildLeafCluster(svg, anchor.cardCx, anchor.cardTop, i, i === anchors.length - 1);
-          clusterIn.triggerEl = anchor.stationEl || anchor.el;
-          clusterIn.badgeEl = anchor.el;
-          leafClusters.push(clusterIn);
-        }
-      });
-
       mount.appendChild(svg);
 
-      // ── Individual waypoint & GSAP leaf blooming triggers ───────────────────
-      leafClusters.forEach((cluster) => {
-        const triggerEl = cluster.triggerEl;
-        const badge = cluster.badgeEl;
-        if (!triggerEl) return;
+      // ── Individual waypoint milestone activation triggers ───────────────────
+      anchors.forEach((anchor) => {
+        const triggerEl = anchor.stationEl || anchor.el;
+        const badge = anchor.el;
+        if (!triggerEl || !badge) return;
 
-        const leafGroup = cluster.group;
-        const cx = cluster.cx;
-        const cy = cluster.cy;
-
-        function bloomLeaves() {
-          if (badge) badge.classList.add('is-active');
-          gsap.killTweensOf(leafGroup);
-          const tl = gsap.timeline();
-          tl.to(leafGroup, {
-            scale: 1,
-            opacity: 1,
-            duration: 0.85,
-            ease: 'back.out(2)',
-            transformOrigin: `${cx}px ${cy}px`,
-          });
-          const blades = leafGroup.querySelectorAll('.leaf-blade');
-          if (blades.length) {
-            tl.fromTo(blades,
-              { scale: 0.2, opacity: 0, transformOrigin: `${cx}px ${cy}px` },
-              { scale: 1, opacity: 1, duration: 0.6, stagger: 0.07, ease: 'power2.out' },
-              '-=0.55'
-            );
-          }
-          const tendrils = leafGroup.querySelectorAll('.vine-tendril');
-          if (tendrils.length) {
-            tl.fromTo(tendrils,
-              { strokeDasharray: 100, strokeDashoffset: 100 },
-              { strokeDashoffset: 0, duration: 0.75, stagger: 0.1, ease: 'power2.out' },
-              '-=0.45'
-            );
-          }
+        function activateBadge() {
+          badge.classList.add('is-active');
         }
 
-        function retractLeaves() {
-          if (badge) badge.classList.remove('is-active');
-          gsap.killTweensOf(leafGroup);
-          gsap.to(leafGroup, {
-            scale: 0,
-            opacity: 0,
-            duration: 0.4,
-            ease: 'power2.in',
-            transformOrigin: `${cx}px ${cy}px`,
-          });
+        function deactivateBadge() {
+          badge.classList.remove('is-active');
         }
 
-        // If element is already in viewport on load/resize, bloom immediately
+        // If element is already in viewport on load/resize, activate immediately
         const bRect = triggerEl.getBoundingClientRect();
         if (bRect.top <= window.innerHeight * 0.75 && bRect.bottom > 0) {
-          bloomLeaves();
+          activateBadge();
         }
 
         const st = ScrollTrigger.create({
           trigger: triggerEl,
           start: 'top 75%',
-          onEnter: bloomLeaves,
-          onLeaveBack: retractLeaves,
-          onEnterBack: bloomLeaves,
+          onEnter: activateBadge,
+          onLeaveBack: deactivateBadge,
+          onEnterBack: activateBadge,
         });
         leafSTs.push(st);
       });

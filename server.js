@@ -330,7 +330,7 @@ function renderPage({ title, description, path, content, isHeroPage = false }) {
   <link rel="preload" href="/fonts/Geist-Light.ttf" as="font" type="font/ttf" crossorigin>
   <link rel="preload" href="/fonts/Geist-Medium.ttf" as="font" type="font/ttf" crossorigin>
   <link rel="stylesheet" href="/css/tailwind.min.css">
-  <link rel="stylesheet" href="/css/elysium.css?v=3.3">
+  <link rel="stylesheet" href="/css/elysium.css?v=3.7">
   <script type="application/ld+json">${JSON.stringify(orgSchema)}</script>
 </head>
 <body class="bg-black text-white selection:bg-white selection:text-black antialiased overflow-x-hidden">
@@ -571,7 +571,7 @@ function renderPage({ title, description, path, content, isHeroPage = false }) {
   <script src="/js/clickSpark.js?v=1.0"></script>
   <script src="/js/footerLightRays.js"></script>
   ${isHeroPage ? '<script src="/js/heroCanvas.js"></script>' : ''}
-  <script src="/js/homeAnimations.js?v=3.3"></script>
+  <script src="/js/homeAnimations.js?v=3.7"></script>
   <script>
     (function() {
       if (location.hostname === 'localhost' || location.hostname === '127.0.0.1') {
@@ -764,34 +764,34 @@ app.get('/', (req, res) => {
 
       </div>
 
-      <!-- 2. Hardware-Accelerated WebGL Liquid Canvas Layer -->
-      <canvas id="lusion-webgl-canvas" class="lusion-webgl-canvas absolute inset-0 w-full h-full block z-10 pointer-events-none" data-src="/images/atelier-immersive.jpg"></canvas>
+      <!-- 2. Hardware-Accelerated WebGL Liquid Canvas Layer (Z-20 to sit ON TOP of SVG path) -->
+      <canvas id="lusion-webgl-canvas" class="lusion-webgl-canvas absolute inset-0 w-full h-full block z-20 pointer-events-none" data-src="/images/atelier-immersive.jpg"></canvas>
 
-      <!-- 2.5. Interactive Scroll-Triggered SVG Drawing Path Layer (Lusion Ribbon Path) -->
-      <div id="lusion-reel-svg-container" class="lusion-line-container absolute inset-0 w-full h-full pointer-events-none z-15 overflow-visible" aria-hidden="true">
+      <!-- 2.5. Interactive Scroll-Triggered SVG Drawing Path Layer (Z-10 behind image) -->
+      <div id="lusion-reel-svg-container" class="lusion-line-container absolute inset-0 w-full h-full pointer-events-none z-10 overflow-visible" aria-hidden="true">
         <svg
           id="lusion-reel-svg"
           class="lusion-svg-line w-full h-full"
           viewBox="0 0 1920 1080"
           fill="none"
-          preserveAspectRatio="xMidYMid meet"
+          preserveAspectRatio="none"
           xmlns="http://www.w3.org/2000/svg"
         >
           <defs>
-            <!-- Lusion Solid Electric Royal Blue Gradient -->
+            <!-- Luxury Black-Grey Monochromatic Ribbon Gradient -->
             <linearGradient id="lusionRibbonGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-              <stop offset="0%" stop-color="#2432EE" />
-              <stop offset="40%" stop-color="#3444FF" />
-              <stop offset="70%" stop-color="#4F43F4" />
-              <stop offset="100%" stop-color="#3B82F6" />
+              <stop offset="0%" stop-color="#141416" />
+              <stop offset="35%" stop-color="#2a2a2e" />
+              <stop offset="70%" stop-color="#4a4a52" />
+              <stop offset="100%" stop-color="#18181b" />
             </linearGradient>
           </defs>
 
-          <!-- Solid Crisp Lusion 3D Ribbon Tube (34px Bold Stroke, Zero Glow Blur) -->
+          <!-- Solid Crisp 3D Ribbon Tube starting from top-left screen edge (34px Bold Stroke) -->
           <path
             id="lusion-draw-path-core"
             class="lusion-draw-path-core"
-            d="M -50,140 C 260,150 490,260 550,500 C 600,740 520,930 360,940 C 200,950 110,840 140,710 C 190,560 480,480 820,540 C 1220,610 1620,740 1980,560"
+            d="M 0,0 C 80,40 480,180 540,460 C 590,720 480,940 320,950 C 170,960 90,830 130,680 C 180,520 480,460 820,520 C 1220,600 1620,720 1950,540"
             stroke="url(#lusionRibbonGrad)"
             stroke-width="34"
             stroke-linecap="round"
@@ -860,69 +860,218 @@ app.get('/', (req, res) => {
     </div>
   </div>`;
 
-  // SECTION 3: THE TACTILE MATERIALITY LAB (Sticky 100dvh Viewport on desktop, natural on mobile)
+  // SECTION 3: THE TACTILE MATERIALITY LAB (100VH STACKING CARDS DECK)
   const sectionMaterialityInterlude = `
-  <section class="section-materiality-interlude relative bg-black border-t border-stone-800" id="materiality-suite-container">
-    <div class="materiality-pinned w-full min-h-screen lg:h-screen overflow-hidden flex flex-col justify-between pt-20 sm:pt-24 pb-8 sm:pb-10 px-6 sm:px-10 lg:px-16 relative">
+  <section class="elysium-stack-section relative bg-[#060608] border-t border-stone-800/80 text-white select-none overflow-hidden" id="materiality-suite-container" aria-label="Tactile Materiality Archive">
+    
+    <!-- Pinned Stacking Viewport Stage -->
+    <div class="elysium-stack-stage relative w-full h-screen overflow-hidden flex flex-col justify-start" id="stack-cards-stage">
       
-      <!-- Macro Material Images (4 slices, scaling during active window) -->
-      <div class="materiality-images absolute inset-0 z-0 pointer-events-none">
-        <div class="mat-slide mat-slide-0 absolute inset-0 overflow-hidden transition-opacity duration-500">
-          <img src="/images/atelier_materials.jpg" alt="Raw Italian Travertine Stone Macro" class="mat-img image-blur-up w-full h-full object-cover object-center filter brightness-90 contrast-110" />
+      <!-- Section Editorial Header (Top Bar) -->
+      <div class="stack-section-header max-w-6xl mx-auto w-full px-6 sm:px-10 pt-5 sm:pt-7 pb-3 flex items-center justify-between gap-4 border-b border-white/10 z-40 flex-shrink-0">
+        <div class="space-y-0.5">
+          <div class="flex items-center gap-2">
+            <span class="inline-block w-2 h-2 rounded-full bg-amber-400 shadow-[0_0_8px_rgba(251,191,36,0.9)]"></span>
+            <span class="text-[10px] sm:text-xs font-mono tracking-[0.35em] uppercase text-amber-400 font-semibold">MATERIALITY ARCHIVE &bull; 05 STACKED CANVASES</span>
+          </div>
+          <h2 class="text-xl sm:text-2xl lg:text-3xl font-light tracking-wide text-white uppercase font-sans">
+            The Material <span class="italic font-serif text-stone-300">Canvases</span>
+          </h2>
         </div>
-        <div class="mat-slide mat-slide-1 absolute inset-0 overflow-hidden opacity-0 transition-opacity duration-500">
-          <img src="/images/story_clay_vessel.jpg" alt="Organic Stoneware Clay Macro" class="mat-img image-blur-up w-full h-full object-cover object-center filter brightness-90 contrast-110" />
-        </div>
-        <div class="mat-slide mat-slide-2 absolute inset-0 overflow-hidden opacity-0 transition-opacity duration-500">
-          <img src="/images/maker_tools.jpg" alt="Crafted Oak Timber Macro" class="mat-img image-blur-up w-full h-full object-cover object-center filter brightness-90 contrast-110" />
-        </div>
-        <div class="mat-slide mat-slide-3 absolute inset-0 overflow-hidden opacity-0 transition-opacity duration-500">
-          <img src="/images/story_plaster_relief.jpg" alt="Textured Lime Plaster Finish Macro" class="mat-img image-blur-up w-full h-full object-cover object-center filter brightness-90 contrast-110" />
+        <div class="flex items-center gap-2 text-[10px] font-mono text-white/80 uppercase tracking-widest px-3.5 py-1.5 bg-white/10 backdrop-blur-md border border-white/15 rounded-full">
+          <span>SCROLL TO STACK</span>
+          <span>&darr;</span>
         </div>
       </div>
 
-      <!-- Vignette and Darkening Gradients -->
-      <div class="absolute inset-0 bg-gradient-to-t from-black/90 via-black/40 to-black/80 pointer-events-none z-10"></div>
+      <!-- The 100vh Stacking Cards Arena -->
+      <div class="elysium-stack-arena relative w-full flex-1 overflow-hidden" id="stack-cards-arena">
+        
+        <!-- CARD 01: Travertine Stone (Vibrant Orange Amber) -->
+        <div class="stack-card" data-card-idx="0">
+          <div class="stack-card-inner card-mat-travertine">
+            <div class="stack-card-shade"></div>
 
-      <!-- Spacer Top -->
-      <div class="relative z-20"></div>
+            <div class="stack-card-content">
+              <div class="inline-flex items-center gap-2 px-3 py-1 bg-black/25 backdrop-blur-md rounded-full border border-white/20 w-fit">
+                <span class="text-[9px] font-mono tracking-widest uppercase font-semibold text-amber-200">01 / 05 &bull; ARCHITECTURAL ANCHOR</span>
+              </div>
+              
+              <h3 class="text-2xl sm:text-3xl lg:text-4xl font-bold text-white tracking-tight leading-tight">
+                Unsealed Tivoli Travertine
+              </h3>
+              
+              <p class="text-xs sm:text-sm text-white/90 leading-relaxed font-light max-w-md">
+                Unfilled geomorphic mineral pores and stratified cross-cut veins. Hand-chiseled from single limestone monoliths to absorb incident acoustic reflections while anchoring living spaces with raw tactile gravity.
+              </p>
 
-      <!-- Center: Synchronized Material Title Reveals in Geist Mono & Cormorant -->
-      <div class="relative z-20 my-auto text-center space-y-3 pointer-events-none">
-        <div class="mat-label-stack relative min-h-[140px] flex items-center justify-center">
-          <div class="mat-label mat-label-0 text-center transition-all duration-400">
-            <span class="text-[10.5px] font-mono uppercase tracking-[0.4em] text-amber-400 block mb-1">MEDIUM 01</span>
-            <h3 class="text-3xl sm:text-5xl lg:text-7xl font-light tracking-wide text-white uppercase font-serif">Travertine Stone</h3>
-            <p class="text-xs sm:text-sm font-mono text-stone-300 tracking-widest uppercase mt-2">Unfilled Geomorphic Pores • Zero Synthetic Resin</p>
-            <p class="text-xs text-stone-400 font-light max-w-lg mx-auto mt-2 hidden sm:block">Cool, porous geomorphic surface with deep stratified mineral veins hand-chiseled from raw limestone blocks.</p>
-          </div>
-          <div class="mat-label mat-label-1 text-center absolute opacity-0 transition-all duration-400">
-            <span class="text-[10.5px] font-mono uppercase tracking-[0.4em] text-amber-400 block mb-1">MEDIUM 02</span>
-            <h3 class="text-3xl sm:text-5xl lg:text-7xl font-light tracking-wide text-white uppercase font-serif">Organic Clay</h3>
-            <p class="text-xs sm:text-sm font-mono text-stone-300 tracking-widest uppercase mt-2">Pit-Fired Silicate Stoneware • Breathable Porosity</p>
-            <p class="text-xs text-stone-400 font-light max-w-lg mx-auto mt-2 hidden sm:block">Iron-dense riverbed clay thrown on manual kickwheels and wood-pit fired for raw fire-speckled texture.</p>
-          </div>
-          <div class="mat-label mat-label-2 text-center absolute opacity-0 transition-all duration-400">
-            <span class="text-[10.5px] font-mono uppercase tracking-[0.4em] text-amber-400 block mb-1">MEDIUM 03</span>
-            <h3 class="text-3xl sm:text-5xl lg:text-7xl font-light tracking-wide text-white uppercase font-serif">Crafted Oak</h3>
-            <p class="text-xs sm:text-sm font-mono text-stone-300 tracking-widest uppercase mt-2">Aged White Timber • Beeswax &amp; Linseed Buffing</p>
-            <p class="text-xs text-stone-400 font-light max-w-lg mx-auto mt-2 hidden sm:block">Slow-grown northern white oak celebrating dense fibrous annual rings, buffed with organic desert wax.</p>
-          </div>
-          <div class="mat-label mat-label-3 text-center absolute opacity-0 transition-all duration-400">
-            <span class="text-[10.5px] font-mono uppercase tracking-[0.4em] text-amber-400 block mb-1">MEDIUM 04</span>
-            <h3 class="text-3xl sm:text-5xl lg:text-7xl font-light tracking-wide text-white uppercase font-serif">Lime Plaster</h3>
-            <p class="text-xs sm:text-sm font-mono text-stone-300 tracking-widest uppercase mt-2">Pulverized Pumice • Natural Hydraulic Lime</p>
-            <p class="text-xs text-stone-400 font-light max-w-lg mx-auto mt-2 hidden sm:block">Breathable mineral plaster applied in delicate layered coats with hand trowels for a matte velvet warmth.</p>
+              <div class="flex flex-wrap gap-2 pt-1">
+                <span class="px-2.5 py-1 bg-black/20 rounded-md text-[10px] font-mono text-white/90 border border-white/10">Tivoli Limestone</span>
+                <span class="px-2.5 py-1 bg-black/20 rounded-md text-[10px] font-mono text-white/90 border border-white/10">Diamond Honed</span>
+                <span class="px-2.5 py-1 bg-black/20 rounded-md text-[10px] font-mono text-white/90 border border-white/10">2,480 kg/m&sup3;</span>
+              </div>
+
+              <div class="pt-2">
+                <a href="/materiality#travertine" class="inline-flex items-center gap-2 px-5 py-2.5 bg-white text-black font-semibold text-xs tracking-widest uppercase rounded-full shadow-lg hover:bg-stone-100 transition-transform">
+                  <span>Explore Travertine &rarr;</span>
+                </a>
+              </div>
+            </div>
+
+            <div class="stack-card-media">
+              <img src="/images/atelier_materials.jpg" alt="Unsealed Tivoli Travertine Stone" class="stack-card-img" loading="lazy" />
+            </div>
           </div>
         </div>
-      </div>
 
-      <!-- Bottom Bar & CTA to Materiality Lab -->
-      <div class="relative z-20 flex justify-end items-center gap-3 pt-3">
-        <a href="/materiality" class="materiality-cta btn-slide-white inline-flex items-center gap-3 px-6 py-2 text-[10px] font-semibold uppercase tracking-[0.25em] shadow-lg">
-          <span>Explore Full Materiality Lab</span>
-          <span class="btn-arrow">&rarr;</span>
-        </a>
+        <!-- CARD 02: Organic Silicate Clay (Vibrant Cobalt Blue) -->
+        <div class="stack-card" data-card-idx="1">
+          <div class="stack-card-inner card-mat-clay">
+            <div class="stack-card-shade"></div>
+
+            <div class="stack-card-content">
+              <div class="inline-flex items-center gap-2 px-3 py-1 bg-black/25 backdrop-blur-md rounded-full border border-white/20 w-fit">
+                <span class="text-[9px] font-mono tracking-widest uppercase font-semibold text-blue-200">02 / 05 &bull; TACTILE HARMONY</span>
+              </div>
+              
+              <h3 class="text-2xl sm:text-3xl lg:text-4xl font-bold text-white tracking-tight leading-tight">
+                Pit-Fired Silicate Clay
+              </h3>
+              
+              <p class="text-xs sm:text-sm text-white/90 leading-relaxed font-light max-w-md">
+                Sculpted on manual kickwheels from alluvial riverbed deposits. Deliberately unglazed so its micro-capillary network breathes in natural equilibrium with ambient air, casting soft matte shadows without artificial sheen.
+              </p>
+
+              <div class="flex flex-wrap gap-2 pt-1">
+                <span class="px-2.5 py-1 bg-black/20 rounded-md text-[10px] font-mono text-white/90 border border-white/10">1,240&deg;C Wood Pit</span>
+                <span class="px-2.5 py-1 bg-black/20 rounded-md text-[10px] font-mono text-white/90 border border-white/10">Smoke Suede</span>
+                <span class="px-2.5 py-1 bg-black/20 rounded-md text-[10px] font-mono text-white/90 border border-white/10">Alluvial Core</span>
+              </div>
+
+              <div class="pt-2">
+                <a href="/materiality#clay" class="inline-flex items-center gap-2 px-5 py-2.5 bg-white text-black font-semibold text-xs tracking-widest uppercase rounded-full shadow-lg hover:bg-stone-100 transition-transform">
+                  <span>Explore Organic Clay &rarr;</span>
+                </a>
+              </div>
+            </div>
+
+            <div class="stack-card-media">
+              <img src="/images/story_clay_vessel.jpg" alt="Pit-Fired Silicate Stoneware Vessel" class="stack-card-img" loading="lazy" />
+            </div>
+          </div>
+        </div>
+
+        <!-- CARD 03: Crafted White Oak (Vibrant Coral Red) -->
+        <div class="stack-card" data-card-idx="2">
+          <div class="stack-card-inner card-mat-oak">
+            <div class="stack-card-shade"></div>
+
+            <div class="stack-card-content">
+              <div class="inline-flex items-center gap-2 px-3 py-1 bg-black/25 backdrop-blur-md rounded-full border border-white/20 w-fit">
+                <span class="text-[9px] font-mono tracking-widest uppercase font-semibold text-rose-200">03 / 05 &bull; LIVING TIMBER</span>
+              </div>
+              
+              <h3 class="text-2xl sm:text-3xl lg:text-4xl font-bold text-white tracking-tight leading-tight">
+                Slow-Grown Northern Oak
+              </h3>
+              
+              <p class="text-xs sm:text-sm text-white/90 leading-relaxed font-light max-w-md">
+                Slow-grown white oak celebrating dense fibrous annual rings. Seasoned across multiple winters and buffed exclusively with unrefined desert beeswax and cold-pressed linseed oil for an enduring satin handfeel.
+              </p>
+
+              <div class="flex flex-wrap gap-2 pt-1">
+                <span class="px-2.5 py-1 bg-black/20 rounded-md text-[10px] font-mono text-white/90 border border-white/10">Quercus Alba</span>
+                <span class="px-2.5 py-1 bg-black/20 rounded-md text-[10px] font-mono text-white/90 border border-white/10">Organic Beeswax</span>
+                <span class="px-2.5 py-1 bg-black/20 rounded-md text-[10px] font-mono text-white/90 border border-white/10">Quarter-Sawn</span>
+              </div>
+
+              <div class="pt-2">
+                <a href="/materiality#timber" class="inline-flex items-center gap-2 px-5 py-2.5 bg-white text-black font-semibold text-xs tracking-widest uppercase rounded-full shadow-lg hover:bg-stone-100 transition-transform">
+                  <span>Explore White Oak &rarr;</span>
+                </a>
+              </div>
+            </div>
+
+            <div class="stack-card-media">
+              <img src="/images/maker_tools.jpg" alt="Aged White Oak Hand-Shaped Timber" class="stack-card-img" loading="lazy" />
+            </div>
+          </div>
+        </div>
+
+        <!-- CARD 04: Mineral Lime Plaster (Deep Jade Emerald) -->
+        <div class="stack-card" data-card-idx="3">
+          <div class="stack-card-inner card-mat-plaster">
+            <div class="stack-card-shade"></div>
+
+            <div class="stack-card-content">
+              <div class="inline-flex items-center gap-2 px-3 py-1 bg-black/25 backdrop-blur-md rounded-full border border-white/20 w-fit">
+                <span class="text-[9px] font-mono tracking-widest uppercase font-semibold text-teal-200">04 / 05 &bull; MONOLITHIC RELIEVO</span>
+              </div>
+              
+              <h3 class="text-2xl sm:text-3xl lg:text-4xl font-bold text-white tracking-tight leading-tight">
+                Pulverized Mineral Plaster
+              </h3>
+              
+              <p class="text-xs sm:text-sm text-white/90 leading-relaxed font-light max-w-md">
+                Natural hydraulic lime compounded with fine volcanic silicate ash. Applied by hand trowels in delicate relief sweeps to craft non-reflective sculptural surfaces that softly diffuse room illumination.
+              </p>
+
+              <div class="flex flex-wrap gap-2 pt-1">
+                <span class="px-2.5 py-1 bg-black/20 rounded-md text-[10px] font-mono text-white/90 border border-white/10">Volcanic Pumice</span>
+                <span class="px-2.5 py-1 bg-black/20 rounded-md text-[10px] font-mono text-white/90 border border-white/10">Hand-Troweled</span>
+                <span class="px-2.5 py-1 bg-black/20 rounded-md text-[10px] font-mono text-white/90 border border-white/10">Matte Velvet</span>
+              </div>
+
+              <div class="pt-2">
+                <a href="/materiality#plaster" class="inline-flex items-center gap-2 px-5 py-2.5 bg-white text-black font-semibold text-xs tracking-widest uppercase rounded-full shadow-lg hover:bg-stone-100 transition-transform">
+                  <span>Explore Lime Plaster &rarr;</span>
+                </a>
+              </div>
+            </div>
+
+            <div class="stack-card-media">
+              <img src="/images/story_plaster_relief.jpg" alt="Textured Mineral Lime Plaster Finish" class="stack-card-img" loading="lazy" />
+            </div>
+          </div>
+        </div>
+
+        <!-- CARD 05: Architectural Harmonies (Signature Atelier Royal Blue) -->
+        <div class="stack-card" data-card-idx="4">
+          <div class="stack-card-inner card-mat-harmonies">
+            <div class="stack-card-shade"></div>
+
+            <div class="stack-card-content">
+              <div class="inline-flex items-center gap-2 px-3 py-1 bg-black/25 backdrop-blur-md rounded-full border border-white/20 w-fit">
+                <span class="text-[9px] font-mono tracking-widest uppercase font-semibold text-blue-200">05 / 05 &bull; ATELIER PROVENANCE</span>
+              </div>
+              
+              <h3 class="text-2xl sm:text-3xl lg:text-4xl font-bold text-white tracking-tight leading-tight">
+                Architectural Harmonies
+              </h3>
+              
+              <p class="text-xs sm:text-sm text-white/90 leading-relaxed font-light max-w-md">
+                The confluence of stone, fire-cured clay, brushed bronze, and slow-grown timber. Every piece engineered as a timeless spatial monolith designed to outlive trends and age with unmatched distinction.
+              </p>
+
+              <div class="flex flex-wrap gap-2 pt-1">
+                <span class="px-2.5 py-1 bg-black/20 rounded-md text-[10px] font-mono text-white/90 border border-white/10">Single-Edition</span>
+                <span class="px-2.5 py-1 bg-black/20 rounded-md text-[10px] font-mono text-white/90 border border-white/10">Rajkot Sanctuary</span>
+                <span class="px-2.5 py-1 bg-black/20 rounded-md text-[10px] font-mono text-white/90 border border-white/10">Signed &amp; Numbered</span>
+              </div>
+
+              <div class="pt-2">
+                <a href="/artisan-pieces" class="inline-flex items-center gap-2 px-5 py-2.5 bg-white text-black font-semibold text-xs tracking-widest uppercase rounded-full shadow-lg hover:bg-stone-100 transition-transform">
+                  <span>View Full Catalogue &rarr;</span>
+                </a>
+              </div>
+            </div>
+
+            <div class="stack-card-media">
+              <img src="/images/chapter_living_room.jpg" alt="Elysium Atelier Sanctuary Composition" class="stack-card-img" loading="lazy" />
+            </div>
+          </div>
+        </div>
+
       </div>
 
     </div>
