@@ -22,3 +22,7 @@ yarn-error.log*
 
 # vercel
 .vercel
+
+# audit screenshots & temporary inspection artifacts
+docs/audit-screenshots/
+

@@ -31,16 +31,73 @@
   font-display: swap;
 }
 
+/* ELYSIUM GEIST TYPOGRAPHY SYSTEM */
+@font-face {
+  font-family: 'Geist-Light';
+  src: url('/fonts/Geist-Light.ttf') format('truetype');
+  font-weight: 300;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Geist-Medium';
+  src: url('/fonts/Geist-Medium.ttf') format('truetype');
+  font-weight: 500;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Geist';
+  src: url('/fonts/Geist-Light.ttf') format('truetype');
+  font-weight: 300;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Geist';
+  src: url('/fonts/Geist-Medium.ttf') format('truetype');
+  font-weight: 500;
+  font-style: normal;
+  font-display: swap;
+}
+
 :root {
-  --color-ink: #000000;
-  --color-mist: #ececec;
-  --color-paper: #ffffff;
-  --color-sand: #f9f8f6;
+  /* MASTER ELYSIUM COLOR TOKENS (WCAG AAA/AA Compliant) */
+  --bg: #ececec;
+  --surface: #ffffff;
+  --ink: #111111;
+  --ink-muted: #4a4a4a;
+  --accent: #222222;
+  --line: rgba(0, 0, 0, 0.08);
+
+  /* DARK SURFACE TOKENS (For dark scenes like Hero & Craft) */
+  --bg-dark: #080808;
+  --surface-dark: #121212;
+  --ink-dark: #f5f5f5;
+  --ink-dark-muted: #a3a3a3;
+  --line-dark: rgba(255, 255, 255, 0.1);
+
+  /* LAYOUT & COMPONENT TOKENS */
+  --header-h: 68px;
+  --radius-media: 20px;
+  --radius-btn: 2px;
+  --radius-pill: 999px;
+  --radius-card: 20px;
+  --max-text-ch: 60ch;
+
+  /* TYPOGRAPHY SCALE TOKENS */
   --font-content: 'Geist-Light', 'Geist', sans-serif;
   --font-heading: 'Geist-Medium', 'Geist', sans-serif;
-  --font-sans: 'Geist-Light', 'Geist', sans-serif;
-  --font-mono: 'Geist-Light', 'Geist', sans-serif;
-  --font-serif: 'Geist-Medium', 'Geist', sans-serif;
+  
+  --text-h1: clamp(2.75rem, 6.5vw, 5.5rem);
+  --text-h2: clamp(1.85rem, 4vw, 3.25rem);
+  --text-h3: clamp(1.2rem, 1.8vw, 1.6rem);
+  --text-body: clamp(0.95rem, 1.05vw, 1.08rem);
+  --text-small: 0.875rem;
+  --text-eyebrow: 0.75rem;
 }
 
 * {
@@ -51,8 +108,8 @@
 
 html {
   scroll-behavior: auto;
-  background-color: #000000;
-  color: #ffffff;
+  background-color: var(--bg);
+  color: var(--ink);
   font-family: var(--font-content);
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
@@ -77,17 +134,16 @@ html.lenis body {
 }
 
 body {
-  background-color: #000000;
-  color: #ffffff;
+  background-color: var(--bg);
+  color: var(--ink);
   font-family: var(--font-content);
   overflow-x: hidden;
-  min-height: 100vh;
+  min-height: 100svh;
   display: flex;
   flex-direction: column;
-  justify-content: space-between;
 }
 
-/* Global Content Typography - Geist Light */
+/* Global Content Typography - Geist Light, Normal Font Style */
 body,
 p,
 span,
@@ -101,14 +157,17 @@ button,
 div,
 blockquote,
 figcaption,
+em,
+i,
 .font-sans,
 .font-mono,
 .font-light {
-  font-family: var(--font-content) !important;
+  font-family: var(--font-content);
   font-weight: 300;
+  font-style: normal !important;
 }
 
-/* Titles & Headings Typography - Geist Medium */
+/* Titles & Headings Typography - Geist Medium, Normal Font Style */
 h1,
 h2,
 h3,
@@ -122,34 +181,416 @@ h6,
 th,
 [class*="heading"],
 [class*="title"] {
-  font-family: var(--font-heading) !important;
+  font-family: var(--font-heading);
   font-weight: 500;
+  font-style: normal !important;
+  line-height: 1.12;
+  letter-spacing: -0.015em;
+}
+
+/* Heading clamp scales */
+h1 { font-size: var(--text-h1); line-height: 1.06; }
+h2 { font-size: var(--text-h2); line-height: 1.12; }
+h3 { font-size: var(--text-h3); line-height: 1.25; }
+p { font-size: var(--text-body); line-height: 1.6; max-width: var(--max-text-ch); }
+
+/* Eyebrow Label Standard */
+.eyebrow-label,
+.lusion-reel-eyebrow,
+.trust-eyebrow {
+  font-size: var(--text-eyebrow);
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.14em;
+  font-family: var(--font-heading);
+  color: var(--ink-muted);
 }
 
 ::selection {
-  background-color: #ffffff;
-  color: #000000;
+  background-color: var(--ink);
+  color: var(--bg);
 }
 
-/* Hero Section Specific Styles */
-#hero-scroll-container {
-  position: relative;
-  width: 100%;
-  height: 100vh;
-  height: 100dvh;
-  background-color: #000000;
-  overflow: hidden;
-  z-index: 30;
+/* ==========================================================================
+   UNIFIED PURE WHITE LUXURY BUTTON SYSTEM
+   - Resting State: Pure white surface (#ffffff), Black typography (#111111), Refined 8px curved edge, NO borders
+   - Consistent layout everywhere (Header, Footer, Navbar, Sections, Drawers, Modals)
+   - Hover Animation: Smooth bottom-to-up fill transition with ink overlay & white text inversion
+   ========================================================================== */
+
+.btn-primary,
+.btn-secondary,
+.btn-dark-primary,
+.btn-dark-secondary,
+.btn-slide-white,
+.btn-slide-subtle,
+.lusion-pill-btn,
+.category-btn {
+  position: relative !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  min-height: 48px !important;
+  padding: 0 28px !important;
+  border-radius: var(--radius-btn, 2px) !important;
+  background-color: #ffffff !important;
+  color: #111111 !important;
+  border: none !important;
+  outline: none !important;
+  font-family: var(--font-heading) !important;
+  font-size: 13px !important;
+  font-weight: 500 !important;
+  text-transform: uppercase !important;
+  letter-spacing: 0.08em !important;
+  text-decoration: none !important;
+  cursor: pointer !important;
+  box-sizing: border-box !important;
+  overflow: hidden !important;
+  white-space: nowrap !important;
+  z-index: 1 !important;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.08) !important;
+  transition: color 0.35s cubic-bezier(0.16, 1, 0.3, 1),
+              box-shadow 0.35s cubic-bezier(0.16, 1, 0.3, 1),
+              transform 0.25s cubic-bezier(0.16, 1, 0.3, 1) !important;
+  will-change: transform;
 }
 
-.hero-sticky-viewport {
-  position: relative;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  overflow: hidden;
-  user-select: none;
+/* Header Compact Variant with identical curved edge layout */
+.site-header .btn-primary,
+.header-nav-wrap .btn-primary,
+.header-enquire-btn {
+  min-height: 40px !important;
+  padding: 0 22px !important;
+  font-size: 12.5px !important;
+  border-radius: var(--radius-btn, 2px) !important;
+}
+
+/* Bottom-to-Up Ink Fill Pseudo-Element */
+.btn-primary::before,
+.btn-secondary::before,
+.btn-dark-primary::before,
+.btn-dark-secondary::before,
+.btn-slide-white::before,
+.btn-slide-subtle::before,
+.lusion-pill-btn::before,
+.category-btn::before {
+  content: '' !important;
+  position: absolute !important;
+  top: 0 !important;
+  left: 0 !important;
+  width: 100% !important;
+  height: 100% !important;
+  background-color: #111111 !important;
+  transform: translateY(100%) !important;
+  transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1) !important;
+  z-index: 1 !important;
+  pointer-events: none !important;
+  border-radius: inherit !important;
+}
+
+/* Hover & Focus-Visible States (Bottom-to-Up Animation Trigger) */
+.btn-primary:hover::before,
+.btn-secondary:hover::before,
+.btn-dark-primary:hover::before,
+.btn-dark-secondary:hover::before,
+.btn-slide-white:hover::before,
+.btn-slide-subtle:hover::before,
+.lusion-pill-btn:hover::before,
+.category-btn:hover::before,
+.category-btn.active::before,
+.btn-primary:focus-visible::before,
+.btn-secondary:focus-visible::before,
+.btn-dark-primary:focus-visible::before,
+.btn-dark-secondary:focus-visible::before,
+.btn-slide-white:focus-visible::before,
+.btn-slide-subtle:focus-visible::before,
+.lusion-pill-btn:focus-visible::before,
+.category-btn:focus-visible::before {
+  transform: translateY(0%) !important;
+}
+
+.btn-primary:hover,
+.btn-secondary:hover,
+.btn-dark-primary:hover,
+.btn-dark-secondary:hover,
+.btn-slide-white:hover,
+.btn-slide-subtle:hover,
+.lusion-pill-btn:hover,
+.category-btn:hover,
+.category-btn.active,
+.btn-primary:focus-visible,
+.btn-secondary:focus-visible,
+.btn-dark-primary:focus-visible,
+.btn-dark-secondary:focus-visible,
+.btn-slide-white:focus-visible,
+.btn-slide-subtle:focus-visible,
+.lusion-pill-btn:focus-visible,
+.category-btn:focus-visible {
+  color: #ffffff !important;
+  border: none !important;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.22) !important;
+  transform: translateY(-2px) !important;
+}
+
+.btn-primary:active,
+.btn-secondary:active,
+.btn-dark-primary:active,
+.btn-dark-secondary:active,
+.btn-slide-white:active,
+.btn-slide-subtle:active,
+.lusion-pill-btn:active,
+.category-btn:active {
+  transform: translateY(0) scale(0.98) !important;
+}
+
+/* Ensure all child text elements, spans, and icons smoothly interchange color above the fill layer */
+.btn-primary > *,
+.btn-primary span,
+.btn-primary svg,
+.btn-secondary > *,
+.btn-secondary span,
+.btn-dark-primary > *,
+.btn-dark-primary span,
+.btn-dark-secondary > *,
+.btn-dark-secondary span,
+.btn-slide-white > *,
+.btn-slide-white span,
+.btn-slide-subtle > *,
+.btn-slide-subtle span,
+.lusion-pill-btn > *,
+.lusion-pill-btn span,
+.category-btn > *,
+.category-btn span {
+  position: relative !important;
+  z-index: 2 !important;
+  color: inherit !important;
+  transition: color 0.35s cubic-bezier(0.16, 1, 0.3, 1), transform 0.3s cubic-bezier(0.16, 1, 0.3, 1) !important;
+}
+
+.btn-primary:hover > *,
+.btn-primary:hover span,
+.btn-secondary:hover > *,
+.btn-secondary:hover span,
+.btn-dark-primary:hover > *,
+.btn-dark-primary:hover span,
+.btn-dark-secondary:hover > *,
+.btn-dark-secondary:hover span,
+.btn-slide-white:hover > *,
+.btn-slide-white:hover span,
+.btn-slide-subtle:hover > *,
+.btn-slide-subtle:hover span,
+.lusion-pill-btn:hover > *,
+.lusion-pill-btn:hover span,
+.category-btn:hover > *,
+.category-btn:hover span,
+.category-btn.active > *,
+.category-btn.active span {
+  color: #ffffff !important;
+}
+
+/* Interactive Arrow Shift on Hover */
+.btn-arrow,
+.btn-primary svg,
+.btn-slide-white svg {
+  display: inline-block;
+  will-change: transform;
+}
+
+.btn-primary:hover .btn-arrow,
+.btn-slide-white:hover .btn-arrow,
+.btn-dark-primary:hover .btn-arrow,
+.btn-secondary:hover .btn-arrow {
+  transform: translateX(4px) !important;
+}
+
+/* Lusion Section 2 Pill Dot Accent */
+.lusion-pill-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background-color: #111111;
+  margin-right: 10px;
+  display: inline-block;
+  transition: background-color 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.lusion-pill-btn:hover .lusion-pill-dot {
+  background-color: #ffffff !important;
+}
+
+/* 4. Text Link */
+.btn-text {
+  min-height: auto;
+  padding: 4px 0;
+  border-radius: 0;
+  border: none;
+  background: transparent !important;
+  color: var(--ink) !important;
+  text-decoration: underline;
+  text-underline-offset: 4px;
+}
+.btn-text:hover {
+  color: var(--ink-muted) !important;
+}
+
+/* Focus Visible Accessible State */
+a:focus-visible,
+button:focus-visible,
+input:focus-visible,
+textarea:focus-visible,
+.btn-primary:focus-visible,
+.btn-secondary:focus-visible,
+.btn-text:focus-visible {
+  outline: 2px solid var(--ink) !important;
+  outline-offset: 3px !important;
+}
+
+/* FIXED STICKY HEADER (TASK 2) */
+.site-header {
+  position: fixed !important;
+  top: 0 !important;
+  left: 0 !important;
+  right: 0 !important;
+  width: 100% !important;
+  height: var(--header-h) !important;
+  z-index: 50 !important;
+  background-color: rgba(236, 236, 236, 0.85) !important;
+  backdrop-filter: blur(12px) !important;
+  -webkit-backdrop-filter: blur(12px) !important;
+  border-bottom: 1px solid var(--line) !important;
+  display: flex !important;
+  align-items: center !important;
+  pointer-events: auto !important;
+  transform: none !important;
+  filter: none !important;
+  contain: none !important;
+  transition: background-color 0.3s ease, border-color 0.3s ease;
+}
+
+.site-header nav a {
+  font-family: var(--font-heading);
+  font-size: 13px;
+  font-weight: 500;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--ink);
+  text-decoration: none;
+  transition: color 0.2s ease;
+}
+
+.site-header nav a:hover {
+  color: var(--ink-muted);
+}
+
+/* Anchor Link Offset */
+[id] {
+  scroll-margin-top: var(--header-h);
+}
+
+/* UNIFIED MEDIA & IMAGE RADIUS (TASK 7) */
+img,
+picture,
+video,
+.product-img-container,
+.featured-piece-img-wrap,
+.split-curtain-viewport,
+.transformation-card,
+.elysium-stack-media,
+.elysium-stack-img {
+  border-radius: var(--radius-media) !important;
+  overflow: hidden !important;
+  border: none !important;
+  outline: none !important;
+  box-shadow: none !important;
+  object-fit: cover !important;
+  object-position: center !important;
+}
+
+/* Prevent layout shifts */
+.product-img-container,
+.featured-piece-img-wrap,
+.split-curtain-viewport {
+  aspect-ratio: 4 / 3;
+}
+
+/* Button Child Inheritance */
+.btn-primary *,
+.btn-slide-white *,
+.btn-dark-primary * {
+  color: inherit !important;
+}
+
+.btn-secondary *,
+.btn-slide-subtle *,
+.btn-dark-secondary * {
+  color: inherit !important;
+}
+
+/* 100SVH SECTION SCALING ON DESKTOP (TASK 5) */
+.section-craft-journey {
+  background-color: #060606 !important;
+  color: #f5f5f5 !important;
+}
+
+.section-featured-pieces {
+  background-color: #000000 !important;
+  color: #f5f5f5 !important;
+}
+
+.featured-piece-card {
+  background-color: #0c0a09 !important;
+  color: #f5f5f5 !important;
+}
+
+.section-trust-voice,
+#trust-voice-container {
+  background-color: #030303 !important;
+  color: #f5f5f5 !important;
+}
+
+.footer-fullscreen {
+  background-color: #000000 !important;
+  color: #f5f5f5 !important;
+}
+
+.craft-stage-num {
+  color: #f59e0b !important;
+}
+
+@media (min-width: 1024px) {
+  .section-craft-journey,
+  .section-featured-pieces {
+    min-height: 100svh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding-top: clamp(2rem, 5vh, 4rem) !important;
+    padding-bottom: clamp(2rem, 5vh, 4rem) !important;
+  }
+
+  .footer-fullscreen {
+    min-height: 100svh;
+    max-height: 100svh;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    overflow: hidden;
+  }
+
+  .footer-decor-fullscreen {
+    padding-top: clamp(1rem, 2vh, 2rem) !important;
+    padding-bottom: clamp(1rem, 2vh, 1.5rem) !important;
+  }
+}
+
+@media (max-width: 1023px) {
+  .section-craft-journey,
+  .section-featured-pieces,
+  .footer-fullscreen {
+    min-height: auto;
+    height: auto;
+    max-height: none;
+  }
 }
 
 #hero-canvas {
@@ -786,17 +1227,7 @@ select {
   color: #686660;
 }
 
-#footer-decor-container a[href*="wa.me"] {
-  background-color: #181816 !important;
-  color: #ffffff !important;
-  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.12);
-  transition: all 0.3s ease;
-}
 
-#footer-decor-container a[href*="wa.me"]:hover {
-  background-color: #000000 !important;
-  transform: translateY(-1px);
-}
 
 /* Night Mode (Dimmed) text and background transitions */
 .footer-decor-fullscreen.footer-night-mode {
@@ -1896,28 +2327,28 @@ select {
   box-sizing: border-box;
 }
 
-/* Specific Card Palette Atmosphere Tones */
-.card-mat-travertine {
+/* Specific Card Palette Atmosphere Tones (Legacy Deck) */
+.stack-card-inner.card-mat-travertine {
   background: linear-gradient(145deg, #131316 0%, #0c0c0e 100%);
   border-color: rgba(212, 175, 55, 0.16);
 }
 
-.card-mat-clay {
+.stack-card-inner.card-mat-clay {
   background: linear-gradient(145deg, #181512 0%, #0f0d0b 100%);
   border-color: rgba(245, 158, 11, 0.16);
 }
 
-.card-mat-oak {
+.stack-card-inner.card-mat-oak {
   background: linear-gradient(145deg, #141512 0%, #0d0e0b 100%);
   border-color: rgba(168, 162, 158, 0.16);
 }
 
-.card-mat-plaster {
+.stack-card-inner.card-mat-plaster {
   background: linear-gradient(145deg, #131417 0%, #0b0c0e 100%);
   border-color: rgba(255, 255, 255, 0.14);
 }
 
-.card-mat-harmonies {
+.stack-card-inner.card-mat-harmonies {
   background: linear-gradient(145deg, #111115 0%, #09090c 100%);
   border-color: rgba(212, 175, 55, 0.22);
 }
@@ -3563,36 +3994,106 @@ img {
 }
 
 /* ==========================================================================
-   AUTHENTIC MATERIAL PALETTES (SUBTLE NATURAL STONE & MINERAL TONES)
+   AUTHENTIC MATERIAL PALETTES (1 BRIGHT • 1 DARK • 1 BRIGHT • 1 DARK • 1 BRIGHT)
    ========================================================================== */
-/* CARD 01: Travertine (Warm limestone) */
+
+/* Generic Theme Modifiers */
+.card-theme-light {
+  background-image: none !important;
+  color: #111111 !important;
+}
+.card-theme-light .elysium-stack-title {
+  color: #111111 !important;
+}
+.card-theme-light .elysium-stack-desc {
+  color: #383531 !important;
+}
+.card-theme-light .elysium-stack-media {
+  border: 1px solid rgba(0, 0, 0, 0.06);
+}
+
+.card-theme-dark {
+  background-image: none !important;
+  color: #FFFFFF !important;
+}
+.card-theme-dark .elysium-stack-title {
+  color: #FFFFFF !important;
+}
+.card-theme-dark .elysium-stack-desc {
+  color: #D6D1C7 !important;
+}
+.card-theme-dark .elysium-stack-media {
+  border: 1px solid rgba(255, 255, 255, 0.12);
+}
+
+/* CARD 01: Travertine (1 BRIGHT: Warm Italian Limestone #F3EFE6) */
 .card-mat-travertine {
-  background-color: #E6E2DA;
-  color: #111111;
+  background: #F3EFE6 !important;
+  background-image: none !important;
+  border: 1px solid rgba(0, 0, 0, 0.09) !important;
+  color: #111111 !important;
+}
+.card-mat-travertine .elysium-stack-title {
+  color: #111111 !important;
+}
+.card-mat-travertine .elysium-stack-desc {
+  color: #383531 !important;
 }
 
-/* CARD 02: Stoneware (Soft ceramic grey-beige) */
+/* CARD 02: Stoneware (2 DARK: Smoked Raw Clay & Obsidian #141312) */
 .card-mat-stoneware {
-  background-color: #D9D5CE;
-  color: #111111;
+  background: #141312 !important;
+  background-image: none !important;
+  border: 1px solid rgba(255, 255, 255, 0.12) !important;
+  color: #FFFFFF !important;
+}
+.card-mat-stoneware .elysium-stack-title {
+  color: #FFFFFF !important;
+}
+.card-mat-stoneware .elysium-stack-desc {
+  color: #D6D1C7 !important;
 }
 
-/* CARD 03: Mineral Plaster (Neutral architectural plaster grey) */
+/* CARD 03: Mineral Plaster (3 BRIGHT: Neutral Architectural Plaster #ECECEC) */
 .card-mat-plaster {
-  background-color: #ECECEC;
-  color: #111111;
+  background: #ECECEC !important;
+  background-image: none !important;
+  border: 1px solid rgba(0, 0, 0, 0.09) !important;
+  color: #111111 !important;
+}
+.card-mat-plaster .elysium-stack-title {
+  color: #111111 !important;
+}
+.card-mat-plaster .elysium-stack-desc {
+  color: #383531 !important;
 }
 
-/* CARD 04: Aged Oak (Warm muted greige) */
+/* CARD 04: Aged Oak (4 DARK: Deep Bog Oak & Charcoal #161514) */
 .card-mat-oak {
-  background-color: #D1CCC3;
-  color: #111111;
+  background: #161514 !important;
+  background-image: none !important;
+  border: 1px solid rgba(255, 255, 255, 0.12) !important;
+  color: #FFFFFF !important;
+}
+.card-mat-oak .elysium-stack-title {
+  color: #FFFFFF !important;
+}
+.card-mat-oak .elysium-stack-desc {
+  color: #D6D1C7 !important;
 }
 
-/* CARD 05: Spatial Synthesis (Light architectural stone grey) */
+/* CARD 05: Spatial Synthesis (5 BRIGHT: Light Warm Architectural Stone #EBE7DF) */
 .card-mat-synthesis {
-  background-color: #E7E7E5;
-  color: #111111;
+  background: #EBE7DF !important;
+  background-image: none !important;
+  border: 1px solid rgba(0, 0, 0, 0.09) !important;
+  color: #111111 !important;
+}
+.card-mat-synthesis .elysium-stack-title {
+  color: #111111 !important;
+}
+.card-mat-synthesis .elysium-stack-desc {
+  color: #383531 !important;
 }
 
 .elysium-stack-shade {
@@ -3606,7 +4107,7 @@ img {
   will-change: opacity;
 }
 
-/* Left Half Content (~50%) - Editorial Dark Charcoal Typography */
+/* Left Half Content (~50%) - Editorial Typography */
 .elysium-stack-content {
   flex: 1 1 50%;
   width: 50%;
@@ -3620,11 +4121,47 @@ img {
   padding-right: 1.2rem;
 }
 
+/* ==========================================================================
+   SCULPTURAL ATELIER TESTIMONIAL CARD & LAUREL EMBLEM
+   ========================================================================== */
+.testimonial-card {
+  background-color: #ffffff !important;
+  color: #111111 !important;
+  border: 1px solid rgba(0, 0, 0, 0.08) !important;
+  box-shadow: 0 30px 70px -15px rgba(0, 0, 0, 0.35), 0 4px 16px rgba(0, 0, 0, 0.06) !important;
+}
+
+.testimonial-headline {
+  color: #111111 !important;
+}
+
+.testimonial-quote {
+  color: #444444 !important;
+}
+
+.testimonial-attribution strong {
+  color: #111111 !important;
+}
+
+.testimonial-wreath-wrap {
+  width: 220px;
+  height: 220px;
+  margin: 0 auto 1.5rem auto;
+}
+
+.testimonial-dot.active {
+  background-color: #111111 !important;
+  transform: scale(1.25);
+}
+
+.testimonial-dot:not(.active) {
+  background-color: #d6d3d1 !important;
+}
+
 .elysium-stack-title {
   font-family: var(--font-sans, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif);
   font-size: clamp(1.85rem, 2.4vw, 2.35rem);
   font-weight: 700;
-  color: #111111;
   line-height: 1.15;
   margin: 0 0 1.25rem 0;
   letter-spacing: -0.015em;
@@ -3634,7 +4171,6 @@ img {
   font-family: var(--font-sans, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif);
   font-size: clamp(0.95rem, 1.05vw, 1.05rem);
   font-weight: 400;
-  color: #333333;
   line-height: 1.62;
   margin: 0;
   max-width: 440px;
@@ -3780,38 +4316,17 @@ p, span, li, a, label {
   border-bottom: 1px solid rgba(0, 0, 0, 0.08) !important;
 }
 
-.site-header a,
-.header-nav-wrap a {
+.site-header a:not(.btn-primary),
+.header-nav-wrap a:not(.btn-primary) {
   color: #333333 !important;
 }
 
-.site-header a:hover,
-.header-nav-wrap a:hover {
+.site-header a:not(.btn-primary):hover,
+.header-nav-wrap a:not(.btn-primary):hover {
   color: #000000 !important;
 }
 
-/* Button & Pill Styles */
-.btn-slide-white {
-  background-color: #111111 !important;
-  color: #ffffff !important;
-  border: 1px solid #111111 !important;
-}
 
-.btn-slide-white:hover {
-  background-color: #333333 !important;
-  color: #ffffff !important;
-}
-
-.btn-slide-subtle {
-  background-color: transparent !important;
-  color: #111111 !important;
-  border: 1px solid rgba(0, 0, 0, 0.25) !important;
-}
-
-.btn-slide-subtle:hover {
-  background-color: rgba(0, 0, 0, 0.05) !important;
-  border-color: #000000 !important;
-}
 
 /* Section Backgrounds across Entire Site */
 .section-lusion-reel {
@@ -3920,11 +4435,11 @@ footer,
   color: #111111 !important;
 }
 
-footer h2, footer h3, footer h4, footer a {
+footer h2, footer h3, footer h4, footer a:not(.btn-primary) {
   color: #111111 !important;
 }
 
-footer p, footer span, footer li {
+footer p, footer span:not(.btn-primary *), footer li {
   color: #333333 !important;
 }
 
@@ -3947,4 +4462,10 @@ input, textarea, select {
   background-color: #ffffff !important;
   color: #111111 !important;
   border: 1px solid rgba(0, 0, 0, 0.15) !important;
+}
+
+/* Split Curtain Handle Sharp Badge */
+#split-curtain-handle > div {
+  border-radius: 2px !important;
+  border: none !important;
 }

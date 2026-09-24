@@ -1,19 +1,28 @@
 document.addEventListener('DOMContentLoaded', () => {
-  // 1. Mobile Menu Drawer Toggle & Keyboard Accessibility
+  // 1. Mobile Menu Drawer Toggle, Focus Trap & Keyboard Accessibility (Task 2)
   const menuToggleBtn = document.getElementById('mobile-menu-btn');
   const menuCloseBtn = document.getElementById('mobile-menu-close-btn');
   const mobileMenuDrawer = document.getElementById('mobile-menu-drawer');
+  let previouslyFocusedElement = null;
 
   function openDrawer() {
     if (!mobileMenuDrawer) return;
+    previouslyFocusedElement = document.activeElement;
     mobileMenuDrawer.classList.remove('hidden');
     document.body.style.overflow = 'hidden';
+    menuToggleBtn?.setAttribute('aria-expanded', 'true');
+    
+    // Focus first focusable element
+    const focusable = mobileMenuDrawer.querySelectorAll('button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])');
+    if (focusable.length > 0) focusable[0].focus();
   }
 
   function closeDrawer() {
     if (!mobileMenuDrawer) return;
     mobileMenuDrawer.classList.add('hidden');
     document.body.style.overflow = '';
+    menuToggleBtn?.setAttribute('aria-expanded', 'false');
+    if (previouslyFocusedElement) previouslyFocusedElement.focus();
   }
 
   if (menuToggleBtn) {
@@ -31,13 +40,49 @@ document.addEventListener('DOMContentLoaded', () => {
       link.addEventListener('click', closeDrawer);
     });
 
-    // Close on Escape key
+    // Close on Escape key & Focus Trap Tab cycling
     window.addEventListener('keydown', (e) => {
-      if (e.key === 'Escape' && !mobileMenuDrawer.classList.contains('hidden')) {
+      if (mobileMenuDrawer.classList.contains('hidden')) return;
+
+      if (e.key === 'Escape') {
         closeDrawer();
+        return;
+      }
+
+      if (e.key === 'Tab') {
+        const focusable = Array.from(mobileMenuDrawer.querySelectorAll('button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])'));
+        if (focusable.length === 0) return;
+        const first = focusable[0];
+        const last = focusable[focusable.length - 1];
+
+        if (e.shiftKey && document.activeElement === first) {
+          e.preventDefault();
+          last.focus();
+        } else if (!e.shiftKey && document.activeElement === last) {
+          e.preventDefault();
+          first.focus();
+        }
       }
     });
   }
+
+  // Smooth Anchor Scrolling with Lenis (Task 9)
+  document.querySelectorAll('a[href^="#"]').forEach((anchor) => {
+    anchor.addEventListener('click', (e) => {
+      const targetId = anchor.getAttribute('href');
+      if (targetId && targetId !== '#') {
+        const targetEl = document.querySelector(targetId);
+        if (targetEl) {
+          e.preventDefault();
+          if (window.__elysiumLenis) {
+            window.__elysiumLenis.scrollTo(targetEl, { duration: 1.0, offset: -70 });
+          } else {
+            targetEl.scrollIntoView({ behavior: 'smooth' });
+          }
+        }
+      }
+    });
+  });
 
   // 2. Materiality Interactive Medium Switcher & Light Angle Simulation
   const lightSlider = document.getElementById('light-angle-slider');

@@ -50,6 +50,16 @@ if (process.env.NODE_ENV !== 'production' && process.env.VERCEL !== '1') {
   }
 }
 
+// Testimonial Mandala SVG Inner Content
+let TESTIMONIAL_SVG_INNER = '';
+try {
+  const rawSvg = fs.readFileSync(path.join(__dirname, 'public', 'testimonial-svg.svg'), 'utf8');
+  const match = rawSvg.match(/<svg[^>]*>([\s\S]*?)<\/svg>/i);
+  TESTIMONIAL_SVG_INNER = match ? match[1] : rawSvg;
+} catch (e) {
+  console.warn('[Elysium] Error loading testimonial-svg.svg:', e.message);
+}
+
 // Brand Constants Data
 const BRAND = {
   name: 'ELYSIUM',
@@ -354,63 +364,61 @@ function renderPage({ title, description, path, content, isHeroPage = false }) {
     </symbol>
   </svg>
 
-  <!-- Sticky Header -->
-  <header class="site-header fixed top-0 left-0 right-0 z-40 transition-all duration-500 font-sans py-4 pointer-events-none">
-    <div class="max-w-7xl mx-auto px-6 md:px-12 flex justify-between items-center w-full">
-      <a href="/" class="header-logo-wrap flex items-center gap-4 cursor-pointer pointer-events-auto z-10">
-        <img src="/images/logo.png" alt="ELYSIUM" class="h-10 md:h-12 w-auto opacity-90">
+  <!-- Sticky Header (Task 2) -->
+  <header class="site-header fixed top-0 left-0 right-0 z-50 font-sans transition-colors duration-300">
+    <div class="max-w-7xl mx-auto px-6 md:px-12 flex justify-between items-center w-full h-full">
+      <a href="/" class="header-logo-wrap flex items-center gap-3 cursor-pointer" aria-label="Elysium Home">
+        <img src="/images/logo.png" alt="ELYSIUM" class="h-9 md:h-11 w-auto">
       </a>
 
-      <nav class="header-nav-wrap hidden lg:flex items-center space-x-8 text-xs font-medium tracking-[0.2em] uppercase text-stone-700 pointer-events-auto z-30">
-        <a href="/philosophy" class="hover:text-black transition-colors ${path === '/philosophy' ? 'text-black border-b-2 border-black pb-1' : ''}">Philosophy</a>
-        <a href="/artisan-pieces" class="hover:text-black transition-colors ${path === '/artisan-pieces' ? 'text-black border-b-2 border-black pb-1' : ''}">Artisan Pieces</a>
-        <a href="/materiality" class="hover:text-black transition-colors ${path === '/materiality' ? 'text-black border-b-2 border-black pb-1' : ''}">Materiality</a>
-        <a href="/our-story" class="hover:text-black transition-colors ${path === '/our-story' ? 'text-black border-b-2 border-black pb-1' : ''}">Our Story</a>
-        <a href="/contact" class="hover:text-black transition-colors ${path === '/contact' ? 'text-black border-b-2 border-black pb-1' : ''}">Contact</a>
-        <a href="${whatsappUrl}" target="_blank" rel="noopener noreferrer" class="btn-slide-white px-5 py-2 text-[11px] font-semibold tracking-[0.2em] uppercase"><span>Enquire</span></a>
+      <nav class="header-nav-wrap hidden lg:flex items-center space-x-8 text-[13px] font-medium tracking-[0.14em] uppercase text-stone-800">
+        <a href="/philosophy" class="hover:text-black transition-colors ${path === '/philosophy' ? 'text-black font-semibold' : ''}">Philosophy</a>
+        <a href="/artisan-pieces" class="hover:text-black transition-colors ${path === '/artisan-pieces' ? 'text-black font-semibold' : ''}">Artisan Pieces</a>
+        <a href="/materiality" class="hover:text-black transition-colors ${path === '/materiality' ? 'text-black font-semibold' : ''}">Materiality</a>
+        <a href="/our-story" class="hover:text-black transition-colors ${path === '/our-story' ? 'text-black font-semibold' : ''}">Our Story</a>
+        <a href="/contact" class="hover:text-black transition-colors ${path === '/contact' ? 'text-black font-semibold' : ''}">Contact</a>
+        <a href="${whatsappUrl}" target="_blank" rel="noopener noreferrer" class="btn-primary header-enquire-btn"><span>Enquire</span></a>
       </nav>
 
-      <div class="flex lg:hidden items-center space-x-3 pointer-events-auto">
-        <button id="mobile-menu-btn" class="lg:hidden text-black p-2" aria-label="Toggle Menu" aria-expanded="false" aria-controls="mobile-menu-drawer">
+      <div class="flex lg:hidden items-center">
+        <button id="mobile-menu-btn" class="text-black p-3" aria-label="Open Navigation Menu" aria-expanded="false" aria-controls="mobile-menu-drawer">
           <svg width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M4 6h16M4 12h16M4 18h16"></path></svg>
         </button>
       </div>
     </div>
   </header>
 
-  <!-- Mobile Drawer -->
-  <div id="mobile-menu-drawer" class="hidden fixed inset-0 z-50 bg-[#ececec] bg-opacity-98 text-[#111111] pt-24 px-8 flex flex-col justify-between pb-12">
-    <div class="flex justify-between items-center mb-8">
-      <span class="text-xs uppercase tracking-[0.4em] text-stone-500 font-mono">Menu Navigation</span>
-      <button id="mobile-menu-close-btn" class="text-black text-2xl">&times;</button>
+  <!-- Mobile Menu Drawer (Task 2) -->
+  <div id="mobile-menu-drawer" class="hidden fixed inset-0 z-50 bg-[#ececec] text-[#111111] pt-20 px-8 flex flex-col justify-between pb-12" role="dialog" aria-modal="true" aria-label="Site Navigation">
+    <div class="flex justify-end items-center mb-8">
+      <button id="mobile-menu-close-btn" class="text-black text-3xl p-3" aria-label="Close Navigation Menu">&times;</button>
     </div>
-    <nav class="flex flex-col space-y-6 text-xl font-light uppercase tracking-[0.25em]">
-      <a href="/philosophy" class="text-stone-800 hover:text-black">Philosophy</a>
-      <a href="/artisan-pieces" class="text-stone-800 hover:text-black">Artisan Pieces</a>
-      <a href="/materiality" class="text-stone-800 hover:text-black">Materiality</a>
-      <a href="/our-story" class="text-stone-800 hover:text-black">Our Story</a>
-      <a href="/contact" class="text-stone-800 hover:text-black">Contact</a>
+    <nav class="flex flex-col space-y-6 text-2xl font-light uppercase tracking-[0.2em]">
+      <a href="/philosophy" class="text-stone-900 hover:text-black transition-colors">Philosophy</a>
+      <a href="/artisan-pieces" class="text-stone-900 hover:text-black transition-colors">Artisan Pieces</a>
+      <a href="/materiality" class="text-stone-900 hover:text-black transition-colors">Materiality</a>
+      <a href="/our-story" class="text-stone-900 hover:text-black transition-colors">Our Story</a>
+      <a href="/contact" class="text-stone-900 hover:text-black transition-colors">Contact</a>
     </nav>
-    <div class="pt-8 border-t border-stone-800">
-      <a href="${whatsappUrl}" target="_blank" rel="noopener noreferrer" class="btn-slide-white w-full py-3.5 text-center text-xs uppercase tracking-[0.25em] font-semibold"><span>Enquire via WhatsApp</span></a>
+    <div class="pt-8 border-t border-stone-300">
+      <a href="${whatsappUrl}" target="_blank" rel="noopener noreferrer" class="btn-primary w-full text-center py-3.5 text-xs uppercase tracking-[0.2em] font-semibold"><span>Enquire via WhatsApp</span></a>
     </div>
   </div>
 
   <!-- Page Content -->
   <main class="flex-grow">${content}</main>
 
-  <!-- Footer -->
-  <footer class="footer-fullscreen bg-black select-none text-stone-900 font-sans overflow-hidden relative">
-    <div id="footer-decor-container" class="footer-decor-fullscreen px-6 sm:px-12 md:px-16 lg:px-24 py-8 sm:py-10 md:py-12 transition-all duration-700">
+  <!-- Master Interactive 100svh Footer with Volumetric Light Rays & Hanging Lamp -->
+  <footer class="footer-fullscreen bg-black select-none text-stone-900 font-sans overflow-hidden relative min-h-[100svh] flex flex-col justify-between">
+    <div id="footer-decor-container" class="footer-decor-fullscreen px-6 sm:px-12 md:px-16 lg:px-24 py-8 sm:py-10 md:py-12 transition-all duration-700 flex-grow flex flex-col justify-between">
       
-      <!-- Pure Atmospheric Dark Canvas + Volumetric Light Rays -->
+      <!-- Pure Atmospheric Dark Canvas + Volumetric WebGL Light Rays -->
       <div class="absolute inset-0 z-0 overflow-hidden pointer-events-none">
-        <!-- Volumetric WebGL Light Rays Focused Directly On Hanging Lamp Bulb -->
         <div id="footer-rays-layer" class="absolute inset-0 z-10 pointer-events-none"></div>
         <div id="footer-light-beam"></div>
       </div>
 
-      <!-- Hanging Animated Lamp (Clean Minimalist Atelier Lamp in open space) -->
+      <!-- Hanging Animated Lamp (Click to Toggle Atelier Lighting) -->
       <div id="footer-bulb-btn" class="footer-hanging-lamp" title="Click lamp to toggle Atelier lighting">
         <div class="bell-root w-full h-full" style="font-size: calc(200px * 0.01); --_size: 200px; --base-clr: #78716c; --degofrot: 0.8;">
           <div id="footer-bell-container" class="bell-container" role="button" aria-pressed="true" tabindex="0">
@@ -434,75 +442,131 @@ function renderPage({ title, description, path, content, isHeroPage = false }) {
       </div>
 
       <!-- Light Control Indicator Banner -->
-      <div class="relative z-20 flex items-center justify-between pb-6">
+      <div class="relative z-20 flex items-center justify-between pb-4">
         <div id="footer-status-badge" class="inline-flex items-center gap-2 px-3.5 py-1.5 bg-black/10 backdrop-blur-md rounded-full text-[11px] font-mono uppercase tracking-[0.2em] text-[#181816] border border-black/10 shadow-sm transition-colors duration-500">
           <span id="footer-status-dot" class="w-2 h-2 rounded-full bg-amber-500 animate-ping"></span>
           <span id="footer-status-text">Studio No. 029 • Atelier Illuminated</span>
         </div>
       </div>
 
-      <!-- Content Overlay -->
-      <div class="relative z-20 space-y-8 lg:space-y-10 my-auto">
-        <div class="max-w-2xl space-y-2.5">
-          <span id="footer-brand-title" class="text-[10px] sm:text-[11px] font-mono uppercase tracking-[0.3em] block font-semibold transition-colors duration-500">${BRAND.fullName}</span>
-          <h2 id="footer-hero-head" class="text-3xl sm:text-4xl md:text-5xl font-light tracking-tight leading-[1.15] font-normal transition-colors duration-500">
-            Sculpting raw earth <br />
-            <span id="footer-hero-sub" class="italic font-serif transition-colors duration-500">into timeless living sanctuaries</span>
-          </h2>
+      <!-- Content Overlay: Clean 3 Columns -->
+      <div class="relative z-20 space-y-6 lg:space-y-8 my-auto">
+        <div class="flex flex-col lg:flex-row lg:items-end justify-between gap-6 pb-6 border-t transition-colors duration-500" id="footer-grid-border">
+          <div class="max-w-2xl space-y-2">
+            <span id="footer-brand-title" class="text-[11px] font-mono uppercase tracking-[0.3em] block font-semibold transition-colors duration-500">${BRAND.fullName}</span>
+            <h2 id="footer-hero-head" class="text-3xl sm:text-4xl md:text-5xl font-light tracking-tight leading-[1.15] transition-colors duration-500">
+              Sculpting raw earth <br />
+              <span id="footer-hero-sub" class="transition-colors duration-500">into timeless living sanctuaries</span>
+            </h2>
+          </div>
+          <div>
+            <a href="${whatsappUrl}" target="_blank" rel="noopener noreferrer" class="btn-primary inline-flex items-center gap-2">
+              <span>WhatsApp Direct</span>
+              <span class="btn-arrow">&rarr;</span>
+            </a>
+          </div>
         </div>
 
-        <div id="footer-grid-border" class="grid grid-cols-1 md:grid-cols-12 gap-8 lg:gap-10 pt-6 lg:pt-8 border-t transition-colors duration-500">
-          <div class="md:col-span-5 space-y-4">
-            <span class="footer-lbl text-xs uppercase tracking-[0.3em] font-mono block font-semibold">Atelier Display</span>
-            <p class="footer-txt text-xs font-light leading-relaxed max-w-sm font-normal">${BRAND.showroomSize}. Curated handcrafted decor pieces for discerning interiors in India and worldwide.</p>
-            <div class="space-y-1.5 pt-1">
-              <span class="footer-lbl text-[10px] uppercase tracking-[0.25em] font-mono block font-semibold">Atelier Address</span>
-              <p class="footer-txt text-xs font-light leading-relaxed max-w-sm font-normal">📍 ${BRAND.address}</p>
-            </div>
+        <div class="grid grid-cols-1 md:grid-cols-12 gap-8 lg:gap-10 pt-4">
+          <div class="md:col-span-5 space-y-3">
+            <span class="footer-lbl text-xs uppercase tracking-[0.3em] font-mono block font-semibold">Visit</span>
+            <p class="footer-txt text-xs font-light leading-relaxed max-w-sm">${BRAND.address}</p>
+            <p class="footer-txt text-xs font-light pt-1">${BRAND.timing}</p>
           </div>
 
-          <div class="md:col-span-4 space-y-4">
-            <span class="footer-lbl text-[10px] uppercase tracking-[0.25em] font-mono block font-semibold">Enquiries & Contact</span>
+          <div class="md:col-span-4 space-y-3">
+            <span class="footer-lbl text-xs uppercase tracking-[0.25em] font-mono block font-semibold">Contact</span>
             <div class="text-xs space-y-2 font-light">
-              <p class="footer-txt font-normal">📞 <a href="tel:${BRAND.phoneDisplay}" class="hover:underline font-medium">+91 ${BRAND.phoneDisplay}</a></p>
-              <p class="footer-txt">Email: ${BRAND.email}</p>
-            </div>
-            <div class="space-y-1.5 pt-1">
-              <span class="footer-lbl text-[10px] uppercase tracking-[0.25em] font-mono block font-semibold">Showroom Hours</span>
-              <p class="footer-txt text-xs font-normal">⏰ ${BRAND.timing}</p>
+              <p class="footer-txt"><a href="tel:${BRAND.phoneDisplay}" class="hover:underline font-medium">+91 ${BRAND.phoneDisplay}</a></p>
+              <p class="footer-txt"><a href="mailto:${BRAND.email}" class="hover:underline">${BRAND.email}</a></p>
             </div>
           </div>
 
-          <div class="md:col-span-3 space-y-4">
-            <span class="footer-lbl text-[10px] uppercase tracking-[0.25em] font-mono block font-semibold">Navigation</span>
+          <div class="md:col-span-3 space-y-3">
+            <span class="footer-lbl text-xs uppercase tracking-[0.25em] font-mono block font-semibold">Navigate</span>
             <ul class="space-y-2 text-xs font-medium">
               <li><a href="/philosophy" class="hover:underline transition-colors">Philosophy</a></li>
-              <li><a href="/artisan-pieces" class="hover:underline transition-colors">Artisan Collection</a></li>
-              <li><a href="/materiality" class="hover:underline transition-colors">Tactile Materiality</a></li>
+              <li><a href="/artisan-pieces" class="hover:underline transition-colors">Artisan Pieces</a></li>
+              <li><a href="/materiality" class="hover:underline transition-colors">Materiality</a></li>
               <li><a href="/our-story" class="hover:underline transition-colors">Our Story</a></li>
-              <li><a href="/contact" class="hover:underline transition-colors">Contact & Enquiries</a></li>
+              <li><a href="/contact" class="hover:underline transition-colors">Contact</a></li>
             </ul>
-            <div class="pt-2">
-              <a href="${whatsappUrl}" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-2 px-5 py-2.5 bg-[#181816] text-white rounded-lg text-[10px] uppercase tracking-[0.2em] font-semibold shadow-md hover:bg-black transition-all">
-                WhatsApp Direct &rarr;
-              </a>
-            </div>
           </div>
         </div>
       </div>
 
-      <div id="footer-bottom-strip" class="relative z-20 pt-6 mt-6 border-t flex flex-col sm:flex-row items-center justify-between text-[10px] uppercase tracking-[0.2em] font-mono font-semibold gap-4 transition-colors duration-500">
+      <!-- Bottom Bar -->
+      <div id="footer-bottom-strip" class="relative z-20 pt-4 mt-4 border-t flex flex-col sm:flex-row items-center justify-between text-[11px] font-mono uppercase tracking-[0.18em] font-semibold gap-4 transition-colors duration-500">
         <div class="flex items-center gap-2">
           <span class="w-2 h-2 rounded-full bg-emerald-600 animate-pulse"></span>
           <span>© ${new Date().getFullYear()} ${BRAND.fullName}. ALL RIGHTS RESERVED.</span>
         </div>
         <div class="flex items-center gap-6">
-          <span>RAJKOT • VOLTERRA • INTERNATIONAL</span>
+          <a href="/privacy-policy" class="hover:underline transition-colors">Privacy</a>
+          <a href="/terms" class="hover:underline transition-colors">Terms</a>
         </div>
       </div>
 
     </div>
   </footer>
+
+  <!-- Footer Lighting Toggle Script -->
+  <script>
+    (function() {
+      var isLit = true;
+      var btn = document.getElementById('footer-bulb-btn');
+      var bell = document.getElementById('footer-bell-container');
+      var container = document.getElementById('footer-decor-container');
+      var beam = document.getElementById('footer-light-beam');
+      var statusTxt = document.getElementById('footer-status-text');
+      var statusDot = document.getElementById('footer-status-dot');
+
+      function toggleLighting() {
+        isLit = !isLit;
+        
+        if (bell) {
+          if (isLit) {
+            bell.classList.remove('off');
+            bell.setAttribute('aria-pressed', 'true');
+          } else {
+            bell.classList.add('off');
+            bell.setAttribute('aria-pressed', 'false');
+          }
+        }
+
+        if (typeof window.setFooterLightRaysActive === 'function') {
+          window.setFooterLightRaysActive(isLit);
+        }
+
+        var badge = document.getElementById('footer-status-badge');
+        if (isLit) {
+          if(container) container.classList.remove('footer-night-mode');
+          if(beam) beam.style.opacity = '1';
+          if(statusTxt) statusTxt.innerText = 'Studio No. 029 • Atelier Illuminated';
+          if(statusDot) statusDot.className = 'w-2 h-2 rounded-full bg-amber-500 animate-ping';
+          if(badge) badge.className = 'inline-flex items-center gap-2 px-3.5 py-1.5 bg-black/10 backdrop-blur-md rounded-full text-[11px] font-mono uppercase tracking-[0.2em] text-[#181816] border border-black/10 shadow-sm transition-colors duration-500';
+        } else {
+          if(container) container.classList.add('footer-night-mode');
+          if(beam) beam.style.opacity = '0';
+          if(statusTxt) statusTxt.innerText = 'Studio No. 029 • Night Mode (Dimmed)';
+          if(statusDot) statusDot.className = 'w-2 h-2 rounded-full bg-stone-700';
+          if(badge) badge.className = 'inline-flex items-center gap-2 px-3.5 py-1.5 bg-black/40 backdrop-blur-md rounded-full text-[11px] font-mono uppercase tracking-[0.2em] text-white border border-white/20 shadow-md transition-colors duration-500';
+        }
+      }
+
+      if (btn) {
+        btn.addEventListener('click', toggleLighting);
+      }
+      if (bell) {
+        bell.addEventListener('keydown', function(e) {
+          if (e.key === 'Enter' || e.key === ' ') {
+            e.preventDefault();
+            toggleLighting();
+          }
+        });
+      }
+    })();
+  </script>
 
   <script>
     (function() {
@@ -697,28 +761,11 @@ app.get('/', (req, res) => {
       <canvas id="hero-canvas"></canvas>
       <div class="hero-vignette"></div>
 
-      <!-- Hero Preloader Overlay -->
+      <!-- Minimal Hero Preloader (Logo only, Task 4) -->
       <div id="hero-preloader">
-        <span class="text-xs uppercase tracking-[0.45em] text-stone-400 font-mono">ELYSIUM</span>
-        <h2 class="text-xl sm:text-2xl font-light tracking-[0.2em] uppercase text-stone-200 mt-2">A SPACE IN MOTION</h2>
-        <div class="preloader-track">
+        <span class="text-sm uppercase tracking-[0.45em] text-stone-300 font-medium">ELYSIUM</span>
+        <div class="preloader-track mt-4">
           <div id="preloader-progress-bar"></div>
-        </div>
-        <span id="preloader-progress-text" class="text-[10px] font-mono tracking-widest text-stone-500">INITIALIZING SPACE 0%</span>
-      </div>
-
-      <!-- Main Hero Overlay UI -->
-      <div class="hero-overlay-ui">
-        <div class="h-16"></div>
-        <div class="max-w-2xl space-y-6 interactive-element">
-          <div class="space-y-3">
-            <h1 class="text-4xl sm:text-6xl lg:text-7xl font-light tracking-[0.12em] leading-tight text-white uppercase font-sans">ELYSIUM</h1>
-            <p class="text-sm sm:text-base font-light text-stone-300 max-w-lg leading-relaxed tracking-wide">${BRAND.heroStatement}</p>
-          </div>
-          <div class="flex flex-wrap items-center gap-4 pt-2">
-            <a href="${whatsappUrl}" target="_blank" rel="noopener noreferrer" class="px-8 py-3.5 bg-white text-black text-xs font-semibold uppercase tracking-[0.25em] inline-flex items-center gap-2 hover:bg-stone-200 transition-colors" data-magnetic="true">ENQUIRE NOW &rarr;</a>
-            <a href="/artisan-pieces" class="px-6 py-3.5 border border-white border-opacity-30 text-white text-xs uppercase tracking-[0.25em] hover:bg-white hover:bg-opacity-10 transition-colors" data-magnetic="true">EXPLORE</a>
-          </div>
         </div>
       </div>
     </div>
@@ -737,7 +784,7 @@ app.get('/', (req, res) => {
         <!-- Top Section: Eyebrow + Huge 2-Line Headline -->
         <div class="lusion-reel-top-block w-full">
           <span class="lusion-reel-eyebrow font-mono uppercase tracking-[0.45em] text-stone-600 block mb-2 sm:mb-3">
-            THE ATELIER PHILOSOPHY &bull; RAJKOT
+            THE ATELIER
           </span>
           <div class="lusion-reel-title-block">
             <div class="lusion-reel-title-line line-1">
@@ -870,9 +917,9 @@ app.get('/', (req, res) => {
       <!-- The 100vh Stacking Cards Arena -->
       <div class="elysium-stack-arena relative w-full h-full overflow-hidden flex items-center justify-center" id="sanctuary-stack-arena">
         
-        <!-- CARD 01: Travertine (Warm limestone #E6E2DA) -->
+        <!-- CARD 01: Travertine (Bright: Warm Italian Limestone) -->
         <article class="elysium-stack-card" data-card-idx="0" aria-label="Travertine — The Guiding Stone">
-          <div class="elysium-stack-slab card-mat-travertine">
+          <div class="elysium-stack-slab card-mat-travertine card-theme-light">
             <div class="elysium-stack-shade"></div>
 
             <div class="elysium-stack-content">
@@ -888,9 +935,9 @@ app.get('/', (req, res) => {
           </div>
         </article>
 
-        <!-- CARD 02: Stoneware (Soft ceramic grey-beige #D9D5CE) -->
+        <!-- CARD 02: Stoneware (Dark: Smoked Raw Clay & Obsidian) -->
         <article class="elysium-stack-card" data-card-idx="1" aria-label="Stoneware — Unglazed Vessels">
-          <div class="elysium-stack-slab card-mat-stoneware">
+          <div class="elysium-stack-slab card-mat-stoneware card-theme-dark">
             <div class="elysium-stack-shade"></div>
 
             <div class="elysium-stack-content">
@@ -906,9 +953,9 @@ app.get('/', (req, res) => {
           </div>
         </article>
 
-        <!-- CARD 03: Mineral Plaster (Neutral architectural grey #ECECEC) -->
+        <!-- CARD 03: Mineral Plaster (Bright: Neutral Architectural Plaster) -->
         <article class="elysium-stack-card" data-card-idx="2" aria-label="Mineral Plaster Relievo">
-          <div class="elysium-stack-slab card-mat-plaster">
+          <div class="elysium-stack-slab card-mat-plaster card-theme-light">
             <div class="elysium-stack-shade"></div>
 
             <div class="elysium-stack-content">
@@ -924,9 +971,9 @@ app.get('/', (req, res) => {
           </div>
         </article>
 
-        <!-- CARD 04: Aged Oak (Warm muted greige #D1CCC3) -->
+        <!-- CARD 04: Aged Oak (Dark: Smoked Oak & Charcoal) -->
         <article class="elysium-stack-card" data-card-idx="3" aria-label="Aged Oak & Beeswax">
-          <div class="elysium-stack-slab card-mat-oak">
+          <div class="elysium-stack-slab card-mat-oak card-theme-dark">
             <div class="elysium-stack-shade"></div>
 
             <div class="elysium-stack-content">
@@ -942,9 +989,9 @@ app.get('/', (req, res) => {
           </div>
         </article>
 
-        <!-- CARD 05: Spatial Synthesis (Light architectural stone #E7E7E5) -->
+        <!-- CARD 05: Spatial Synthesis (Bright: Warm Mineral Stone) -->
         <article class="elysium-stack-card" data-card-idx="4" aria-label="Spatial Synthesis">
-          <div class="elysium-stack-slab card-mat-synthesis">
+          <div class="elysium-stack-slab card-mat-synthesis card-theme-light">
             <div class="elysium-stack-shade"></div>
 
             <div class="elysium-stack-content">
@@ -967,31 +1014,30 @@ app.get('/', (req, res) => {
 
   // SECTION 4: THE CRAFT JOURNEY & INTERACTIVE BEFORE/AFTER SLIDER (3-Point Section)
   const sectionCraftJourney = `
-  <section class="section-craft-journey relative bg-[#060606] border-t border-stone-800 text-white z-10 overflow-hidden py-20 sm:py-24 lg:py-28 px-6 md:px-12 lg:px-20">
-    <div class="max-w-7xl mx-auto w-full space-y-6 sm:space-y-8">
+  <section class="section-craft-journey relative bg-[#060606] border-t border-stone-800 text-white z-10 overflow-hidden py-12 sm:py-16 lg:py-20 px-6 md:px-12 lg:px-20">
+    <div class="max-w-7xl mx-auto w-full space-y-6 sm:space-y-8 my-auto">
       
-      <!-- Compact Section Header -->
+      <!-- Section Header (Clean Normal Font Style) -->
       <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-end border-b border-stone-800 pb-4">
         <div class="lg:col-span-8 space-y-1">
-          <span class="text-[10px] font-mono tracking-[0.45em] uppercase text-stone-500 block">CHRONOLOGY &bull; ATELIER CRAFT</span>
-          <h2 class="text-2xl sm:text-4xl font-light tracking-wide text-white uppercase font-sans leading-tight">
-            From Raw Earth <span class="italic text-stone-400">to Living Sanctuary.</span>
+          <span class="text-[11px] font-mono tracking-[0.3em] uppercase text-stone-400 block">OUR PROCESS</span>
+          <h2 class="text-2xl sm:text-4xl font-light tracking-wide text-white uppercase leading-tight">
+            From Raw Earth to Living Sanctuary.
           </h2>
         </div>
         <div class="lg:col-span-4">
-          <p class="text-xs text-stone-400 font-light leading-relaxed">
-            Three rigorous stages. Zero shortcuts. Every raw block is hand-sculpted in Rajkot, buffed with organic beeswax, and individually catalogued.
+          <p class="text-xs text-stone-300 font-light leading-relaxed">
+            Three rigorous stages. Zero shortcuts. Every raw block is hand-sculpted in Rajkot and individually catalogued.
           </p>
         </div>
       </div>
 
-      <!-- 3-Stage Progressive Timeline with SVG Scrub Line & Split Curtain -->
+      <!-- 3-Stage Progressive Timeline -->
       <div class="craft-timeline-container relative grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-center">
         
-        <!-- Left 7 Cols: The 3 Steps with SVG Connecting Line -->
+        <!-- Left 7 Cols: The 3 Steps -->
         <div class="lg:col-span-7 relative pl-8 sm:pl-10">
           
-          <!-- SVG Scrubbed Vertical Line -->
           <svg class="craft-svg-track absolute left-3 top-3 bottom-6 w-1 h-[calc(100%-1.5rem)] overflow-visible" aria-hidden="true">
             <line x1="2" y1="0" x2="2" y2="100%" stroke="rgba(255,255,255,0.1)" stroke-width="2" />
             <line id="craft-scrub-line" x1="2" y1="0" x2="2" y2="100%" stroke="#d4af37" stroke-width="2.5" stroke-dasharray="1000" stroke-dashoffset="1000" />
@@ -1000,70 +1046,51 @@ app.get('/', (req, res) => {
           <div class="space-y-6 sm:space-y-7">
             ${CRAFT_STEPS.map((step, idx) => `
               <div class="craft-stage-item relative" data-stage="${idx}">
-                <!-- Glowing Step Marker Dot -->
                 <div class="craft-stage-dot absolute -left-[27px] sm:-left-[39px] top-1 w-3.5 h-3.5 rounded-full bg-black border-2 border-stone-600 transition-colors duration-400 flex items-center justify-center">
                   <span class="craft-dot-inner w-1.5 h-1.5 rounded-full bg-stone-700 transition-all duration-400"></span>
                 </div>
 
                 <div class="space-y-1.5">
                   <div class="flex items-baseline gap-3">
-                    <span class="craft-stage-num text-base sm:text-lg font-mono text-amber-500 font-semibold tracking-wider inline-block">${step.step}</span>
-                    <h3 class="craft-stage-title text-sm sm:text-base font-light text-white uppercase font-sans tracking-wide">${step.title}</h3>
+                    <span class="craft-stage-num text-base sm:text-lg font-mono text-amber-400 font-semibold tracking-wider inline-block">${step.step}</span>
+                    <h3 class="craft-stage-title text-sm sm:text-base font-light text-white uppercase tracking-wide">${step.title}</h3>
                   </div>
 
                   <p class="craft-stage-desc text-xs text-stone-300 font-light leading-relaxed max-w-lg">
                     ${step.description}
                   </p>
 
-                  <div class="craft-stage-meta flex flex-wrap gap-3 text-[9px] font-mono text-stone-500 uppercase tracking-widest pt-0.5">
+                  <div class="craft-stage-meta flex flex-wrap gap-3 text-[10px] font-mono text-stone-400 uppercase tracking-widest pt-0.5">
                     <span>Duration: ${step.duration}</span>
-                    <span>&bull;</span>
-                    <span>Supervisor: ${step.supervisor}</span>
                   </div>
-
-                  ${idx === 1 ? `
-                    <!-- Stage 2 Count-Up Stat: 4,500 Sq. Ft. Atelier -->
-                    <div class="atelier-stat-badge mt-2 p-2.5 bg-stone-900/80 flex items-center gap-3 max-w-sm shadow-lg border border-stone-800/80 rounded-xs">
-                      <div class="text-xl sm:text-2xl font-light text-amber-400 font-mono" id="atelier-sqft-counter">0</div>
-                      <div class="text-[8.5px] font-mono tracking-widest text-stone-400 uppercase leading-snug">
-                        <span>SQ. FT. DISPLAY ATELIER</span><br>
-                        <span class="text-stone-500">Vavdi, Rajkot, Gujarat</span>
-                      </div>
-                    </div>
-                  ` : ''}
                 </div>
               </div>
             `).join('')}
           </div>
         </div>
 
-        <!-- Right 5 Cols: Interactive Draggable & Touch Split-Wipe Transformation Moment -->
+        <!-- Right 5 Cols: Interactive Before/After Split Curtain -->
         <div class="lg:col-span-5">
-          <div class="transformation-card bg-stone-950 shadow-2xl rounded-sm overflow-hidden border border-stone-800">
-            <!-- Interactive Split-Wipe Curtain Container -->
-            <div id="split-curtain-container" class="split-curtain-viewport relative aspect-[4/3] max-h-[46vh] overflow-hidden cursor-ew-resize rounded-sm select-none img-skeleton-wrap" role="slider" aria-valuemin="0" aria-valuemax="100" aria-valuenow="50">
-              <div class="img-skeleton-placeholder"></div>
+          <div class="transformation-card bg-stone-950 rounded-2xl overflow-hidden border border-stone-800">
+            <div id="split-curtain-container" class="split-curtain-viewport relative aspect-[4/3] max-h-[46vh] overflow-hidden cursor-ew-resize rounded-2xl select-none" role="slider" aria-valuemin="0" aria-valuemax="100" aria-valuenow="50">
               
-              <!-- Raw Medium Image (Background Layer) -->
               <img
                 src="/images/atelier_materials.jpg"
                 alt="Raw Geomorphic Travertine Block"
-                class="image-blur-up absolute inset-0 w-full h-full object-cover object-center filter contrast-115 brightness-90 pointer-events-none"
+                class="absolute inset-0 w-full h-full object-cover object-center filter brightness-90 pointer-events-none"
               />
 
-              <!-- Finished Piece Image (Clipped Foreground Layer) -->
               <div id="split-curtain-clip" class="absolute inset-0 overflow-hidden pointer-events-none z-10" style="clip-path: polygon(50% 0, 100% 0, 100% 100%, 50% 100%);">
                 <img
                   src="/images/chapter_living_room.jpg"
                   alt="Finished Solis Travertine Console"
-                  class="image-blur-up absolute inset-0 w-full h-full object-cover object-center filter contrast-105 pointer-events-none"
+                  class="absolute inset-0 w-full h-full object-cover object-center pointer-events-none"
                 />
               </div>
 
-              <!-- Draggable Divider Bar -->
-              <div id="split-curtain-handle" class="absolute top-0 bottom-0 w-1 bg-amber-400 shadow-[0_0_12px_#f59e0b] pointer-events-none z-20" style="left: 50%;">
-                <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-6 h-6 rounded-full bg-black border-2 border-amber-400 flex items-center justify-center text-[8.5px] text-amber-300 shadow-xl">
-                  &harr;
+              <div id="split-curtain-handle" class="absolute top-0 bottom-0 w-1 bg-white shadow-md pointer-events-none z-20" style="left: 50%;">
+                <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 px-2.5 py-1 rounded-[2px] bg-black text-[9px] font-mono uppercase tracking-widest text-white shadow-xl">
+                  Drag
                 </div>
               </div>
 
@@ -1078,86 +1105,63 @@ app.get('/', (req, res) => {
 
   // SECTION 5: THE CURATED EDITORIAL COLLECTION (Natural Height Grid)
   const sectionFeaturedPieces = `
-  <section class="section-featured-pieces relative bg-black border-t border-stone-800 text-white z-10 overflow-hidden py-20 sm:py-24 lg:py-28 px-6 md:px-12 lg:px-20">
-    <div class="max-w-7xl mx-auto w-full space-y-6">
+  <section class="section-featured-pieces relative bg-black border-t border-stone-800 text-white z-10 overflow-hidden py-12 sm:py-16 lg:py-20 px-6 md:px-12 lg:px-20">
+    <div class="max-w-7xl mx-auto w-full space-y-6 my-auto">
       
       <!-- Section Header -->
       <div class="flex flex-col md:flex-row md:items-end justify-between gap-4 border-b border-stone-800 pb-3">
         <div class="space-y-1">
-          <span class="text-[10px] font-mono tracking-[0.45em] uppercase text-amber-500 block">
-            CURATED COLLECTION • PERMANENT SANCTUARY
+          <span class="text-[11px] font-mono tracking-[0.3em] uppercase text-stone-400 block">
+            FEATURED PIECES
           </span>
-          <h2 class="text-2xl sm:text-3xl lg:text-4xl font-light tracking-wide text-white uppercase font-serif">
-            Featured Pieces
+          <h2 class="text-2xl sm:text-3xl lg:text-4xl font-light tracking-wide text-white uppercase">
+            Curated Collection
           </h2>
         </div>
-        <a href="/artisan-pieces" class="btn-slide-white inline-flex items-center gap-2 px-4 py-2 text-[10px] uppercase tracking-[0.25em] font-semibold self-start md:self-auto">
+        <a href="/artisan-pieces" class="btn-primary text-xs">
           <span>View Full Collection</span>
-          <span class="btn-arrow">&rarr;</span>
+          <span class="btn-arrow ml-2">&rarr;</span>
         </a>
       </div>
 
-      <!-- 4 Flagship Products Horizontal Grid (Strict Uniform Proportions) -->
+      <!-- 4 Flagship Products Horizontal Grid -->
       <div class="featured-pieces-grid grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
         ${PRODUCTS.slice(0, 4).map((p, idx) => `
-          <div class="featured-piece-card group flex flex-col justify-between bg-stone-950 p-3 sm:p-4 space-y-3 transition-all duration-300 shadow-xl rounded-sm" data-row="${idx}">
+          <a href="/artisan-pieces/${p.slug}" class="featured-piece-card group flex flex-col justify-between bg-stone-950 p-4 space-y-3 transition-all duration-300 rounded-2xl border border-stone-800/60 hover:border-stone-600 block text-white no-underline" data-row="${idx}">
             
-            <div class="space-y-2.5">
-              <!-- Uniform Fixed 4:3 Image Container with Skeleton Placeholder -->
-              <div class="featured-piece-img-wrap relative w-full aspect-[4/3] overflow-hidden bg-stone-900 rounded-sm img-skeleton-wrap">
-                <div class="img-skeleton-placeholder"></div>
+            <div class="space-y-3">
+              <div class="featured-piece-img-wrap relative w-full aspect-[4/3] overflow-hidden bg-stone-900 rounded-2xl">
                 <img
                   src="${p.image}"
-                  alt="${p.name} - Handcrafted by ${p.artisan}"
-                  class="featured-piece-img image-blur-up w-full h-full object-cover object-center filter contrast-105 transition-transform duration-700 ease-out group-hover:scale-[1.06]"
+                  alt="${p.name}"
+                  class="featured-piece-img w-full h-full object-cover object-center transition-transform duration-700 ease-out group-hover:scale-105"
                   loading="lazy"
                 />
               </div>
 
-              <!-- Product Info with Fixed Height Alignment -->
               <div class="space-y-1">
-                <div class="flex justify-between items-baseline gap-2 min-h-[26px]">
-                  <a href="/artisan-pieces/${p.slug}" class="relative inline-block product-name-link truncate">
-                    <h3 class="text-base sm:text-lg font-light text-white uppercase font-serif tracking-wide truncate group-hover:text-amber-300 transition-colors">
-                      ${p.name}
-                    </h3>
-                    <span class="product-gold-underline absolute bottom-0 left-0 w-full h-px bg-amber-400 scale-x-0 origin-left transition-transform duration-300"></span>
-                  </a>
-                  <span class="text-xs font-mono text-amber-400 font-semibold tracking-wider whitespace-nowrap flex-shrink-0">
+                <div class="flex justify-between items-baseline gap-2">
+                  <h3 class="text-base font-light text-white uppercase tracking-wide truncate group-hover:text-stone-300 transition-colors">
+                    ${p.name}
+                  </h3>
+                  <span class="text-xs font-mono text-stone-300 font-semibold tracking-wider whitespace-nowrap">
                     ${p.price}
                   </span>
                 </div>
 
-                <div class="text-[9px] font-mono text-stone-400 uppercase tracking-widest min-h-[16px] flex items-center">
+                <div class="text-[10px] font-mono text-stone-400 uppercase tracking-wider">
                   <span>${p.category}</span>
-                  <span class="mx-1 text-stone-600">•</span>
-                  <span class="truncate">${p.artisan}</span>
                 </div>
               </div>
             </div>
 
-            <!-- Action CTAs: Pinned to bottom of card -->
-            <div class="pt-2.5 border-t border-stone-800/80 flex items-center justify-between gap-2 mt-auto">
-              <a href="${createWhatsAppLink(p.name)}" target="_blank" rel="noopener noreferrer" class="btn-slide-white flex-1 text-center py-2 px-2 text-[9px] font-semibold uppercase tracking-[0.2em] shadow-md">
-                <span>Enquire</span>
-                <span class="btn-arrow ml-1">&rarr;</span>
-              </a>
-              <a href="/artisan-pieces/${p.slug}" class="btn-slide-subtle px-3 py-2 text-center text-[9px] font-mono uppercase tracking-widest">
-                <span>Details</span>
-                <span class="btn-arrow ml-1">&rarr;</span>
-              </a>
+            <!-- Single Secondary CTA -->
+            <div class="pt-3 border-t border-stone-800/80 flex items-center justify-between mt-auto">
+              <span class="text-xs font-medium uppercase tracking-wider text-stone-300 group-hover:text-white transition-colors">View Details &rarr;</span>
             </div>
 
-          </div>
+          </a>
         `).join('')}
-      </div>
-
-      <!-- Closing Link Strip -->
-      <div class="pt-1 text-center">
-        <a href="/artisan-pieces" class="btn-slide-white inline-flex items-center gap-3 px-7 py-2.5 text-[10px] uppercase tracking-[0.25em] font-semibold shadow-xl">
-          <span>Explore All Atelier Works</span>
-          <span class="btn-arrow">&rarr;</span>
-        </a>
       </div>
 
     </div>
@@ -1175,39 +1179,31 @@ app.get('/', (req, res) => {
   const sectionTrustVoice = `
   <section class="section-trust-voice relative bg-[#030303] border-t border-stone-800 text-white overflow-hidden" id="trust-voice-container">
     
-    <!-- 1. Horizontal ContainerAnimation Stream Viewport -->
-    <div class="Horizontal relative w-full h-screen overflow-hidden bg-[#030303]" id="trust-horizontal-wrapper">
+    <!-- 1. Horizontal Text Stream Viewport -->
+    <div class="Horizontal relative w-full h-[100svh] overflow-hidden bg-[#030303] flex items-center" id="trust-horizontal-wrapper">
       
-      <!-- Subtle Ambient Warm Glow -->
-      <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[400px] bg-amber-500/[0.035] rounded-full blur-3xl pointer-events-none"></div>
-
-      <!-- Top Eyebrow -->
       <div class="absolute top-8 left-6 md:left-12 lg:left-20 z-20 pointer-events-none">
-        <span class="trust-eyebrow text-[10px] font-mono tracking-[0.5em] uppercase text-amber-500 block">
-          TRUST &amp; VOICE • LIVING SPACES
+        <span class="trust-eyebrow text-[11px] font-mono tracking-[0.3em] uppercase text-stone-400 block">
+          VOICES
         </span>
       </div>
 
       <!-- Horizontal Text Stream -->
       <div class="Horizontal__container w-full">
-        <h3 class="Horizontal__text heading-xl select-none" id="trust-horizontal-stream">
+        <h3 class="Horizontal__text text-3xl sm:text-5xl lg:text-6xl font-light select-none tracking-tight whitespace-nowrap text-stone-200" id="trust-horizontal-stream">
           “${quoteRawText}”
         </h3>
       </div>
 
-      <!-- Bottom Status Strip & Attribution -->
-      <div class="absolute bottom-8 left-6 right-6 md:left-12 md:right-12 lg:left-20 lg:right-20 z-20 flex justify-between items-center text-[9px] font-mono tracking-widest text-stone-500 uppercase border-t border-white/10 pt-3 pointer-events-none">
-        <span class="text-amber-300/80">INTERIOR ARCHITECTURE STUDIO — MUMBAI • PRIVATE RESIDENCE COMMISSION</span>
-        <span>
-          <span class="mouse-device-only">SCROLL TO ADVANCE HORIZONTAL STREAM</span>
-          <span class="touch-device-only">SWIPE TO ADVANCE HORIZONTAL STREAM</span>
-        </span>
+      <!-- Bottom Attribution -->
+      <div class="absolute bottom-8 left-6 right-6 md:left-12 md:right-12 lg:left-20 lg:right-20 z-20 flex justify-between items-center text-[10px] font-mono tracking-widest text-stone-400 uppercase border-t border-white/10 pt-3 pointer-events-none">
+        <span>Interior Architecture Studio, Mumbai</span>
       </div>
 
     </div>
 
-    <!-- 2. Sculptural Frosted Glass Testimonial Component (Natural Height) -->
-    <div class="section-testimonial-stage relative w-full py-20 sm:py-28 lg:py-32 px-6 sm:px-10 lg:px-16 overflow-hidden flex flex-col items-center justify-center border-t border-stone-800/80 bg-black" id="trust-testimonial-stage">
+    <!-- 2. Sculptural Frosted Glass Testimonial Component with Animated Stone Fragments -->
+    <div class="section-testimonial-stage relative w-full py-16 sm:py-20 lg:py-24 px-6 sm:px-10 lg:px-16 overflow-hidden flex flex-col items-center justify-center border-t border-stone-800/80 bg-black min-h-[100svh]" id="trust-testimonial-stage">
       
       <!-- Full-Bleed Blurred Atelier Stone Backdrop -->
       <div class="absolute inset-0 z-0 overflow-hidden pointer-events-none">
@@ -1217,125 +1213,43 @@ app.get('/', (req, res) => {
           class="w-full h-full object-cover object-center filter blur-xl brightness-[0.25] contrast-125 scale-110"
         />
         <div class="absolute inset-0 bg-gradient-to-b from-black/90 via-black/75 to-black"></div>
-        <div class="absolute -top-32 left-1/2 -translate-x-1/2 w-[600px] h-[300px] bg-amber-500/[0.05] rounded-full blur-3xl"></div>
       </div>
 
       <!-- Center Floating Frosted Glass Card -->
-      <div id="elysium-testimonial-card" class="testimonial-card relative z-10 w-full max-w-2xl bg-stone-950/75 backdrop-blur-2xl border border-amber-500/20 rounded-2xl p-8 sm:p-12 text-center shadow-[0_25px_60px_-15px_rgba(0,0,0,0.95),0_0_40px_rgba(212,175,55,0.06)] overflow-visible will-change-[transform,opacity]">
+      <div id="elysium-testimonial-card" class="testimonial-card relative z-10 w-full max-w-2xl bg-stone-950/80 backdrop-blur-2xl border border-stone-800 rounded-2xl p-8 sm:p-12 text-center shadow-2xl overflow-visible will-change-[transform,opacity]">
         
-        <!-- Top Custom Botanical Wreath Frame with 100% Unobstructed Round Portrait in Circular Frame -->
-        <div class="testimonial-wreath-wrap relative w-60 sm:w-72 h-auto mx-auto mb-6 flex items-center justify-center">
+        <!-- Top Custom Architectural Botanical Mandala Emblem with Circular Portrait -->
+        <div class="testimonial-wreath-wrap relative w-56 sm:w-64 h-auto mx-auto mb-6 flex items-center justify-center">
           
-          <svg class="testimonial-frame-svg w-full h-auto pointer-events-none z-10 overflow-visible text-amber-300 drop-shadow-[0_4px_16px_rgba(0,0,0,0.9)] select-none" viewBox="0 0 240 180" fill="none">
+          <svg class="testimonial-frame-svg w-full h-auto pointer-events-none z-10 overflow-visible text-stone-900 drop-shadow-[0_2px_12px_rgba(0,0,0,0.06)] select-none" viewBox="0 0 1280 1271" fill="none">
             
             <defs>
-              <!-- Exact Circle Clip Path for Portrait Photo -->
               <clipPath id="testimonial-circle-clip">
-                <circle id="testimonial-portrait-circle" cx="140" cy="90" r="54" />
+                <circle id="testimonial-portrait-circle" cx="640" cy="635.5" r="290" />
               </clipPath>
             </defs>
 
-            <!-- 1. Central Circular Portrait Photo (100% Round, Zero Overlap Inside Circle) -->
-            <g class="testimonial-portrait-wrap will-change-[opacity,transform]">
-              <!-- Dark Backing Base Circle -->
-              <circle cx="140" cy="90" r="54" fill="#141210" />
-              <!-- Pure Round Clipped Image -->
+            <!-- 1. Central Circular Portrait Photo (Fixed and upright) -->
+            <g class="testimonial-portrait-wrap will-change-[opacity,transform]" id="testimonial-portrait-wrap" style="transform-origin: 640px 635.5px;">
+              <circle cx="640" cy="635.5" r="290" fill="#141210" />
               <image
                 id="testimonial-portrait-img"
                 href="/images/maker_portrait.jpg"
-                x="86"
-                y="36"
-                width="108"
-                height="108"
+                xlink:href="/images/maker_portrait.jpg"
+                x="350"
+                y="345.5"
+                width="580"
+                height="580"
                 clip-path="url(#testimonial-circle-clip)"
                 preserveAspectRatio="xMidYMid slice"
                 class="filter contrast-105 brightness-95"
               />
+              <circle cx="640" cy="635.5" r="290" stroke="#111111" stroke-width="4" fill="none" opacity="0.35" />
             </g>
 
-            <!-- 2. Fragment: Complete Outer Gold Ring Framing the Portrait -->
-            <circle class="stone-fragment stone-frag-ring text-amber-400/90" cx="140" cy="90" r="54" stroke="currentColor" stroke-width="1.8" fill="none" stroke-linecap="round"/>
-
-            <!-- 3. Fragment: Top Botanical Leaves (Sprouting Upward Along Outer Rim) -->
-            <g class="stone-fragment stone-frag-top-leaves text-amber-400" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" fill="none">
-              <!-- Upward Rose Leaf -->
-              <path d="M 86,48 C 76,32 86,16 96,8 C 108,18 110,34 100,46 Z" stroke-width="1.5" fill="#000000" fill-opacity="0.35"/>
-              <path d="M 86,48 Q 94,26 96,8" stroke-width="1.3"/>
-              <path d="M 90,38 L 84,33 M 92,30 L 86,24 M 94,22 L 89,17 M 92,38 L 99,34 M 94,30 L 102,25 M 95,21 L 102,17" stroke-width="0.9"/>
-              
-              <!-- Top-Right Leaf -->
-              <path d="M 100,44 C 110,30 126,24 138,22 C 138,38 126,50 114,52 Z" stroke-width="1.5" fill="#000000" fill-opacity="0.35"/>
-              <path d="M 100,44 Q 119,33 138,22" stroke-width="1.3"/>
-              <path d="M 109,39 L 112,32 M 117,35 L 123,29 M 125,30 L 131,24 M 111,43 L 116,48 M 119,40 L 125,45" stroke-width="0.9"/>
-              
-              <!-- Small Outer Leaf -->
-              <path d="M 78,54 C 66,46 66,32 72,24 C 82,30 85,44 82,52 Z" stroke-width="1.3" fill="#000000" fill-opacity="0.35"/>
-              <path d="M 78,54 Q 74,38 72,24" stroke-width="1.1"/>
-            </g>
-
-            <!-- 4. Fragment: Upper Blooming Rose on Outer Left Perimeter -->
-            <g class="stone-fragment stone-frag-rose-top text-amber-300" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" fill="none">
-              <path d="M 50,52 C 44,42 52,30 66,30 C 80,30 88,42 82,54" stroke-width="1.6" fill="#000000" fill-opacity="0.55"/>
-              <path d="M 82,54 C 88,60 86,74 74,78 C 62,82 52,76 50,64" stroke-width="1.6" fill="#000000" fill-opacity="0.55"/>
-              <path d="M 50,64 C 40,66 34,54 40,44 C 46,36 58,34 66,36" stroke-width="1.6" fill="#000000" fill-opacity="0.55"/>
-              <path d="M 46,50 C 40,58 44,70 54,74 C 64,78 74,74 76,64" stroke-width="1.4"/>
-              <path d="M 56,42 C 66,38 76,44 74,54 C 72,64 60,66 52,60" stroke-width="1.4"/>
-              <path d="M 62,50 C 58,47 60,57 66,56 C 72,55 70,46 63,44 C 56,43 54,54 60,59 C 66,64 74,60 74,52" stroke-width="1.3"/>
-              <circle cx="63" cy="53" r="2.2" stroke-width="1.2" fill="currentColor" fill-opacity="0.25"/>
-            </g>
-
-            <!-- 5. Fragment: Side Bud & Berry Sprig Extending Outward -->
-            <g class="stone-fragment stone-frag-berries-side text-amber-400/90" stroke="currentColor" stroke-linecap="round" fill="none">
-              <path d="M 54,78 Q 38,70 26,58" stroke-width="1.4"/>
-              <path d="M 46,74 L 34,68 M 40,80 L 22,78 M 42,86 L 28,92 M 50,90 L 38,98" stroke-width="1.1"/>
-              
-              <circle cx="26" cy="58" r="3.2" stroke-width="1.3" fill="#000000" fill-opacity="0.6"/>
-              <circle cx="34" cy="68" r="3.4" stroke-width="1.3" fill="#000000" fill-opacity="0.6"/>
-              <circle cx="22" cy="78" r="3.6" stroke-width="1.3" fill="#000000" fill-opacity="0.6"/>
-              <circle cx="28" cy="92" r="3.4" stroke-width="1.3" fill="#000000" fill-opacity="0.6"/>
-              <circle cx="38" cy="98" r="3" stroke-width="1.3" fill="#000000" fill-opacity="0.6"/>
-              
-              <circle cx="25" cy="57" r="0.8" fill="currentColor" stroke="none"/>
-              <circle cx="33" cy="67" r="0.8" fill="currentColor" stroke="none"/>
-              <circle cx="21" cy="77" r="0.8" fill="currentColor" stroke="none"/>
-              <circle cx="27" cy="91" r="0.8" fill="currentColor" stroke="none"/>
-            </g>
-
-            <!-- 6. Fragment: Lower Blooming Rose on Outer Left Perimeter -->
-            <g class="stone-fragment stone-frag-rose-bottom text-amber-300" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" fill="none">
-              <path d="M 48,94 C 40,84 50,72 64,72 C 78,72 88,84 82,96" stroke-width="1.6" fill="#000000" fill-opacity="0.55"/>
-              <path d="M 82,96 C 90,104 88,118 76,124 C 64,128 52,122 48,110" stroke-width="1.6" fill="#000000" fill-opacity="0.55"/>
-              <path d="M 48,110 C 36,114 30,102 38,90 C 44,80 56,80 64,82" stroke-width="1.6" fill="#000000" fill-opacity="0.55"/>
-              <path d="M 38,90 C 28,100 32,116 44,124 C 56,132 70,132 80,124" stroke-width="1.6" fill="#000000" fill-opacity="0.55"/>
-              <path d="M 44,102 C 36,112 44,126 58,128 C 72,130 84,120 84,108" stroke-width="1.4"/>
-              <path d="M 54,86 C 66,84 78,90 76,102 C 74,114 60,116 50,108" stroke-width="1.4"/>
-              <path d="M 62,96 C 56,92 58,104 66,102 C 74,100 71,90 63,88 C 54,87 52,100 60,106 C 68,112 78,106 77,97" stroke-width="1.3"/>
-              <circle cx="63" cy="97" r="2.4" stroke-width="1.2" fill="currentColor" fill-opacity="0.25"/>
-            </g>
-
-            <!-- 7. Fragment: Bottom Foliage & Veined Leaves -->
-            <g class="stone-fragment stone-frag-bottom-leaves text-amber-400" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" fill="none">
-              <path d="M 56,128 C 46,142 50,160 62,170 C 72,156 74,138 66,128 Z" stroke-width="1.5" fill="#000000" fill-opacity="0.35"/>
-              <path d="M 56,128 Q 62,150 62,170" stroke-width="1.3"/>
-              <path d="M 58,140 L 51,145 M 60,150 L 53,156 M 60,140 L 67,136 M 61,150 L 68,145" stroke-width="0.9"/>
-              
-              <path d="M 76,126 C 90,138 108,146 124,142 C 114,130 100,122 84,122 Z" stroke-width="1.5" fill="#000000" fill-opacity="0.35"/>
-              <path d="M 76,126 Q 104,136 124,142" stroke-width="1.3"/>
-            </g>
-
-            <!-- 8. Fragment: Bottom Sweeping Berry Droop -->
-            <g class="stone-fragment stone-frag-berries-bottom text-amber-400/90" stroke="currentColor" stroke-linecap="round" fill="none">
-              <path d="M 74,132 Q 98,150 130,158" stroke-width="1.4"/>
-              <path d="M 84,140 L 92,150 M 96,144 L 104,155 M 110,148 L 118,158 M 122,152 L 128,160" stroke-width="1.1"/>
-              
-              <circle cx="92" cy="150" r="3.4" stroke-width="1.3" fill="#000000" fill-opacity="0.6"/>
-              <circle cx="104" cy="155" r="3.6" stroke-width="1.3" fill="#000000" fill-opacity="0.6"/>
-              <circle cx="118" cy="158" r="3.4" stroke-width="1.3" fill="#000000" fill-opacity="0.6"/>
-              <circle cx="128" cy="160" r="3" stroke-width="1.3" fill="#000000" fill-opacity="0.6"/>
-              
-              <circle cx="91" cy="149" r="0.8" fill="currentColor" stroke="none"/>
-              <circle cx="103" cy="154" r="0.8" fill="currentColor" stroke="none"/>
-              <circle cx="117" cy="157" r="0.8" fill="currentColor" stroke="none"/>
+            <!-- 2. Rotating Ornate Mandala Ring -->
+            <g class="stone-fragment stone-frag-mandala" id="testimonial-mandala-ring" fill="#000000" style="transform-origin: 640px 635.5px; will-change: transform;">
+              ${TESTIMONIAL_SVG_INNER}
             </g>
 
           </svg>
@@ -1344,33 +1258,30 @@ app.get('/', (req, res) => {
 
         <!-- Crossfading Text Content Container -->
         <div id="testimonial-content-container" class="space-y-4">
-          <!-- Large Emotional Headline in Cormorant Garamond -->
-          <h3 id="testimonial-headline" class="testimonial-headline text-3xl sm:text-4xl lg:text-5xl font-light text-white italic font-serif tracking-wide leading-tight">
+          <h3 id="testimonial-headline" class="testimonial-headline text-3xl sm:text-4xl font-light text-stone-950 tracking-wide leading-tight">
             “Grounded.”
           </h3>
 
-          <!-- Full Testimonial Quote with Gold Sweeping Highlight -->
-          <p id="testimonial-quote" class="testimonial-quote text-sm sm:text-base text-stone-300 font-light leading-relaxed max-w-xl mx-auto font-sans">
-            “Elysium delivered a custom travertine console that transformed our living room into <span class="testimonial-highlight-wrap inline-block relative"><span class="testimonial-highlight-bg absolute inset-0 bg-amber-500/20 border border-amber-400/30 rounded-xs"></span><span class="testimonial-highlight-text relative z-10 text-amber-200 font-normal px-1.5">a monolithic living sanctuary</span></span> with unmatched tactile reverence.”
+          <p id="testimonial-quote" class="testimonial-quote text-sm sm:text-base text-stone-700 font-light leading-relaxed max-w-xl mx-auto">
+            “Elysium delivered a custom travertine console that transformed our living room into a monolithic living sanctuary with unmatched tactile reverence.”
           </p>
 
-          <!-- Attribution Row -->
           <div id="testimonial-attribution-block" class="testimonial-attribution pt-4">
-            <div class="text-xs sm:text-sm text-stone-200 font-sans">
-              <strong id="testimonial-author" class="font-semibold text-white">Sarah P.</strong>
-              <span class="text-stone-500 mx-1">•</span>
-              <span id="testimonial-project" class="text-stone-400">Bespoke Console Commission, South Bombay Residence</span>
+            <div class="text-xs sm:text-sm text-stone-600">
+              <strong id="testimonial-author" class="font-medium text-stone-950">Sarah P.</strong>
+              <span class="text-stone-400 mx-1">•</span>
+              <span id="testimonial-project" class="text-stone-500">South Bombay</span>
             </div>
           </div>
         </div>
 
       </div>
 
-      <!-- Small Dot Indicators for Manual Navigation / Status -->
+      <!-- Navigation Dots -->
       <div class="testimonial-dots flex items-center justify-center gap-2.5 mt-8 relative z-20" id="testimonial-dots-nav">
-        <button class="testimonial-dot active w-2.5 h-2.5 rounded-full bg-amber-400 transition-all cursor-pointer shadow-[0_0_8px_#f59e0b]" data-idx="0" aria-label="Testimonial 1"></button>
-        <button class="testimonial-dot w-2.5 h-2.5 rounded-full bg-stone-700 hover:bg-stone-500 transition-all cursor-pointer" data-idx="1" aria-label="Testimonial 2"></button>
-        <button class="testimonial-dot w-2.5 h-2.5 rounded-full bg-stone-700 hover:bg-stone-500 transition-all cursor-pointer" data-idx="2" aria-label="Testimonial 3"></button>
+        <button class="testimonial-dot active w-2.5 h-2.5 rounded-full bg-stone-950 transition-all cursor-pointer" data-idx="0" aria-label="Testimonial 1"></button>
+        <button class="testimonial-dot w-2.5 h-2.5 rounded-full bg-stone-300 hover:bg-stone-500 transition-all cursor-pointer" data-idx="1" aria-label="Testimonial 2"></button>
+        <button class="testimonial-dot w-2.5 h-2.5 rounded-full bg-stone-300 hover:bg-stone-500 transition-all cursor-pointer" data-idx="2" aria-label="Testimonial 3"></button>
       </div>
 
     </div>
@@ -1447,11 +1358,11 @@ app.get('/artisan-pieces', (req, res) => {
       </div>
 
       <div id="category-filter-bar" class="flex flex-wrap gap-3 pb-12 mb-12 border-b border-stone-800">
-        <button class="category-btn active" data-category="All">All</button>
-        <button class="category-btn" data-category="Furniture">Furniture</button>
-        <button class="category-btn" data-category="Sculpture">Sculpture</button>
-        <button class="category-btn" data-category="Lighting">Lighting</button>
-        <button class="category-btn" data-category="Vessels">Vessels</button>
+        <button class="category-btn active" data-category="All"><span>All</span></button>
+        <button class="category-btn" data-category="Furniture"><span>Furniture</span></button>
+        <button class="category-btn" data-category="Sculpture"><span>Sculpture</span></button>
+        <button class="category-btn" data-category="Lighting"><span>Lighting</span></button>
+        <button class="category-btn" data-category="Vessels"><span>Vessels</span></button>
       </div>
 
       <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
@@ -1549,8 +1460,8 @@ app.get('/artisan-pieces/:slug', (req, res) => {
             </div>
           </div>
           <div class="pt-4 space-y-4">
-            <a href="${whatsappUrl}" target="_blank" rel="noopener noreferrer" class="btn-slide-white w-full py-3.5 text-center text-xs font-semibold uppercase tracking-[0.25em] shadow-lg"><span>Enquire via WhatsApp</span><span class="btn-arrow ml-2">&rarr;</span></a>
-            <a href="/contact?piece=${encodeURIComponent(product.name)}" class="btn-slide-subtle w-full py-3 text-center text-xs uppercase tracking-[0.25em]"><span>Submit Form Enquiry</span></a>
+            <a href="${whatsappUrl}" target="_blank" rel="noopener noreferrer" class="btn-primary w-full py-3.5 text-center text-xs font-semibold uppercase tracking-[0.25em] shadow-lg"><span>Enquire via WhatsApp</span><span class="btn-arrow ml-2">&rarr;</span></a>
+            <a href="/contact?piece=${encodeURIComponent(product.name)}" class="btn-primary w-full py-3 text-center text-xs uppercase tracking-[0.25em]"><span>Submit Form Enquiry</span></a>
           </div>
         </div>
       </div>
@@ -1696,7 +1607,7 @@ app.get('/our-story', (req, res) => {
         <h2 class="text-2xl sm:text-3xl font-light tracking-wide text-white uppercase font-sans">Connect With Our Curators</h2>
         <p class="text-xs text-stone-400 max-w-md mx-auto font-light leading-relaxed">Whether sourcing for a single residential sanctuary or a complete trade project, our team is available for direct consultation.</p>
         <div class="pt-2">
-          <a href="${whatsappUrl}" target="_blank" rel="noopener noreferrer" class="btn-slide-white px-8 py-3.5 text-xs font-semibold uppercase tracking-[0.25em] inline-flex items-center gap-2 shadow-lg"><span>Start Consultation via WhatsApp</span><span class="btn-arrow">&rarr;</span></a>
+          <a href="${whatsappUrl}" target="_blank" rel="noopener noreferrer" class="btn-primary px-8 py-3.5 text-xs font-semibold uppercase tracking-[0.25em] inline-flex items-center gap-2 shadow-lg"><span>Start Consultation via WhatsApp</span><span class="btn-arrow">&rarr;</span></a>
         </div>
       </section>
     </div>
@@ -1731,7 +1642,7 @@ app.get('/contact', (req, res) => {
     content: `
               <span class="text-[10px] font-mono uppercase tracking-[0.3em] text-amber-500 block mb-2">Instant Communication</span>
               <h3 class="text-xl font-light text-white uppercase mb-4">WhatsApp Direct Line</h3>
-              <a href="${createWhatsAppLink(pieceName)}" target="_blank" rel="noopener noreferrer" class="btn-slide-white w-full py-3.5 text-center text-xs font-semibold uppercase tracking-[0.25em] shadow-md"><span>OPEN WHATSAPP CHAT</span><span class="btn-arrow ml-2">&rarr;</span></a>
+              <a href="${createWhatsAppLink(pieceName)}" target="_blank" rel="noopener noreferrer" class="btn-primary w-full py-3.5 text-center text-xs font-semibold uppercase tracking-[0.25em] shadow-md"><span>OPEN WHATSAPP CHAT</span><span class="btn-arrow ml-2">&rarr;</span></a>
             `,
     className: 'p-8'
   })}
@@ -1762,7 +1673,7 @@ app.get('/contact', (req, res) => {
                   <input type="email" name="email" required placeholder="Email Address *" class="w-full bg-stone-900 border border-stone-800 p-3.5 text-white focus:border-amber-400 outline-none transition-colors">
                 </div>
                 <textarea id="contact-message" name="message" required rows="5" placeholder="Your Message..." class="w-full bg-stone-900 border border-stone-800 p-3.5 text-white focus:border-amber-400 outline-none transition-colors">${initialMessage}</textarea>
-                <button type="submit" class="btn-slide-white w-full py-4 text-center text-xs font-semibold uppercase tracking-[0.25em] shadow-md"><span>SUBMIT FORM ENQUIRY</span></button>
+                <button type="submit" class="btn-primary w-full py-4 text-center text-xs font-semibold uppercase tracking-[0.25em] shadow-md"><span>SUBMIT FORM ENQUIRY</span></button>
               </form>
             `,
     className: 'p-8'
@@ -1837,8 +1748,8 @@ app.use((req, res) => {
         <h1 class="text-4xl sm:text-5xl font-light uppercase tracking-wide">Sanctuary Not Found</h1>
         <p class="text-xs text-stone-400 max-w-md mx-auto leading-relaxed">The page you are looking for may have moved or no longer exists in our atelier catalogue.</p>
         <div class="pt-4 flex flex-wrap justify-center gap-4">
-          <a href="/" class="px-6 py-3 bg-white text-black text-xs font-semibold uppercase tracking-[0.2em] hover:bg-stone-200 transition-colors">Return to Home</a>
-          <a href="/artisan-pieces" class="px-6 py-3 border border-stone-700 text-white text-xs uppercase tracking-[0.2em] hover:bg-white hover:text-black transition-all">Explore Collection</a>
+          <a href="/" class="btn-primary">Return to Home</a>
+          <a href="/artisan-pieces" class="btn-primary">Explore Collection</a>
         </div>
       </div>
     `,
@@ -1858,7 +1769,7 @@ app.use((err, req, res, next) => {
         <h1 class="text-4xl sm:text-5xl font-light uppercase tracking-wide">Atelier Disruption</h1>
         <p class="text-xs text-stone-400 max-w-md mx-auto leading-relaxed">Our atelier system encountered an unexpected condition. Please refresh or return home.</p>
         <div class="pt-4">
-          <a href="/" class="px-6 py-3 bg-white text-black text-xs font-semibold uppercase tracking-[0.2em] hover:bg-stone-200 transition-colors">Return to Home</a>
+          <a href="/" class="btn-primary">Return to Home</a>
         </div>
       </div>
     `,

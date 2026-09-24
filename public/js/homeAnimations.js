@@ -102,6 +102,7 @@
     // Solid SVG Drawing Ribbon Path Elements
     const drawPathCore = document.getElementById('lusion-draw-path-core');
     const svgLineWrap = document.getElementById('lusion-reel-svg-container');
+    const pathHead = document.getElementById('lusion-path-head');
 
     let pathLength = 3600;
     if (drawPathCore) {
@@ -981,7 +982,7 @@
         });
       }
 
-      // 2. Horizontal scroll tween pinned to viewport
+      // 2. Horizontal scroll tween pinned to viewport (Task 9 calibrated distance)
       const scrollTween = gsap.to(text, {
         xPercent: -100,
         ease: 'none',
@@ -989,8 +990,8 @@
           trigger: wrapper,
           pin: true,
           start: 'clamp(top top)',
-          end: '+=5000px',
-          scrub: true,
+          end: '+=1600px',
+          scrub: 0.8,
           anticipatePin: 1,
           invalidateOnRefresh: true,
         },
@@ -1048,28 +1049,28 @@
     const testimonials = [
       {
         headline: '“Grounded.”',
-        quote: '“Elysium delivered a custom travertine console that transformed our living room into <span class="testimonial-highlight-wrap inline-block relative"><span class="testimonial-highlight-bg absolute inset-0 bg-amber-500/20 border border-amber-400/30 rounded-xs"></span><span class="testimonial-highlight-text relative z-10 text-amber-200 font-normal px-1.5">a monolithic living sanctuary</span></span> with unmatched tactile reverence.”',
+        quote: '“Elysium delivered a custom travertine console that transformed our living room into a monolithic living sanctuary with unmatched tactile reverence.”',
         author: 'Sarah P.',
         project: 'Bespoke Console Commission, South Bombay Residence',
-        tag: '🪨 Custom Commission',
+        tag: 'Custom Commission',
         rating: '5/5',
         portrait: '/images/maker_portrait.jpg'
       },
       {
         headline: '“Timeless.”',
-        quote: '“The chiseled black granite plinth and vessels created an atmosphere of <span class="testimonial-highlight-wrap inline-block relative"><span class="testimonial-highlight-bg absolute inset-0 bg-amber-500/20 border border-amber-400/30 rounded-xs"></span><span class="testimonial-highlight-text relative z-10 text-amber-200 font-normal px-1.5">profound architectural calm</span></span> in our penthouse gallery.”',
+        quote: '“The chiseled black granite plinth and vessels created an atmosphere of profound architectural calm in our penthouse gallery.”',
         author: 'Vikram M.',
         project: 'Granite Plinth Suite, Juhu Atelier Villa',
-        tag: '🏛️ Architectural Suite',
+        tag: 'Architectural Suite',
         rating: '5/5',
         portrait: '/images/atelier_craftsman.jpg'
       },
       {
         headline: '“Sanctuary.”',
-        quote: '“Every curve in the raw cast-bronze lighting feels intentional, anchoring the room in <span class="testimonial-highlight-wrap inline-block relative"><span class="testimonial-highlight-bg absolute inset-0 bg-amber-500/20 border border-amber-400/30 rounded-xs"></span><span class="testimonial-highlight-text relative z-10 text-amber-200 font-normal px-1.5">warm, shadow-sculpted silence</span></span>.”',
+        quote: '“Every curve in the raw cast-bronze lighting feels intentional, anchoring the room in warm, shadow-sculpted silence.”',
         author: 'Elena R.',
         project: 'Cast Bronze & Terracotta Series, New Delhi Residence',
-        tag: '🏺 Bronze Commission',
+        tag: 'Bronze Commission',
         rating: '5/5',
         portrait: '/images/atelier_display.jpg'
       }
@@ -1091,20 +1092,16 @@
       if (stars.length) gsap.set(stars, { scale: 1, opacity: 1 });
     } else {
       // Set initial states for GSAP Timeline
-      gsap.set(card, { opacity: 0, scale: 0.92, y: 30 });
+      gsap.set(card, { opacity: 0, scale: 0.94, y: 25 });
 
-      // Each fragment starts from randomized offset (±60px, ±25deg, 0 opacity)
-      fragments.forEach((frag) => {
-        const randX = (Math.random() * 120 - 60).toFixed(1);
-        const randY = (Math.random() * 120 - 60).toFixed(1);
-        const randRot = (Math.random() * 50 - 25).toFixed(1);
-        gsap.set(frag, { x: randX, y: randY, rotation: randRot, opacity: 0 });
-      });
+      // Clean, ultra-smooth architectural mandala & portrait setup
+      const mandalaRing = document.getElementById('testimonial-mandala-ring') || card.querySelector('.stone-frag-mandala');
+      if (mandalaRing) {
+        gsap.set(mandalaRing, { transformOrigin: '640px 635.5px', scale: 0.82, rotation: -25, opacity: 0 });
+      }
 
       if (portraitWrap) {
-        gsap.set(portraitWrap, { opacity: 0 });
-        const clipCircle = document.getElementById('testimonial-portrait-circle');
-        if (clipCircle) gsap.set(clipCircle, { attr: { r: 0 } });
+        gsap.set(portraitWrap, { opacity: 0, scale: 0.88, transformOrigin: '640px 635.5px' });
       }
       if (headline) gsap.set(headline, { opacity: 0, y: 15 });
       if (quote) gsap.set(quote, { opacity: 0, y: 20 });
@@ -1116,79 +1113,86 @@
       const entranceTl = gsap.timeline({
         scrollTrigger: {
           trigger: card,
-          start: 'top 75%',
+          start: 'top 85%',
           toggleActions: 'play none none none',
           once: true,
         },
       });
 
-      // Step 1: Card Entrance (opacity 0→1, scale 0.92→1, y: 30→0, 1s, power3.out)
+      // Step 1: Card Entrance
       entranceTl.to(card, {
         opacity: 1,
         scale: 1,
         y: 0,
-        duration: 1.0,
+        duration: 0.9,
         ease: 'power3.out',
       }, 0);
 
-      // Step 2: Stone Fragments Assemble (staggered 0.08s, duration 0.9s, power3.out, offset start by 0.3s)
+      // Step 2: Portrait Reveal
+      if (portraitWrap) {
+        entranceTl.to(portraitWrap, {
+          scale: 1,
+          opacity: 1,
+          duration: 0.85,
+          ease: 'power2.out',
+        }, 0.18);
+      }
+
+      // Step 3: Mandala Ring Blooms & Spins into position
+      if (mandalaRing) {
+        entranceTl.to(mandalaRing, {
+          scale: 1,
+          rotation: 0,
+          opacity: 0.95,
+          duration: 1.15,
+          ease: 'power3.out',
+        }, 0.2);
+      }
+
+      // Step 2: Portrait Reveal (scale 0.9 -> 1, opacity 0 -> 1, duration 0.8s, power2.out)
+      if (portraitWrap) {
+        entranceTl.to(portraitWrap, {
+          scale: 1,
+          opacity: 1,
+          duration: 0.8,
+          ease: 'power2.out',
+        }, 0.2);
+      }
+
+      // Step 3: Stone Fragments Assemble into clean precision (duration 0.85s, power3.out, offset start by 0.25s)
       if (fragments.length > 0) {
         entranceTl.to(fragments, {
           x: 0,
           y: 0,
+          scale: 1,
           rotation: 0,
           opacity: 1,
-          duration: 0.9,
-          stagger: 0.08,
+          duration: 0.85,
+          stagger: 0.05,
           ease: 'power3.out',
-        }, 0.3);
+        }, 0.25);
       }
 
-      // Step 3: Portrait Reveal (circle clip-path radius reveal 0 -> 54, duration 0.8s, power2.inOut)
-      if (portraitWrap) {
-        const clipCircle = document.getElementById('testimonial-portrait-circle');
-        if (clipCircle) {
-          entranceTl.to(clipCircle, {
-            attr: { r: 54 },
-            duration: 0.8,
-            ease: 'power2.inOut',
-          }, '>-0.2');
-        }
-        entranceTl.to(portraitWrap, {
-          opacity: 1,
-          duration: 0.8,
-          ease: 'power2.inOut',
-        }, '<');
-      }
-
-      // Step 4: Headline + Quote + Gold Highlight Sweep
+      // Step 4: Headline + Quote Fade-in
       if (headline) {
         entranceTl.to(headline, {
           opacity: 1,
           y: 0,
           duration: 0.6,
           ease: 'power3.out',
-        }, '>-0.1');
+        }, '>-0.2');
       }
 
       if (quote) {
         entranceTl.to(quote, {
           opacity: 1,
           y: 0,
-          duration: 0.8,
+          duration: 0.7,
           ease: 'power3.out',
-        }, '<0.15');
+        }, '<0.1');
       }
 
-      if (highlightBg) {
-        entranceTl.to(highlightBg, {
-          clipPath: 'inset(0 0% 0 0)',
-          duration: 0.5,
-          ease: 'power2.out',
-        }, '>');
-      }
-
-      // Step 5: Attribution + Star Rating with Overshoot (back.out(2))
+      // Step 5: Attribution
       if (attribution) {
         entranceTl.to(attribution, {
           opacity: 1,
@@ -1209,6 +1213,17 @@
       }
     }
 
+    // Step 5b: Continuous Ultra-Smooth Ambient Spin
+      if (mandalaRing && !prefersReducedMotion) {
+        gsap.to(mandalaRing, {
+          rotation: '+=360',
+          duration: 60,
+          repeat: -1,
+          ease: 'none',
+          transformOrigin: '640px 635.5px'
+        });
+      }
+
     // Step 6: Testimonial Crossfade & Auto-advance (Frame & stone fragments stay static!)
     function goToTestimonial(targetIdx) {
       if (isTransitioning || targetIdx === currentIndex) return;
@@ -1219,10 +1234,10 @@
       dots.forEach((dot, idx) => {
         if (idx === targetIdx) {
           dot.classList.add('active');
-          gsap.to(dot, { scale: 1.3, backgroundColor: '#d4af37', duration: 0.3 });
+          gsap.to(dot, { scale: 1.25, backgroundColor: '#111111', duration: 0.3 });
         } else {
           dot.classList.remove('active');
-          gsap.to(dot, { scale: 1, backgroundColor: '#44403c', duration: 0.3 });
+          gsap.to(dot, { scale: 1, backgroundColor: '#d6d3d1', duration: 0.3 });
         }
       });
 
