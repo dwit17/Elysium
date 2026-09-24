@@ -3011,3 +3011,270 @@ img {
   z-index: 99999 !important;
   user-select: none !important;
 }
+
+/* ============================================================
+   1:1 LUSION RECREATION — SECTION 2 STYLES & MOTION DESIGN SYSTEM
+   ============================================================ */
+:root,
+.section-lusion-reel {
+  --reel-bg: #EFEFF9;
+  --reel-text: #000000;
+  --reel-text-muted: #2d2d32;
+  --reel-accent: #4F43F4;
+  --reel-ribbon-start: #2B2FE8;
+  --reel-ribbon-end: #5B7BFF;
+  --reel-card-bg: #4F43F4;
+  --reel-card-radius: 22px;
+  --reel-frame-w: 90.8vw;
+  --reel-frame-h: 75vh;
+  --reel-side-margin: 4.6vw;
+  --reel-headline-size: clamp(42px, 10vw, 191.2px);
+  --reel-headline-lh: 1.0;
+  --reel-body-size: clamp(15px, 1.45vw, 28.68px);
+  --reel-body-lh: 1.45;
+  --reel-pill-w: 233px;
+  --reel-pill-h: 64px;
+  --reel-play-btn-w: 180px;
+  --reel-play-btn-h: 112px;
+}
+
+.section-lusion-reel {
+  background-color: var(--reel-bg);
+  color: var(--reel-text);
+  min-height: 100vh;
+}
+
+.lusion-reel-stage {
+  height: 100vh;
+  height: 100dvh;
+  padding: clamp(90px, 12vh, 120px) var(--reel-side-margin) 6vh var(--reel-side-margin);
+  box-sizing: border-box;
+}
+
+/* 1. Typography & Narrative Blocks */
+.lusion-reel-intro {
+  padding: clamp(90px, 12vh, 120px) var(--reel-side-margin) 6vh var(--reel-side-margin);
+  box-sizing: border-box;
+}
+
+.lusion-reel-eyebrow {
+  font-size: clamp(9px, 0.75vw, 12px);
+  letter-spacing: 0.45em;
+  color: #52525b;
+}
+
+.lusion-reel-top-block {
+  max-width: 65vw;
+}
+
+.lusion-reel-title-block {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  width: 100%;
+}
+
+.lusion-reel-title-line {
+  font-family: inherit;
+  font-size: var(--reel-headline-size);
+  line-height: var(--reel-headline-lh);
+  letter-spacing: -0.02em;
+  font-weight: 400;
+  color: #000000;
+  white-space: nowrap;
+}
+
+/* Line 1 is inset so both lines end at the exact same right edge */
+@media (min-width: 1024px) {
+  .lusion-reel-title-line.line-1 {
+    padding-left: clamp(140px, 15.3vw, 294px);
+  }
+}
+
+.lusion-reel-content-block {
+  align-self: flex-end;
+  width: 100%;
+  max-width: 44vw;
+  margin-top: auto;
+  margin-bottom: 2vh;
+  text-align: left;
+}
+
+.lusion-reel-desc {
+  font-size: var(--reel-body-size);
+  line-height: var(--reel-body-lh);
+  color: #000000;
+  letter-spacing: -0.01em;
+}
+
+/* Pill CTA Button */
+.lusion-pill-btn {
+  background-color: #ffffff;
+  color: #000000;
+  border-radius: 100px;
+  padding: 18px 32px 18px 28px;
+  font-size: clamp(11px, 0.95vw, 14px);
+  font-weight: 500;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  box-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.12);
+  transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.3s ease, background-color 0.3s ease;
+  cursor: pointer;
+  text-decoration: none;
+}
+
+.lusion-pill-btn:hover {
+  transform: translateY(-2px) scale(1.02);
+  box-shadow: 0 18px 40px -12px rgba(0, 0, 0, 0.22);
+}
+
+.lusion-pill-dot {
+  display: inline-block;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background-color: #000000;
+  margin-right: 12px;
+  flex-shrink: 0;
+  transition: transform 0.3s ease;
+}
+
+.lusion-pill-btn:hover .lusion-pill-dot {
+  transform: scale(1.25);
+}
+
+/* 2. WebGL Canvas */
+.lusion-webgl-canvas {
+  touch-action: none;
+  z-index: 10;
+}
+
+/* 2.5. Interactive SVG Drawing Ribbon Path */
+.lusion-line-container {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 15;
+  overflow: visible;
+  transition: opacity 0.4s ease;
+}
+
+.lusion-svg-line {
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+}
+
+.lusion-draw-path-core {
+  vector-effect: non-scaling-stroke;
+  will-change: stroke-dashoffset;
+}
+
+/* 3. Docked UI: "PLAY ▶ ATELIER" & Registration '+' Marks */
+.lusion-reel-ui {
+  padding: 0 var(--reel-side-margin);
+  box-sizing: border-box;
+  z-index: 35 !important;
+}
+
+.lusion-play-cta-wrap {
+  position: relative;
+  z-index: 40 !important;
+  user-select: none;
+  pointer-events: auto !important;
+}
+
+.lusion-play-word {
+  font-size: clamp(36px, 7.3vw, 140px);
+  font-weight: 300;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: #ffffff;
+  text-shadow: 0 4px 24px rgba(0, 0, 0, 0.45);
+}
+
+.lusion-play-pill {
+  width: clamp(100px, 9.4vw, var(--reel-play-btn-w));
+  height: clamp(60px, 5.8vw, var(--reel-play-btn-h));
+  background-color: #ffffff;
+  border-radius: 100px;
+  border: none;
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.35);
+  cursor: pointer;
+  position: relative;
+  z-index: 45 !important;
+  pointer-events: auto !important;
+}
+
+.lusion-reg-row {
+  width: var(--reel-frame-w);
+  max-width: calc(100vw - (var(--reel-side-margin) * 2));
+  padding: 0 20px;
+  box-sizing: border-box;
+  z-index: 36 !important;
+}
+
+.lusion-reg-top {
+  top: 10vh;
+}
+
+.lusion-reg-bottom {
+  bottom: 10vh;
+}
+
+.lusion-reg-plus {
+  font-family: monospace;
+  font-size: 16px;
+  font-weight: 400;
+  color: #000000;
+  opacity: 0.6;
+  transform-origin: center;
+  transition: transform 0.4s ease;
+}
+
+/* Responsive adjustments */
+@media (max-width: 1023px) {
+  .lusion-reel-top-block {
+    max-width: 100%;
+  }
+
+  .lusion-reel-content-block {
+    max-width: 100%;
+    margin-top: 4vh;
+  }
+
+  .lusion-reel-title-line.line-1 {
+    padding-left: 0;
+  }
+}
+
+@media (max-width: 767px) {
+  .lusion-reel-stage {
+    padding: 3vh 20px 4vh 20px;
+    height: auto;
+    min-height: 100vh;
+  }
+
+  .lusion-reel-intro {
+    position: relative;
+    inset: auto;
+    padding: 3vh 0;
+    pointer-events: auto;
+  }
+
+  .lusion-reel-title-line {
+    white-space: normal;
+  }
+
+  .lusion-play-word {
+    font-size: clamp(28px, 10vw, 48px);
+  }
+
+  .lusion-play-pill {
+    width: 80px;
+    height: 50px;
+    margin: 0 12px;
+  }
+}

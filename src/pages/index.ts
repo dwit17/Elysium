@@ -1,9 +1,0 @@
-export { Home } from './Home';
-export { Philosophy } from './Philosophy';
-export { ArtisanPieces } from './ArtisanPieces';
-export { PieceDetail } from './PieceDetail';
-export { MaterialityLab } from './MaterialityLab';
-export { OurStory } from './OurStory';
-export { Contact } from './Contact';
-export { PrivacyPolicy } from './PrivacyPolicy';
-export { Terms } from './Terms';

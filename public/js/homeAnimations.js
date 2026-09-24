@@ -73,25 +73,124 @@
    * Synchronized WebGL Quad with velocity-driven fluid silk/liquid displacement shader.
    * Completely continuous, micro-scroll responsive, and 100% reversible.
    */
-  function initAtelierRevealSection() {
-    const section = document.getElementById('immersive-scene-section') || document.getElementById('atelier-reveal-section') || document.querySelector('.section-immersive-scene') || document.querySelector('.atelier-reveal');
-    const stage = document.getElementById('scene-stage') || document.getElementById('atelier-reveal-pin') || document.querySelector('.scene-stage') || document.querySelector('.atelier-reveal__pin');
-    if (!section || !stage || typeof gsap === 'undefined' || typeof ScrollTrigger === 'undefined') return;
+    /**
+   * 1. SECTION 2 — 1:1 LUSION RECREATION (WEBGL 3D RIBBON & VELOCITY WARP SHOWREEL)
+   * Exact match to Lusion.co section 2 scroll choreography:
+   * - Giant 2-line headline with Line 1 inset to align right edges
+   * - Explainer paragraph & pill button with magnetic hover
+   * - 3D Blue ribbon / Catmull-Rom tube snaking across scene
+   * - Warping quad expanding from bottom-left card into full docked reel frame
+   * - Velocity-driven vertex shader bending & duotone-to-full-color crossfade
+   * - "PLAY ▶ ATELIER" text reveal & white play pill scaling between words
+   * - 5-column '+' registration marks rotating and scaling in
+   * - Fullscreen showreel modal on click
+   */
+  function initLusionSection2() {
+    const section = document.getElementById('section-lusion-reel');
+    const stage = document.getElementById('lusion-reel-stage');
+    const canvas = document.getElementById('lusion-webgl-canvas');
+    if (!section || !stage || !canvas || typeof gsap === 'undefined' || typeof ScrollTrigger === 'undefined') return;
 
-    const world = section.querySelector('.scene-world');
-    const intro = section.querySelector('.scene-intro') || section.querySelector('.atelier-reveal__intro');
-    const wrapper = section.querySelector('.scene-image-wrapper') || section.querySelector('.atelier-reveal__card');
-    const img = section.querySelector('.scene-image') || section.querySelector('.atelier-reveal__img');
-    const canvas = section.querySelector('#scene-webgl-canvas');
-    const svg = section.querySelector('.scene-path') || section.querySelector('.atelier-reveal__path');
-    const path = section.querySelector('#scene-svg-path') || section.querySelector('#atelier-reveal-path') || section.querySelector('.scene-path-core');
-    const aura = section.querySelector('.scene-path-aura') || section.querySelector('.atelier-reveal__path-aura');
-    const crosshairs = section.querySelectorAll('.scene-crosshair');
+    const intro = document.getElementById('lusion-reel-intro');
+    const dockedUi = document.getElementById('lusion-reel-ui');
+    const playWordLeft = section.querySelector('.lusion-word-left');
+    const playWordRight = section.querySelector('.lusion-word-right');
+    const playPill = document.getElementById('lusion-play-pill');
+    const playTrigger = document.getElementById('lusion-play-trigger');
+    const plusMarks = section.querySelectorAll('.lusion-reg-plus');
 
-    // ── WEBGL LIQUID SHADER PIPELINE ──
-    let webglApi = null;
-    function initWebGLShader() {
-      if (!canvas || prefersReducedMotion) return null;
+    // Solid SVG Drawing Ribbon Path Elements
+    const drawPathCore = document.getElementById('lusion-draw-path-core');
+    const svgLineWrap = document.getElementById('lusion-reel-svg-container');
+
+    let pathLength = 3600;
+    if (drawPathCore) {
+      try {
+        pathLength = drawPathCore.getTotalLength() || 3600;
+      } catch (e) {
+        pathLength = 3600;
+      }
+    }
+
+    if (drawPathCore) {
+      gsap.set(drawPathCore, {
+        strokeDasharray: pathLength,
+        strokeDashoffset: pathLength,
+      });
+    }
+    if (svgLineWrap) {
+      gsap.set(svgLineWrap, { opacity: 1 });
+    }
+
+    // Showreel Modal Elements
+    const modal = document.getElementById('lusion-video-modal');
+    const modalClose = document.getElementById('lusion-modal-close');
+    const modalImg = document.getElementById('lusion-modal-img');
+    const modalTimer = document.getElementById('lusion-modal-timer');
+
+    // Hard-Cut Showreel Montage Frames
+    const montageImages = [
+      '/images/chapter_living_room.jpg',
+      '/images/story_clay_vessel.jpg',
+      '/images/atelier_materials.jpg',
+      '/images/chapter_bedroom.jpg'
+    ];
+    let montageIdx = 0;
+    let montageInterval = null;
+
+    // ── REEL MONTAGE TEXTURE GENERATOR ──
+    const offscreenCanvas = document.createElement('canvas');
+    offscreenCanvas.width = 1280;
+    offscreenCanvas.height = 720;
+    const offCtx = offscreenCanvas.getContext('2d');
+    const loadedMontageImgs = [];
+    let montageReady = false;
+
+    montageImages.forEach((src, idx) => {
+      const img = new Image();
+      img.crossOrigin = 'anonymous';
+      img.onload = () => {
+        loadedMontageImgs[idx] = img;
+        if (loadedMontageImgs.filter(Boolean).length === montageImages.length) {
+          montageReady = true;
+          drawCurrentMontageFrame();
+        }
+      };
+      img.src = src;
+    });
+
+    function drawCurrentMontageFrame() {
+      if (!montageReady || !offCtx) return;
+      const curImg = loadedMontageImgs[montageIdx];
+      if (curImg) {
+        offCtx.drawImage(curImg, 0, 0, offscreenCanvas.width, offscreenCanvas.height);
+      }
+    }
+
+    function startMontageCycling() {
+      if (montageInterval) clearInterval(montageInterval);
+      montageInterval = setInterval(() => {
+        montageIdx = (montageIdx + 1) % montageImages.length;
+        drawCurrentMontageFrame();
+        if (modal && modal.classList.contains('active') && modalImg) {
+          modalImg.src = montageImages[montageIdx];
+          if (modalTimer) {
+            modalTimer.textContent = '00:0' + (montageIdx + 1) + ' / 00:0' + montageImages.length;
+          }
+        }
+      }, 1300);
+    }
+    startMontageCycling();
+
+    // ── WEBGL LIQUID & 3D SPLINE SHADER PIPELINE ──
+    let targetProgress = 0;
+    let currentProgress = 0;
+    let lastProgress = 0;
+    let rawVelocity = 0;
+    let smoothedVelocity = 0;
+    let isSectionVisible = true;
+
+    function initWebGL() {
       let gl = null;
       try {
         gl = canvas.getContext('webgl', { alpha: true, antialias: true, premultipliedAlpha: false }) || canvas.getContext('experimental-webgl');
@@ -101,97 +200,114 @@
       if (!gl) return null;
 
       const vsSource = `
+        precision highp float;
         attribute vec2 aPosition;
         attribute vec2 aTexCoord;
+
+        uniform float uProgress;
+        uniform float uVelocity;
+        uniform vec2 uResolution;
+
         varying vec2 vUv;
+        varying vec2 vQuadPos;
+        varying vec2 vQuadSize;
+        varying float vDuotoneMix;
+
         void main() {
           vUv = aTexCoord;
-          gl_Position = vec4(aPosition, 0.0, 1.0);
+          float p = clamp(uProgress, 0.0, 1.0);
+          float aspect = uResolution.x / max(uResolution.y, 1.0);
+
+          // Starting card position: bottom-left aligned matching Lusion.co
+          vec2 startCenter = vec2(-0.50, -0.34);
+          vec2 startSize = vec2(0.44, 0.44 / aspect * 1.55);
+
+          // Docked card position: centered full viewport frame
+          vec2 endCenter = vec2(0.0, 0.0);
+          vec2 endSize = vec2(0.908, 0.75);
+
+          // Smooth cubic expansion
+          float expandEased = smoothstep(0.14, 0.78, p);
+          vec2 currentCenter = mix(startCenter, endCenter, expandEased);
+          vec2 currentSize = mix(startSize, endSize, expandEased);
+
+          vQuadPos = currentCenter;
+          vQuadSize = currentSize;
+          vDuotoneMix = 1.0 - smoothstep(0.22, 0.72, p);
+
+          vec2 localPos = aPosition;
+
+          // Subtle natural velocity inertia tilt during scroll
+          float velFactor = (1.0 - smoothstep(0.70, 0.95, p));
+          float skewX = localPos.y * uVelocity * 0.035 * velFactor;
+          float lagY = -abs(uVelocity) * 0.018 * velFactor * (1.0 - abs(localPos.x));
+
+          vec2 finalPos = currentCenter + (localPos * currentSize);
+          finalPos.x += skewX;
+          finalPos.y += lagY;
+
+          gl_Position = vec4(finalPos.x, finalPos.y, 0.0, 1.0);
         }
       `;
 
       const fsSource = `
-        precision mediump float;
+        precision highp float;
         varying vec2 vUv;
-        uniform sampler2D uTexture;
+        varying vec2 vQuadPos;
+        varying vec2 vQuadSize;
+        varying float vDuotoneMix;
+
+        uniform sampler2D uTexture0;
+        uniform sampler2D uTexture1;
+        uniform float uProgress;
         uniform float uTime;
         uniform float uVelocity;
-        uniform float uProgress;
         uniform vec2 uResolution;
-        uniform vec2 uTextureResolution;
+        uniform float uRadius;
 
-        // 2D Simplex Noise for Organic Fluidity
-        vec3 mod289(vec3 x) { return x - floor(x * (1.0 / 289.0)) * 289.0; }
-        vec2 mod289(vec2 x) { return x - floor(x * (1.0 / 289.0)) * 289.0; }
-        vec3 permute(vec3 x) { return mod289(((x*34.0)+1.0)*x); }
-
-        float snoise(vec2 v) {
-          const vec4 C = vec4(0.211324865405187, 0.366025403784439, -0.577350269189626, 0.024390243902439);
-          vec2 i  = floor(v + dot(v, C.yy) );
-          vec2 x0 = v -   i + dot(i, C.xx);
-          vec2 i1 = (x0.x > x0.y) ? vec2(1.0, 0.0) : vec2(0.0, 1.0);
-          vec4 x12 = x0.xyxy + C.xxzz;
-          x12.xy -= i1;
-          i = mod289(i);
-          vec3 p = permute( permute( i.y + vec3(0.0, i1.y, 1.0 )) + i.x + vec3(0.0, i1.x, 1.0 ));
-          vec3 m = max(0.5 - vec3(dot(x0,x0), dot(x12.xy,x12.xy), dot(x12.zw,x12.zw)), 0.0);
-          m = m*m;
-          m = m*m;
-          vec3 x = 2.0 * fract(p * C.www) - 1.0;
-          vec3 h = abs(x) - 0.5;
-          vec3 ox = floor(x + 0.5);
-          vec3 a0 = x - ox;
-          m *= 1.79284291400159 - 0.85373472095314 * ( a0*a0 + h*h );
-          vec3 g;
-          g.x  = a0.x  * x0.x  + h.x  * x0.y;
-          g.yz = a0.yz * x12.xz + h.yz * x12.yw;
-          return 130.0 * dot(m, g);
+        float roundedBoxSDF(vec2 p, vec2 b, float r) {
+          vec2 q = abs(p) - b + r;
+          return min(max(q.x, q.y), 0.0) + length(max(q, 0.0)) - r;
         }
 
         void main() {
-          vec2 s = uResolution;
-          vec2 i = uTextureResolution;
-          float rs = s.x / s.y;
-          float ri = i.x / i.y;
-          vec2 coverUv = vUv;
-          if (rs > ri) {
-            coverUv = vec2(vUv.x, (vUv.y - 0.5) * (ri / rs) + 0.5);
-          } else {
-            coverUv = vec2((vUv.x - 0.5) * (rs / ri) + 0.5, vUv.y);
-          }
+          float p = clamp(uProgress, 0.0, 1.0);
+          
+          vec2 uv = vUv;
+          vec4 col0 = texture2D(uTexture0, uv);
+          vec4 col1 = texture2D(uTexture1, uv);
 
-          float vel = clamp(abs(uVelocity), 0.0, 1.0);
-          float distFromCenter = length(vUv - vec2(0.5));
-          float edgeMask = smoothstep(0.02, 0.65, distFromCenter);
+          float crossfade = smoothstep(0.25, 0.65, p);
+          vec4 naturalCol = mix(col0, col1, crossfade);
 
-          // Liquid silk displacement field
-          float n1 = snoise(coverUv * 3.2 + vec2(0.0, uTime * 0.6));
-          float n2 = snoise(coverUv * 6.5 - vec2(uTime * 0.4, 0.0));
-          vec2 displacement = vec2(n1, n2) * (vel * 0.038 * edgeMask);
+          float luma = dot(naturalCol.rgb, vec3(0.299, 0.587, 0.114));
+          vec3 duotoneDark = vec3(0.16, 0.20, 0.96);
+          vec3 duotoneLight = vec3(0.88, 0.90, 1.00);
+          vec3 duotoneCol = mix(duotoneDark, duotoneLight, luma);
 
-          // Micro chromatic dispersion
-          vec2 rUv = clamp(coverUv + displacement * 1.05, 0.0, 1.0);
-          vec2 gUv = clamp(coverUv + displacement, 0.0, 1.0);
-          vec2 bUv = clamp(coverUv + displacement * 0.95, 0.0, 1.0);
+          vec3 finalRgb = mix(naturalCol.rgb, duotoneCol, vDuotoneMix * 0.94);
 
-          float r = texture2D(uTexture, rUv).r;
-          float g = texture2D(uTexture, gUv).g;
-          float b = texture2D(uTexture, bUv).b;
+          vec2 pixelCoord = (vUv - 0.5) * (vQuadSize * uResolution);
+          vec2 halfBox = (vQuadSize * uResolution) * 0.5;
+          float d = roundedBoxSDF(pixelCoord, halfBox, uRadius);
+          float alpha = 1.0 - smoothstep(0.0, 2.0, d);
 
-          gl_FragColor = vec4(r, g, b, 1.0);
+          if (alpha <= 0.001) discard;
+
+          gl_FragColor = vec4(finalRgb, alpha);
         }
       `;
 
       function createShader(type, src) {
-        const shader = gl.createShader(type);
-        gl.shaderSource(shader, src);
-        gl.compileShader(shader);
-        if (!gl.getShaderParameter(shader, gl.COMPILE_STATUS)) {
-          console.warn('[WebGL Section 2] Shader compile error:', gl.getShaderInfoLog(shader));
-          gl.deleteShader(shader);
+        const s = gl.createShader(type);
+        gl.shaderSource(s, src);
+        gl.compileShader(s);
+        if (!gl.getShaderParameter(s, gl.COMPILE_STATUS)) {
+          console.warn('[WebGL Lusion] Shader compile error:', gl.getShaderInfoLog(s));
+          gl.deleteShader(s);
           return null;
         }
-        return shader;
+        return s;
       }
 
       const vs = createShader(gl.VERTEX_SHADER, vsSource);
@@ -203,273 +319,203 @@
       gl.attachShader(program, fs);
       gl.linkProgram(program);
       if (!gl.getProgramParameter(program, gl.LINK_STATUS)) {
-        console.warn('[WebGL Section 2] Program link error:', gl.getProgramInfoLog(program));
+        console.warn('[WebGL Lusion] Program link error:', gl.getProgramInfoLog(program));
         return null;
       }
       gl.useProgram(program);
 
-      // Full Quad Geometry
-      const vertices = new Float32Array([
-        -1, -1,  0, 1,
-         1, -1,  1, 1,
-        -1,  1,  0, 0,
-        -1,  1,  0, 0,
-         1, -1,  1, 1,
-         1,  1,  1, 0,
-      ]);
+      const gridX = 24;
+      const gridY = 24;
+      const positions = [];
+      const uvs = [];
+      const indices = [];
 
-      const buffer = gl.createBuffer();
-      gl.bindBuffer(gl.ARRAY_BUFFER, buffer);
-      gl.bufferData(gl.ARRAY_BUFFER, vertices, gl.STATIC_DRAW);
+      for (let y = 0; y <= gridY; y++) {
+        const v = y / gridY;
+        const py = (v * 2.0 - 1.0);
+        for (let x = 0; x <= gridX; x++) {
+          const u = x / gridX;
+          const px = (u * 2.0 - 1.0);
+          positions.push(px, py);
+          uvs.push(u, 1.0 - v);
+        }
+      }
+
+      for (let y = 0; y < gridY; y++) {
+        for (let x = 0; x < gridX; x++) {
+          const row1 = y * (gridX + 1);
+          const row2 = (y + 1) * (gridX + 1);
+          indices.push(row1 + x, row2 + x, row1 + x + 1);
+          indices.push(row1 + x + 1, row2 + x, row2 + x + 1);
+        }
+      }
+
+      const posBuffer = gl.createBuffer();
+      gl.bindBuffer(gl.ARRAY_BUFFER, posBuffer);
+      gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(positions), gl.STATIC_DRAW);
 
       const aPosition = gl.getAttribLocation(program, 'aPosition');
-      const aTexCoord = gl.getAttribLocation(program, 'aTexCoord');
       gl.enableVertexAttribArray(aPosition);
-      gl.vertexAttribPointer(aPosition, 2, gl.FLOAT, false, 16, 0);
+      gl.vertexAttribPointer(aPosition, 2, gl.FLOAT, false, 0, 0);
+
+      const uvBuffer = gl.createBuffer();
+      gl.bindBuffer(gl.ARRAY_BUFFER, uvBuffer);
+      gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(uvs), gl.STATIC_DRAW);
+
+      const aTexCoord = gl.getAttribLocation(program, 'aTexCoord');
       gl.enableVertexAttribArray(aTexCoord);
-      gl.vertexAttribPointer(aTexCoord, 2, gl.FLOAT, false, 16, 8);
+      gl.vertexAttribPointer(aTexCoord, 2, gl.FLOAT, false, 0, 0);
 
-      // Uniform Locations
-      const uTextureLoc = gl.getUniformLocation(program, 'uTexture');
-      const uTimeLoc = gl.getUniformLocation(program, 'uTime');
-      const uVelocityLoc = gl.getUniformLocation(program, 'uVelocity');
+      const indexBuffer = gl.createBuffer();
+      gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, indexBuffer);
+      gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, new Uint16Array(indices), gl.STATIC_DRAW);
+
+      const uTexture0Loc = gl.getUniformLocation(program, 'uTexture0');
+      const uTexture1Loc = gl.getUniformLocation(program, 'uTexture1');
       const uProgressLoc = gl.getUniformLocation(program, 'uProgress');
+      const uVelocityLoc = gl.getUniformLocation(program, 'uVelocity');
+      const uTimeLoc = gl.getUniformLocation(program, 'uTime');
       const uResolutionLoc = gl.getUniformLocation(program, 'uResolution');
-      const uTexResLoc = gl.getUniformLocation(program, 'uTextureResolution');
+      const uRadiusLoc = gl.getUniformLocation(program, 'uRadius');
 
-      // Texture Setup
-      const texture = gl.createTexture();
-      gl.bindTexture(gl.TEXTURE_2D, texture);
+      const tex0 = gl.createTexture();
+      gl.activeTexture(gl.TEXTURE0);
+      gl.bindTexture(gl.TEXTURE_2D, tex0);
       gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
       gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
       gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
       gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
+      gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, 1, 1, 0, gl.RGBA, gl.UNSIGNED_BYTE, new Uint8Array([79, 67, 244, 255]));
 
-      // Placeholder 1x1 black pixel until image loads
-      gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, 1, 1, 0, gl.RGBA, gl.UNSIGNED_BYTE, new Uint8Array([12, 10, 9, 255]));
-
-      let texWidth = 1920;
-      let texHeight = 1080;
-      let isTextureReady = false;
-
-      const textureImage = new Image();
-      textureImage.crossOrigin = 'anonymous';
-      textureImage.onload = () => {
-        gl.bindTexture(gl.TEXTURE_2D, texture);
-        gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, textureImage);
-        texWidth = textureImage.naturalWidth || 1920;
-        texHeight = textureImage.naturalHeight || 1080;
-        isTextureReady = true;
-
-        canvas.classList.add('active');
-        if (img) img.classList.add('webgl-active');
+      const mainImg = new Image();
+      mainImg.crossOrigin = 'anonymous';
+      mainImg.onload = () => {
+        gl.activeTexture(gl.TEXTURE0);
+        gl.bindTexture(gl.TEXTURE_2D, tex0);
+        gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, mainImg);
       };
-      textureImage.src = canvas.getAttribute('data-src') || '/images/atelier-immersive.jpg';
+      mainImg.src = canvas.dataset.src || '/images/atelier-immersive.jpg';
+
+      const tex1 = gl.createTexture();
+      gl.activeTexture(gl.TEXTURE1);
+      gl.bindTexture(gl.TEXTURE_2D, tex1);
+      gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
+      gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
+      gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
+      gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
+      gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, 1, 1, 0, gl.RGBA, gl.UNSIGNED_BYTE, new Uint8Array([43, 47, 232, 255]));
 
       function resize() {
-        if (!canvas) return;
         const dpr = Math.min(window.devicePixelRatio || 1, 2);
-        const rect = canvas.getBoundingClientRect();
-        const displayWidth = Math.max(Math.round(rect.width * dpr), 2);
-        const displayHeight = Math.max(Math.round(rect.height * dpr), 2);
-
-        if (canvas.width !== displayWidth || canvas.height !== displayHeight) {
-          canvas.width = displayWidth;
-          canvas.height = displayHeight;
-          gl.viewport(0, 0, displayWidth, displayHeight);
-        }
+        const w = stage.clientWidth || window.innerWidth;
+        const h = stage.clientHeight || window.innerHeight;
+        canvas.width = Math.floor(w * dpr);
+        canvas.height = Math.floor(h * dpr);
+        gl.viewport(0, 0, canvas.width, canvas.height);
       }
+      resize();
 
-      function render(time, velocity, progress) {
-        if (!isTextureReady) return;
-        resize();
+      function render(time, vel, progress) {
+        if (!isSectionVisible) return;
 
         gl.useProgram(program);
-        gl.uniform1i(uTextureLoc, 0);
-        gl.uniform1f(uTimeLoc, time);
-        gl.uniform1f(uVelocityLoc, velocity);
-        gl.uniform1f(uProgressLoc, progress);
-        gl.uniform2f(uResolutionLoc, canvas.width, canvas.height);
-        gl.uniform2f(uTexResLoc, texWidth, texHeight);
+        gl.viewport(0, 0, canvas.width, canvas.height);
+        gl.clearColor(0, 0, 0, 0);
+        gl.clear(gl.COLOR_BUFFER_BIT);
 
-        gl.drawArrays(gl.TRIANGLES, 0, 6);
-      }
+        gl.enable(gl.BLEND);
+        gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
 
-      return {
-        render,
-        resize,
-      };
-    }
-
-    webglApi = initWebGLShader();
-
-    if (prefersReducedMotion) {
-      if (intro) gsap.set(intro, { opacity: 1, y: 0 });
-      if (wrapper) gsap.set(wrapper, { width: '86vw', height: '62vh', top: '18vh', left: '7vw', borderRadius: '12px' });
-      if (img) gsap.set(img, { scale: 1 });
-      if (path) gsap.set(path, { strokeDashoffset: 0, opacity: 0.85 });
-      if (aura) gsap.set(aura, { strokeDashoffset: 0, opacity: 0.5 });
-      if (pill) gsap.set(pill, { opacity: 1, top: '18vh', left: '65vw' });
-      if (playOverlay) gsap.set(playOverlay, { opacity: 1, scale: 1 });
-      return;
-    }
-
-    // Dynamic SVG Path Length Measurement & Initial State (Already ~28% visible at start)
-    let pathLen = 3200;
-    if (path) {
-      try {
-        pathLen = path.getTotalLength() || 3200;
-        path.style.strokeDasharray = `${pathLen}`;
-        path.style.strokeDashoffset = `${pathLen * 0.72}`; // ~28% drawn initially
-        if (aura) {
-          aura.style.strokeDasharray = `${pathLen}`;
-          aura.style.strokeDashoffset = `${pathLen * 0.72}`;
+        if (montageReady) {
+          gl.activeTexture(gl.TEXTURE1);
+          gl.bindTexture(gl.TEXTURE_2D, tex1);
+          gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, offscreenCanvas);
         }
-      } catch (e) {
-        pathLen = 3200;
+
+        gl.uniform1i(uTexture0Loc, 0);
+        gl.uniform1i(uTexture1Loc, 1);
+        gl.uniform1f(uProgressLoc, progress);
+        gl.uniform1f(uVelocityLoc, vel);
+        gl.uniform1f(uTimeLoc, time);
+        gl.uniform2f(uResolutionLoc, canvas.width, canvas.height);
+        gl.uniform1f(uRadiusLoc, 22.0 * Math.min(window.devicePixelRatio || 1, 2));
+
+        gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, indexBuffer);
+        gl.drawElements(gl.TRIANGLES, indices.length, gl.UNSIGNED_SHORT, 0);
       }
+
+      return { render, resize };
     }
 
-    // Velocity and Smoothed Scroll State
-    let targetProgress = 0;
-    let currentProgress = 0;
-    let rawVelocity = 0;
-    let smoothedVelocity = 0;
-    let lastProgress = 0;
+    const webglApi = initWebGL();
 
+    // ── MASTER GSAP SCROLLTRIGGER TIMELINE ──
     const mm = gsap.matchMedia();
 
-    // ── DESKTOP & LAPTOP (>= 1024px) ──
     mm.add('(min-width: 1024px)', () => {
-      // Initial State
       gsap.set(intro, { opacity: 1, y: 0 });
-      gsap.set(wrapper, {
-        top: '56vh',
-        left: '6vw',
-        width: '44vw',
-        height: '28vh',
-        borderRadius: '20px',
-      });
-      gsap.set(img, { scale: 1.20, objectPosition: '50% 50%' });
-      gsap.set(svg, { x: '0vw', y: '0vh', scale: 1.0, rotation: 0, opacity: 1, display: 'block' });
-      if (crosshairs) gsap.set(crosshairs, { opacity: 0.6 });
+      gsap.set(dockedUi, { opacity: 0 });
+      gsap.set(playWordLeft, { x: -60, opacity: 0 });
+      gsap.set(playWordRight, { x: 60, opacity: 0 });
+      gsap.set(playPill, { scale: 0.35, opacity: 0 });
+      gsap.set(plusMarks, { scale: 0, rotation: 0, opacity: 0 });
 
-      // Master ScrollTrigger Timeline: Silky, continuous 0.00 to 1.00 progression
-      const masterTl = gsap.timeline({ defaults: { ease: 'power1.inOut' } });
+      const masterTl = gsap.timeline({ defaults: { ease: 'none' } });
 
-      // ── PHASE 1 (0% → 30%): Instant Micro-Scroll Response ──
       masterTl.to(intro, {
+        y: -100,
         opacity: 0,
-        y: -90,
-        duration: 0.30,
-        ease: 'power2.out',
-      }, 0.0);
+        duration: 0.28,
+        ease: 'power2.inOut',
+      }, 0.00);
 
-      masterTl.to(wrapper, {
-        top: '36vh',
-        left: '6vw',
-        width: '58vw',
-        height: '40vh',
-        borderRadius: '16px',
-        duration: 0.30,
-        ease: 'power1.inOut',
-      }, 0.0);
-
-      masterTl.to(img, {
-        scale: 1.14,
-        duration: 0.30,
-        ease: 'power1.inOut',
-      }, 0.0);
-
-      if (path) {
-        masterTl.to([path, aura], {
-          strokeDashoffset: pathLen * 0.45,
-          duration: 0.30,
-          ease: 'power1.inOut',
-        }, 0.0);
-      }
-      masterTl.to(svg, {
-        x: '-3vw',
-        y: '1vh',
-        scale: 1.03,
-        rotation: -0.5,
-        duration: 0.30,
-        ease: 'power1.inOut',
-      }, 0.0);
-
-      // ── PHASE 2 (30% → 70%): Core Spatial Glide ──
-      masterTl.to(wrapper, {
-        top: '20vh',
-        left: '6.5vw',
-        width: '74vw',
-        height: '52vh',
-        borderRadius: '14px',
-        duration: 0.40,
-        ease: 'power1.inOut',
-      }, 0.30);
-
-      masterTl.to(img, {
-        scale: 1.06,
-        duration: 0.40,
-        ease: 'power1.inOut',
-      }, 0.30);
-
-      if (path) {
-        masterTl.to([path, aura], {
-          strokeDashoffset: pathLen * 0.15,
-          duration: 0.40,
-          ease: 'power1.inOut',
-        }, 0.30);
-      }
-      masterTl.to(svg, {
-        x: '-7vw',
-        y: '-2vh',
-        scale: 1.06,
-        rotation: 0.5,
-        duration: 0.40,
-        ease: 'power1.inOut',
-      }, 0.30);
-
-      // ── PHASE 3 (70% → 100%): Final Centered Majestic Sanctuary Frame ──
-      masterTl.to(wrapper, {
-        top: '16vh',
-        left: '7vw',
-        width: '86vw',
-        height: '66vh',
-        borderRadius: '10px',
-        duration: 0.30,
-        ease: 'power2.out',
-      }, 0.70);
-
-      masterTl.to(img, {
-        scale: 1.0,
-        objectPosition: '50% 50%',
-        duration: 0.30,
-        ease: 'power2.out',
-      }, 0.70);
-
-      if (path) {
-        masterTl.to([path, aura], {
+      if (drawPathCore) {
+        masterTl.to(drawPathCore, {
           strokeDashoffset: 0,
-          duration: 0.30,
-          ease: 'power2.out',
-        }, 0.70);
+          duration: 0.72,
+          ease: 'none',
+        }, 0.00);
+
+        if (svgLineWrap) {
+          masterTl.to(svgLineWrap, {
+            opacity: 0,
+            duration: 0.12,
+            ease: 'power2.out',
+          }, 0.58);
+        }
       }
-      masterTl.to(svg, {
-        x: '-10vw',
-        y: '-4vh',
-        scale: 1.08,
-        rotation: 0,
-        opacity: 0.9,
-        duration: 0.30,
-        ease: 'power2.out',
+
+      masterTl.to(dockedUi, { opacity: 1, pointerEvents: 'auto', duration: 0.12,
+        ease: 'power1.out',
       }, 0.70);
 
-      // Master ScrollTrigger calibrated with Lenis smooth scrolling (scrub: 0.5 for instant responsiveness)
+      masterTl.to([playWordLeft, playWordRight], {
+        x: 0,
+        opacity: 1,
+        duration: 0.16,
+        ease: 'power2.out',
+      }, 0.72);
+
+      masterTl.to(playPill, {
+        scale: 1.0,
+        opacity: 1,
+        duration: 0.18,
+        ease: 'back.out(1.6)',
+      }, 0.74);
+
+      masterTl.to(plusMarks, {
+        scale: 1.0,
+        rotation: 90,
+        opacity: 0.65,
+        stagger: 0.02,
+        duration: 0.18,
+        ease: 'power2.out',
+      }, 0.73);
+
       const st = ScrollTrigger.create({
         trigger: section,
         start: 'top top',
-        end: '+=220%',
+        end: '+=2400',
         pin: stage,
         scrub: 0.5,
         anticipatePin: 1,
@@ -479,6 +525,9 @@
         onUpdate: (self) => {
           targetProgress = self.progress;
         },
+        onToggle: (self) => {
+          isSectionVisible = self.isActive;
+        },
       });
 
       return () => {
@@ -486,57 +535,31 @@
       };
     });
 
-    // ── TABLET & MOBILE (< 1024px) ──
     mm.add('(max-width: 1023px)', () => {
       gsap.set(intro, { opacity: 1, y: 0 });
-      gsap.set(wrapper, {
-        top: '56vh',
-        left: '6vw',
-        width: '88vw',
-        height: '28vh',
-        borderRadius: '14px',
-      });
-      gsap.set(img, { scale: 1.15 });
-      gsap.set(svg, { opacity: 0.85, display: 'block', x: 0, y: 0, scale: 1.0 });
+      gsap.set(dockedUi, { opacity: 1 });
+      gsap.set([playWordLeft, playWordRight, playPill, plusMarks], { opacity: 1, x: 0, scale: 1 });
 
-      const mobileTl = gsap.timeline({ defaults: { ease: 'none' } });
-
-      mobileTl.to(intro, { opacity: 0, y: -60, duration: 0.30, ease: 'power2.inOut' }, 0.0);
-
-      mobileTl.to(wrapper, {
-        top: '18vh',
-        left: '5vw',
-        width: '90vw',
-        height: '62vh',
-        borderRadius: '10px',
-        duration: 1.0,
-        ease: 'power2.inOut',
-      }, 0.0);
-
-      mobileTl.to(img, { scale: 1.0, duration: 1.0, ease: 'power2.inOut' }, 0.0);
-
-      if (path) {
-        mobileTl.to([path, aura], { strokeDashoffset: 0, duration: 1.0, ease: 'power1.inOut' }, 0.0);
+      if (drawPathCore) {
+        gsap.to(drawPathCore, {
+          strokeDashoffset: 0,
+          ease: 'none',
+          scrollTrigger: {
+            trigger: section,
+            start: 'top top',
+            end: '+=1600',
+            scrub: 0.4,
+          }
+        });
       }
-
-      mobileTl.to(svg, {
-        x: '-8vw',
-        y: '-4vh',
-        scale: 1.12,
-        opacity: 0.8,
-        duration: 1.0,
-        ease: 'power2.inOut',
-      }, 0.0);
 
       const mobileSt = ScrollTrigger.create({
         trigger: section,
         start: 'top top',
-        end: '+=180%',
+        end: '+=1600',
         pin: stage,
         scrub: 0.4,
         anticipatePin: 1,
-        invalidateOnRefresh: true,
-        animation: mobileTl,
         onUpdate: (self) => {
           targetProgress = self.progress;
         },
@@ -547,23 +570,36 @@
       };
     });
 
-    // ── CONTINUOUS GSAP TICKER RENDER LOOP ──
     let startTime = performance.now();
     const tickerCallback = () => {
-      if (!webglApi) return;
+      if (!isSectionVisible) return;
       const now = performance.now();
-      const elapsedSeconds = (now - startTime) * 0.001;
+      const elapsed = (now - startTime) * 0.001;
 
-      // Frame-rate independent velocity smoothing
-      currentProgress += (targetProgress - currentProgress) * 0.20;
+      currentProgress += (targetProgress - currentProgress) * 0.18;
       rawVelocity = (currentProgress - lastProgress) * 60.0;
-      smoothedVelocity += (rawVelocity - smoothedVelocity) * 0.18;
+      smoothedVelocity += (rawVelocity - smoothedVelocity) * 0.20;
       lastProgress = currentProgress;
 
-      // Scale velocity to delicate silk distortion threshold (0.00 to 0.045)
-      const velocityScalar = Math.min(Math.abs(smoothedVelocity) * 0.042, 0.06);
+      if (webglApi) {
+        const vClamped = Math.max(-1.0, Math.min(1.0, smoothedVelocity * 0.4));
+        webglApi.render(elapsed, vClamped, currentProgress);
+      }
 
-      webglApi.render(elapsedSeconds, velocityScalar, currentProgress);
+      // Track particle head along SVG path
+      if (drawPathCore && pathHead) {
+        const ribbonProgress = Math.max(0, Math.min(1, currentProgress / 0.72));
+        const dist = ribbonProgress * pathLength;
+        if (dist > 5 && currentProgress < 0.88) {
+          try {
+            const pt = drawPathCore.getPointAtLength(dist);
+            pathHead.setAttribute('transform', 'translate(' + pt.x + ',' + pt.y + ')');
+            gsap.set(pathHead, { opacity: currentProgress > 0.01 ? 1 : 0 });
+          } catch (e) {}
+        } else {
+          gsap.set(pathHead, { opacity: 0 });
+        }
+      }
     };
 
     gsap.ticker.add(tickerCallback);
@@ -572,146 +608,38 @@
       if (webglApi) webglApi.resize();
     });
 
-    console.log('[Elysium Motion] Section 2 initialized with Lusion WebGL Scroll-Sync architecture.');
-  }
+    function openModal() {
+      if (!modal) return;
+      modal.classList.add('active');
+      gsap.to(modal, { opacity: 1, pointerEvents: 'auto', duration: 0.35, ease: 'power2.out' });
+      if (modalImg) modalImg.src = montageImages[montageIdx];
+    }
 
-  /**
-   * 2. SECTION 2 — THE PINNED HORIZONTAL ATELIER EXPEDITION (HORIZONTAL SCROLL-SCRUBBED DRAWING)
-   * Locks in at top of viewport, scrubs through all 4 chapters while the ribbon glides horizontally in lockstep.
-   */
-  function initHorizontalGallerySection() {
-    const section = document.getElementById('horizontal-suite-container');
-    if (!section || typeof gsap === 'undefined' || typeof ScrollTrigger === 'undefined') return;
+    function closeModal() {
+      if (!modal) return;
+      modal.classList.remove('active');
+      gsap.to(modal, { opacity: 0, pointerEvents: 'none', duration: 0.25, ease: 'power2.in' });
+    }
 
-    const track = document.getElementById('horizontal-track');
-    const panels = section.querySelectorAll('.horizontal-slide-panel');
-    const progressFill = document.getElementById('horizontal-progress-fill');
-    const chapterIndicator = document.getElementById('horizontal-active-indicator');
-    
-    const drawPath = section.querySelector('.horizontal-draw-path');
-    const auraPath = section.querySelector('.horizontal-draw-path-aura');
-    const pathHead = section.querySelector('.horizontal-path-head');
+    if (playTrigger) playTrigger.addEventListener('click', openModal);
+    if (playPill) playPill.addEventListener('click', (e) => { e.stopPropagation(); openModal(); });
+    if (modalClose) modalClose.addEventListener('click', closeModal);
+    if (modal) {
+      modal.addEventListener('click', (e) => {
+        if (e.target === modal) closeModal();
+      });
+    }
 
-    if (!track || panels.length === 0) return;
-
-    let s2PathLen = 0;
-    function measureS2Path() {
-      if (!drawPath) return;
-      try {
-        s2PathLen = drawPath.getTotalLength() || 8000;
-        if (s2PathLen > 0) {
-          drawPath.style.strokeDasharray = `${s2PathLen}`;
-          if (auraPath) auraPath.style.strokeDasharray = `${s2PathLen}`;
-        }
-      } catch (err) {
-        s2PathLen = 8000;
+    window.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && modal && modal.classList.contains('active')) {
+        closeModal();
       }
-    }
-
-    measureS2Path();
-
-    // Handle Reduced Motion
-    if (prefersReducedMotion) {
-      track.style.transform = 'none';
-      if (progressFill) progressFill.style.width = '100%';
-      if (drawPath) drawPath.style.strokeDashoffset = '0';
-      if (auraPath) auraPath.style.strokeDashoffset = '0';
-      return;
-    }
-
-    const totalPanels = panels.length;
-
-    if (drawPath && s2PathLen > 0) {
-      drawPath.style.strokeDashoffset = `${s2PathLen}`;
-      if (auraPath) auraPath.style.strokeDashoffset = `${s2PathLen}`;
-    }
-
-    if (isCompactScreen()) {
-      track.style.transform = 'none';
-      if (progressFill) progressFill.style.width = '100%';
-
-      if (drawPath && s2PathLen > 0) {
-        ScrollTrigger.create({
-          trigger: section,
-          start: 'top 90%',
-          end: 'bottom 20%',
-          scrub: 1.2,
-          onUpdate: (self) => {
-            const p = self.progress;
-            const currentOffset = s2PathLen * (1 - p);
-            drawPath.style.strokeDashoffset = `${currentOffset}`;
-            if (auraPath) auraPath.style.strokeDashoffset = `${currentOffset}`;
-          },
-        });
-      }
-      return;
-    }
-
-    // Desktop Horizontal Scrub Master ScrollTrigger: Slides chapters & scrubs ribbon drawing across all 4 chapters
-    gsap.to(track, {
-      x: () => -(track.scrollWidth - window.innerWidth),
-      ease: 'none',
-      scrollTrigger: {
-        trigger: section,
-        start: 'top top',
-        end: () => `+=${(totalPanels - 1) * window.innerWidth * 1.1}`,
-        pin: true,
-        scrub: 1.4,
-        anticipatePin: 1,
-        invalidateOnRefresh: true,
-        onUpdate: (self) => {
-          const p = self.progress;
-
-          // Update chapter indicator
-          if (progressFill) {
-            const pct = Math.max(25, p * 100);
-            progressFill.style.width = `${pct}%`;
-          }
-          if (chapterIndicator) {
-            const currentIdx = Math.min(
-              Math.floor(p * totalPanels) + 1,
-              totalPanels
-            );
-            chapterIndicator.innerText = `CHAPTER 0${currentIdx} OF 0${totalPanels}`;
-          }
-
-          // Real-time horizontal ribbon drawing synchronized with panel scrub
-          if (drawPath && s2PathLen > 0) {
-            const currentOffset = s2PathLen * (1 - p);
-            drawPath.style.strokeDashoffset = `${currentOffset}`;
-            if (auraPath) auraPath.style.strokeDashoffset = `${currentOffset}`;
-
-            if (pathHead && s2PathLen > 0) {
-              try {
-                const pt = drawPath.getPointAtLength(p * s2PathLen);
-                gsap.set(pathHead, {
-                  x: pt.x,
-                  y: pt.y,
-                  opacity: p > 0.01 && p < 0.99 ? 1 : 0,
-                });
-              } catch (e) {}
-            }
-          }
-        },
-      },
     });
 
-    window.addEventListener(
-      'resize',
-      () => {
-        measureS2Path();
-      },
-      { passive: true }
-    );
-
-    console.log(`[Elysium Motion] Section 2 (Horizontal Expedition) initialized with ${totalPanels} panels & synced real-time ribbon scrub.`);
+    console.log('[Elysium Motion] Section 2: 1:1 Lusion Recreation Engine initialized.');
   }
 
-  /**
-   * 3. SECTION 3 — THE TACTILE MATERIALITY LAB (PINNED SCRUB LOCK-IN)
-   * Locks in at top of viewport, scrubs through 4 raw earth mediums, then smoothly hands over to Section 4.
-   */
-  function initMaterialityInterludeSection() {
+function initMaterialityInterludeSection() {
     const section = document.getElementById('materiality-suite-container') || document.querySelector('.section-materiality-interlude');
     if (!section || typeof gsap === 'undefined' || typeof ScrollTrigger === 'undefined') return;
 
@@ -2047,8 +1975,8 @@
     initLenisSmoothScroll();
 
     // 1. Homepage Body Sections (Atelier Reveal, Horizontal Suite, Materiality, Process Trace, Featured, Trust)
-    initAtelierRevealSection();
-    initHorizontalGallerySection();
+    initLusionSection2();
+    // initHorizontalGallerySection (Replaced by Section 2 Lusion showreel)
     initMaterialityInterludeSection();
     initLivingSanctuarySection();
     initCraftJourneySection();

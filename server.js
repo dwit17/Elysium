@@ -355,13 +355,13 @@ function renderPage({ title, description, path, content, isHeroPage = false }) {
   </svg>
 
   <!-- Sticky Header -->
-  <header class="fixed top-0 left-0 right-0 z-50 transition-all duration-500 font-sans header-blur py-4">
-    <div class="max-w-7xl mx-auto px-6 md:px-12 flex justify-between items-center">
-      <a href="/" class="flex items-center gap-4 cursor-pointer">
+  <header class="site-header fixed top-0 left-0 right-0 z-40 transition-all duration-500 font-sans py-4 pointer-events-none">
+    <div class="max-w-7xl mx-auto px-6 md:px-12 flex justify-between items-center w-full">
+      <a href="/" class="header-logo-wrap flex items-center gap-4 cursor-pointer pointer-events-auto z-10">
         <img src="/images/logo.png" alt="ELYSIUM" class="h-10 md:h-12 w-auto filter invert opacity-90">
       </a>
 
-      <nav class="hidden lg:flex items-center space-x-8 text-xs font-medium tracking-[0.2em] uppercase text-stone-400">
+      <nav class="header-nav-wrap hidden lg:flex items-center space-x-8 text-xs font-medium tracking-[0.2em] uppercase text-stone-400 pointer-events-auto z-30">
         <a href="/philosophy" class="hover:text-white transition-colors ${path === '/philosophy' ? 'text-white border-b-2 border-white pb-1' : ''}">Philosophy</a>
         <a href="/artisan-pieces" class="hover:text-white transition-colors ${path === '/artisan-pieces' ? 'text-white border-b-2 border-white pb-1' : ''}">Artisan Pieces</a>
         <a href="/materiality" class="hover:text-white transition-colors ${path === '/materiality' ? 'text-white border-b-2 border-white pb-1' : ''}">Materiality</a>
@@ -370,7 +370,7 @@ function renderPage({ title, description, path, content, isHeroPage = false }) {
         <a href="${whatsappUrl}" target="_blank" rel="noopener noreferrer" class="btn-slide-white px-5 py-2 text-[11px] font-semibold tracking-[0.2em] uppercase"><span>Enquire</span></a>
       </nav>
 
-      <div class="flex lg:hidden items-center space-x-3">
+      <div class="flex lg:hidden items-center space-x-3 pointer-events-auto">
         <button id="mobile-menu-btn" class="lg:hidden text-white p-2" aria-label="Toggle Menu" aria-expanded="false" aria-controls="mobile-menu-drawer">
           <svg width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M4 6h16M4 12h16M4 18h16"></path></svg>
         </button>
@@ -724,288 +724,140 @@ app.get('/', (req, res) => {
     </div>
   </div>`;
 
-  // SECTION 1 & 2: COMBINED ATELIER MANIFESTO & HORIZONTAL EXPEDITION (SINGLE CONTINUOUS SVG PATH)
-  const manifestoHeadingWords = "Every Piece Begins With a Name.".split(" ");
-  const horizontalChapters = [
-    {
-      index: '01',
-      tag: 'ORIGIN & TERRAIN',
-      title: 'Vavdi Atelier, Rajkot',
-      subtitle: '4,500 Sq. Ft. Dedicated Sanctuary',
-      description: 'Where generational stone sculptors work directly with volcanic silicate ash, unsealed Italian travertine slabs, and aged white timber beams without synthetic binders.',
-      image: '/images/chapter_living_room.jpg',
-      specs: ['Coordinates: 22.2587° N, 70.8022° E', 'Hand-split limestone strata', 'Zero synthetic resins'],
-      ctaText: 'Explore Atelier Provenance',
-      ctaHref: '/our-story'
-    },
-    {
-      index: '02',
-      tag: 'MEDIUM & FORM',
-      title: 'Solis Travertine Console',
-      subtitle: 'Super Fine Italian Limestone',
-      description: 'Extracted with diamond wire saws and carved over 40 hours of patient hand chiseling to create monolithic structural joins that absorb ambient room lighting.',
-      image: '/images/atelier_materials.jpg',
-      specs: ['Dimensions: 85cm x 160cm x 42cm', 'Approx. Weight: 68 kg', 'Price: ₹64,000'],
-      ctaText: 'Enquire on WhatsApp',
-      ctaHref: createWhatsAppLink('Solis Travertine Console')
-    },
-    {
-      index: '03',
-      tag: 'EARTH & FIRE',
-      title: 'Caelum Stoneware Vessel',
-      subtitle: 'Pit-Fired Silicate Clay',
-      description: 'Thrown on traditional kickwheels and pit-fired at low temperatures with natural wood smoke to cultivate unique organic marbling across unglazed porous clay.',
-      image: '/images/story_clay_vessel.jpg',
-      specs: ['Material: Raw Iron-Dense Clay', 'Manual Kickwheel Turned', 'Price: ₹18,500'],
-      ctaText: 'View Vessel Details',
-      ctaHref: '/artisan-pieces/caelum-vessel'
-    },
-    {
-      index: '04',
-      tag: 'TIMBER & TIME',
-      title: 'Monolith White Oak Chair',
-      subtitle: 'Shou Sugi Ban & Beeswax',
-      description: 'Slow-grown northern white oak celebrating fibrous satin grain patterns, buffed by hand with organic mountain beeswax and cold-pressed linseed oil.',
-      image: '/images/chapter_bedroom.jpg',
-      specs: ['Origin: Rajkot Atelier', 'Zero Chemical Lacquers', 'Price: ₹48,000'],
-      ctaText: 'Discover Furniture Series',
-      ctaHref: '/artisan-pieces'
-    }
-  ];
-
+  // SECTION 2: 1:1 LUSION RECREATION (NARRATIVE TYPOGRAPHY -> WARPING 3D RIBBON & QUAD -> DOCKED ATELIER REEL)
   const sectionManifestoAndExpedition = `
-  <div id="manifesto-expedition-super-wrapper" class="relative bg-black overflow-visible">
-
-    <!-- SECTION 1 / 2: THE IMMERSIVE SCENE (LUSION-INSPIRED SCROLL-DRIVEN VISUAL STAGE) -->
-    <section class="section-immersive-scene relative bg-black text-white z-20 overflow-visible" id="immersive-scene-section">
+  <section id="section-lusion-reel" class="section-lusion-reel relative w-full overflow-visible select-none z-20" aria-label="Elysium Atelier Philosophy and Showreel">
+    
+    <!-- Pinned Viewport Container (Locks in for the entire scroll sequence) -->
+    <div id="lusion-reel-stage" class="lusion-reel-stage relative w-full h-screen overflow-hidden flex flex-col justify-between">
       
-      <!-- Pinned Viewport Camera Stage (100vw x 100vh) -->
-      <div class="scene-stage relative w-full h-screen overflow-hidden flex items-center justify-center" id="scene-stage">
+      <!-- 1. Dominant Typography & Intro Narrative (Headline, Paragraph, Pill CTA) -->
+      <div id="lusion-reel-intro" class="lusion-reel-intro absolute inset-0 w-full h-full pointer-events-none z-20 flex flex-col justify-between">
         
-        <!-- Spatial World Canvas (Translates & scales in 2D space) -->
-        <div class="scene-world absolute inset-0 w-full h-full pointer-events-none" id="scene-world">
-          
-          <!-- Expansive Spatial Decorative SVG Trajectory Layer -->
-          <svg class="scene-path absolute pointer-events-none overflow-visible z-0" id="scene-svg" viewBox="0 0 2400 1350" fill="none" xmlns="http://www.w3.org/2000/svg" style="shape-rendering:geometricPrecision;">
-            <defs>
-              <linearGradient id="sceneStrokeGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-                <stop offset="0%" stop-color="#09090b" stop-opacity="0.95" />
-                <stop offset="18%" stop-color="#27272a" stop-opacity="1" />
-                <stop offset="40%" stop-color="#71717a" stop-opacity="1" />
-                <stop offset="55%" stop-color="#f4f4f5" stop-opacity="1" />
-                <stop offset="70%" stop-color="#a1a1aa" stop-opacity="1" />
-                <stop offset="88%" stop-color="#3f3f46" stop-opacity="1" />
-                <stop offset="100%" stop-color="#09090b" stop-opacity="0.95" />
-              </linearGradient>
-              <filter id="sceneGlow" x="-20%" y="-20%" width="140%" height="140%">
-                <feGaussianBlur in="SourceGraphic" stdDeviation="12" result="blur1" />
-                <feGaussianBlur in="SourceGraphic" stdDeviation="28" result="blur2" />
-                <feMerge>
-                  <feMergeNode in="blur2" />
-                  <feMergeNode in="blur1" />
-                  <feMergeNode in="SourceGraphic" />
-                </feMerge>
-              </filter>
-            </defs>
-
-            <!-- Glowing Aura Path -->
-            <path
-              class="scene-path-aura"
-              d="M -60 140 C 460 120, 940 380, 1280 660 C 1620 940, 1980 1180, 2320 1040 C 2520 960, 2540 520, 2260 320 C 1980 120, 1420 180, 920 460 C 420 740, 160 1120, 560 1260 C 960 1400, 1740 1280, 2460 1180"
-              stroke="url(#sceneStrokeGrad)"
-              stroke-width="60"
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              filter="url(#sceneGlow)"
-              opacity="0.38"
-            />
-
-            <!-- Core SVG Path Geometry -->
-            <path
-              id="scene-svg-path"
-              class="scene-path-core"
-              d="M -60 140 C 460 120, 940 380, 1280 660 C 1620 940, 1980 1180, 2320 1040 C 2520 960, 2540 520, 2260 320 C 1980 120, 1420 180, 920 460 C 420 740, 160 1120, 560 1260 C 960 1400, 1740 1280, 2460 1180"
-              stroke="url(#sceneStrokeGrad)"
-              stroke-width="42"
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              fill="none"
-            />
-          </svg>
-
-          <!-- Spatial Image Frame Wrapper (Lusion-style Showreel Container with WebGL Canvas) -->
-          <div class="scene-image-wrapper absolute overflow-hidden shadow-2xl z-10 cursor-pointer" id="scene-image-wrapper">
-            <!-- Hardware-Accelerated WebGL Liquid Canvas Layer -->
-            <canvas id="scene-webgl-canvas" class="scene-webgl-canvas absolute inset-0 w-full h-full block z-0" data-src="/images/atelier-immersive.jpg"></canvas>
-
-            <!-- Fallback DOM Image (for no-WebGL environments) -->
-            <img
-              src="/images/atelier-immersive.jpg"
-              alt="Elysium Artisan Interior Sanctuary"
-              class="scene-image w-full h-full object-cover z-0"
-              id="scene-image"
-              loading="eager"
-            />
-            <div class="scene-image-vignette absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-black/20 pointer-events-none z-10"></div>
+        <!-- Top Section: Eyebrow + Huge 2-Line Headline -->
+        <div class="lusion-reel-top-block w-full">
+          <span class="lusion-reel-eyebrow font-mono uppercase tracking-[0.45em] text-stone-600 block mb-2 sm:mb-3">
+            THE ATELIER PHILOSOPHY &bull; RAJKOT
+          </span>
+          <div class="lusion-reel-title-block">
+            <div class="lusion-reel-title-line line-1">
+              <span class="lusion-title-text">Every Piece</span>
+            </div>
+            <div class="lusion-reel-title-line line-2">
+              <span class="lusion-title-text">Begins with a Name.</span>
+            </div>
           </div>
-
         </div>
 
-        <!-- Initial Dominant Typography (Left Title + Right Editorial Paragraph) -->
-        <div class="scene-intro absolute inset-0 z-20 pointer-events-none px-6 sm:px-12 pt-20 sm:pt-24 flex flex-col justify-between" id="scene-intro">
-          <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start w-full">
-            <!-- Left Big Heading (Matches Lusion "Bold Ideas, Brought to Life") -->
-            <div class="lg:col-span-7 space-y-2">
-              <span class="text-[10px] font-mono tracking-[0.45em] uppercase text-amber-500 block">
-                THE ATELIER PHILOSOPHY • RAJKOT
-              </span>
-              <h2 class="text-3xl sm:text-5xl lg:text-6xl font-light tracking-tight text-white uppercase font-sans leading-[1.05]">
-                Every Piece<br>Begins with a Name.
-              </h2>
-            </div>
-
-            <!-- Right Paragraph (Matches Lusion Right-Side Explainer) -->
-            <div class="lg:col-span-5 lg:pt-8">
-              <p class="text-xs sm:text-sm text-stone-300 font-light leading-relaxed max-w-md">
-                We combine volcanic silicate ash, unsealed Italian travertine, and aged timber of absolute purity. From architectural stone monoliths to tactile vessels, every creation is hand-sculpted for eternity.
-              </p>
-            </div>
+        <!-- Right-Anchored Paragraph and Pill Button -->
+        <div class="lusion-reel-content-block">
+          <p class="lusion-reel-desc font-light">
+            We combine volcanic silicate ash, unsealed Italian travertine, and aged timber of absolute purity. From architectural stone monoliths to tactile vessels, every creation is hand-sculpted for eternity.
+          </p>
+          <div class="pt-5 sm:pt-6 pointer-events-auto">
+            <a href="/our-story" id="lusion-reel-approach-btn" class="lusion-pill-btn inline-flex items-center group" data-magnetic="true">
+              <span class="lusion-pill-dot"></span>
+              <span class="lusion-pill-text">EXPLORE ATELIER PROVENANCE</span>
+            </a>
           </div>
         </div>
 
       </div>
-    </section>
 
-    <!-- SECTION 2: THE PINNED HORIZONTAL ATELIER EXPEDITION (Vavdi Atelier, Rajkot) -->
-    <section class="section-horizontal-gallery relative bg-transparent z-10 overflow-visible" id="horizontal-suite-container">
-      
-      <!-- Pinned Viewport Container (100dvh on desktop, natural stack on compact) -->
-      <div class="horizontal-pinned-track w-full min-h-screen lg:h-screen flex flex-col justify-center overflow-visible relative z-10">
+      <!-- 2. Hardware-Accelerated WebGL Liquid Canvas Layer -->
+      <canvas id="lusion-webgl-canvas" class="lusion-webgl-canvas absolute inset-0 w-full h-full block z-10 pointer-events-none" data-src="/images/atelier-immersive.jpg"></canvas>
 
-        <!-- Horizontal Slides Track (GSAP translates x smoothly on desktop, carrying the SVG line along with it) -->
-        <div class="horizontal-slides-wrapper flex h-full flex-nowrap will-change-transform relative overflow-visible" id="horizontal-track">
+      <!-- 2.5. Interactive Scroll-Triggered SVG Drawing Path Layer (Lusion Ribbon Path) -->
+      <div id="lusion-reel-svg-container" class="lusion-line-container absolute inset-0 w-full h-full pointer-events-none z-15 overflow-visible" aria-hidden="true">
+        <svg
+          id="lusion-reel-svg"
+          class="lusion-svg-line w-full h-full"
+          viewBox="0 0 1920 1080"
+          fill="none"
+          preserveAspectRatio="xMidYMid meet"
+          xmlns="http://www.w3.org/2000/svg"
+        >
+          <defs>
+            <!-- Lusion Solid Electric Royal Blue Gradient -->
+            <linearGradient id="lusionRibbonGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+              <stop offset="0%" stop-color="#2432EE" />
+              <stop offset="40%" stop-color="#3444FF" />
+              <stop offset="70%" stop-color="#4F43F4" />
+              <stop offset="100%" stop-color="#3B82F6" />
+            </linearGradient>
+          </defs>
+
+          <!-- Solid Crisp Lusion 3D Ribbon Tube (34px Bold Stroke, Zero Glow Blur) -->
+          <path
+            id="lusion-draw-path-core"
+            class="lusion-draw-path-core"
+            d="M -50,140 C 260,150 490,260 550,500 C 600,740 520,930 360,940 C 200,950 110,840 140,710 C 190,560 480,480 820,540 C 1220,610 1620,740 1980,560"
+            stroke="url(#lusionRibbonGrad)"
+            stroke-width="34"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          />
+        </svg>
+      </div>
+
+      <!-- 3. Docked Reel Overlay UI ("PLAY ▶ ATELIER" & 5-Column Registration Marks) -->
+      <div id="lusion-reel-ui" class="lusion-reel-ui absolute inset-0 w-full h-full pointer-events-none z-30 flex flex-col justify-center items-center opacity-0">
+        
+        <!-- Registration '+' Marks Top Row (5 columns evenly spaced across frame width) -->
+        <div class="lusion-reg-row lusion-reg-top absolute flex justify-between pointer-events-none">
+          <span class="lusion-reg-plus">+</span>
+          <span class="lusion-reg-plus">+</span>
+          <span class="lusion-reg-plus">+</span>
+          <span class="lusion-reg-plus">+</span>
+          <span class="lusion-reg-plus">+</span>
+        </div>
+
+        <!-- Central "PLAY ▶ ATELIER" Text Reveal and Play Pill -->
+        <div id="lusion-play-trigger" class="lusion-play-cta-wrap flex items-center justify-center pointer-events-auto cursor-pointer">
+          <span class="lusion-play-word lusion-word-left">PLAY</span>
           
-          <!-- Interactive Scroll-Triggered Horizontal SVG Drawing Line Layer (Horizontal Atelier Expedition) -->
-          <div class="horizontal-line-container absolute inset-0 w-full h-full pointer-events-none z-0 overflow-visible" aria-hidden="true">
-            <svg
-              class="horizontal-svg-line w-full h-full overflow-visible"
-              viewBox="0 0 7680 1080"
-              fill="none"
-              preserveAspectRatio="none"
-              xmlns="http://www.w3.org/2000/svg"
-              style="shape-rendering:geometricPrecision;"
-            >
-              <defs>
-                <linearGradient id="horizontalStrokeGrad" x1="0%" y1="0%" x2="100%" y2="50%">
-                  <stop offset="0%" stop-color="#09090b" stop-opacity="0.95" />
-                  <stop offset="15%" stop-color="#27272a" stop-opacity="1" />
-                  <stop offset="35%" stop-color="#71717a" stop-opacity="1" />
-                  <stop offset="50%" stop-color="#f4f4f5" stop-opacity="1" />
-                  <stop offset="65%" stop-color="#a1a1aa" stop-opacity="1" />
-                  <stop offset="85%" stop-color="#3f3f46" stop-opacity="1" />
-                  <stop offset="100%" stop-color="#09090b" stop-opacity="0.95" />
-                </linearGradient>
-                <filter id="horizontalGlow" x="-20%" y="-20%" width="140%" height="140%">
-                  <feGaussianBlur in="SourceGraphic" stdDeviation="10" result="blur1" />
-                  <feGaussianBlur in="SourceGraphic" stdDeviation="22" result="blur2" />
-                  <feMerge>
-                    <feMergeNode in="blur2" />
-                    <feMergeNode in="blur1" />
-                    <feMergeNode in="SourceGraphic" />
-                  </feMerge>
-                </filter>
-              </defs>
-
-              <!-- Diffuse Glowing Aura Path -->
-              <path
-                class="horizontal-draw-path-aura"
-                d="M 0 160 C 420 220, 850 420, 1280 340 C 1680 260, 1850 560, 2040 520 C 2380 460, 2750 220, 3180 310 C 3580 390, 3780 720, 3980 670 C 4320 610, 4680 320, 5080 410 C 5480 490, 5680 760, 5880 710 C 6220 630, 6600 360, 7000 440 C 7380 510, 7550 780, 7680 740"
-                fill="none"
-                stroke="url(#horizontalStrokeGrad)"
-                stroke-width="54"
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                filter="url(#horizontalGlow)"
-                opacity="0.38"
-              />
-
-              <!-- Core Precision Vector Ribbon -->
-              <path
-                class="horizontal-draw-path"
-                d="M 0 160 C 420 220, 850 420, 1280 340 C 1680 260, 1850 560, 2040 520 C 2380 460, 2750 220, 3180 310 C 3580 390, 3780 720, 3980 670 C 4320 610, 4680 320, 5080 410 C 5480 490, 5680 760, 5880 710 C 6220 630, 6600 360, 7000 440 C 7380 510, 7550 780, 7680 740"
-                fill="none"
-                stroke="url(#horizontalStrokeGrad)"
-                stroke-width="36"
-                stroke-linecap="round"
-                stroke-linejoin="round"
-              />
-
-              <!-- Luminous Leading Edge Light Particle / Orb -->
-              <g class="horizontal-path-head" style="opacity: 0;">
-                <circle cx="0" cy="0" r="18" fill="#e4e4e7" opacity="0.45" filter="url(#horizontalGlow)" />
-                <circle cx="0" cy="0" r="8" fill="#ffffff" opacity="0.95" />
-                <circle cx="0" cy="0" r="3.5" fill="#09090b" />
-              </g>
+          <!-- Center Floating Play Pill Button -->
+          <button id="lusion-play-pill" class="lusion-play-pill mx-4 sm:mx-8 flex items-center justify-center transition-transform hover:scale-105" aria-label="Play Atelier Showreel">
+            <svg class="w-6 h-6 text-black fill-current translate-x-0.5" viewBox="0 0 24 24">
+              <path d="M8 5v14l11-7z"/>
             </svg>
-          </div>
+          </button>
 
-          ${horizontalChapters.map((ch, idx) => `
-            <div class="horizontal-slide-panel flex-shrink-0 w-full lg:w-screen lg:min-w-[100vw] lg:max-w-[100vw] h-full flex items-center px-6 sm:px-12 md:px-16 lg:px-20 py-8 lg:py-6 relative z-10" data-panel="${idx}">
-              
-              <div class="max-w-7xl mx-auto w-full grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-16 items-center">
-                
-                <!-- Left Column: Chapter Description & Telemetry -->
-                <div class="lg:col-span-5 space-y-4">
-                  <h3 class="text-2xl sm:text-4xl font-light text-white uppercase font-serif tracking-wide leading-tight">
-                    ${ch.title}
-                  </h3>
-                  <span class="text-[11px] font-mono text-amber-400 uppercase tracking-widest block">${ch.subtitle}</span>
+          <span class="lusion-play-word lusion-word-right">ATELIER</span>
+        </div>
 
-                  <p class="text-xs sm:text-sm text-stone-300 font-light leading-relaxed max-w-md">
-                    ${ch.description}
-                  </p>
-
-                  <!-- Spec Pill List -->
-                  <div class="space-y-1.5 pt-1">
-                    ${ch.specs.map(spec => `
-                      <div class="flex items-center gap-2.5 text-[10px] font-mono tracking-wider text-stone-400">
-                        <span class="w-1.5 h-1.5 rounded-full bg-amber-400"></span>
-                        <span>${spec}</span>
-                      </div>
-                    `).join('')}
-                  </div>
-
-                  <div class="pt-2">
-                    <a href="${ch.ctaHref}" target="${ch.ctaHref.includes('http') ? '_blank' : '_self'}" rel="noopener noreferrer" class="btn-slide-white inline-flex items-center gap-3 px-6 py-2.5 text-[10px] font-semibold uppercase tracking-[0.25em] shadow-lg">
-                      <span>${ch.ctaText}</span>
-                      <span class="btn-arrow">&rarr;</span>
-                    </a>
-                  </div>
-                </div>
-
-                <!-- Right Column: Widescreen Architectural Frame -->
-                <div class="lg:col-span-7 flex justify-center">
-                  <div class="horizontal-img-frame relative aspect-[16/10] max-h-[50vh] w-full overflow-hidden bg-stone-950 shadow-2xl rounded-sm group img-skeleton-wrap">
-                    <div class="img-skeleton-placeholder"></div>
-                    <img
-                      src="${ch.image}"
-                      alt="${ch.title} - Elysium Atelier Handcrafted Decor"
-                      class="image-blur-up w-full h-full object-cover object-center filter contrast-105 transition-transform duration-700 group-hover:scale-105"
-                      loading="lazy"
-                    />
-                    <div class="absolute inset-0 bg-gradient-to-t from-black/75 via-transparent to-transparent pointer-events-none z-10"></div>
-                  </div>
-                </div>
-
-              </div>
-
-            </div>
-          `).join('')}
+        <!-- Registration '+' Marks Bottom Row (5 columns evenly spaced) -->
+        <div class="lusion-reg-row lusion-reg-bottom absolute flex justify-between pointer-events-none">
+          <span class="lusion-reg-plus">+</span>
+          <span class="lusion-reg-plus">+</span>
+          <span class="lusion-reg-plus">+</span>
+          <span class="lusion-reg-plus">+</span>
+          <span class="lusion-reg-plus">+</span>
         </div>
 
       </div>
-    </section>
 
+    </div>
+
+  </section>
+
+  <!-- FULLSCREEN HIGH-DEFINITION VIDEO / SHOWREEL MODAL -->
+  <div id="lusion-video-modal" class="lusion-video-modal fixed inset-0 z-[9999] bg-black/95 backdrop-blur-3xl flex items-center justify-center opacity-0 pointer-events-none transition-opacity duration-400">
+    <button id="lusion-modal-close" class="lusion-modal-close absolute top-6 right-8 text-white/80 hover:text-white font-mono text-xs uppercase tracking-[0.3em] flex items-center gap-2 cursor-pointer z-50">
+      <span>CLOSE</span>
+      <span class="text-lg">&times;</span>
+    </button>
+
+    <div class="relative w-[92vw] max-w-6xl aspect-video rounded-2xl overflow-hidden bg-stone-950 shadow-2xl border border-stone-800">
+      <div id="lusion-modal-carousel" class="absolute inset-0 w-full h-full overflow-hidden">
+        <img id="lusion-modal-img" src="/images/chapter_living_room.jpg" alt="Elysium Atelier Showreel Frame" class="w-full h-full object-cover transition-opacity duration-400" />
+      </div>
+
+      <div class="absolute bottom-4 left-6 right-6 flex items-center justify-between text-white/80 text-[11px] font-mono tracking-widest pointer-events-none z-20">
+        <span>ELYSIUM ATELIER &bull; RAJKOT SANCTUARY</span>
+        <span id="lusion-modal-timer">00:01 / 00:06</span>
+      </div>
+    </div>
   </div>`;
 
   // SECTION 3: THE TACTILE MATERIALITY LAB (Sticky 100dvh Viewport on desktop, natural on mobile)
