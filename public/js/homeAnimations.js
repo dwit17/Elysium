@@ -672,14 +672,14 @@
     const isMobile = window.innerWidth < 768;
     const isTablet = window.innerWidth < 1024;
 
-    const scaleStep = isMobile ? 0.025 : 0.035;
-    const shiftYStep = isMobile ? -8 : -14;
+    // Vertical top ladder offset & scale step matching 21st.dev
+    const stepY = isMobile ? -14 : (isTablet ? -18 : -22);
+    const scaleMultiplier = isMobile ? 0.03 : 0.04;
 
-    // Initialize Card Positions and Z-Indices
+    // Set initial card states
     cardItems.forEach((card, index) => {
       const slab = card.querySelector('.elysium-stack-slab');
       const shade = card.querySelector('.elysium-stack-shade');
-      const img = card.querySelector('.elysium-stack-img');
 
       card.style.zIndex = (index + 1).toString();
       if (slab) {
@@ -688,57 +688,42 @@
       if (shade) {
         gsap.set(shade, { opacity: 0 });
       }
-      if (img) {
-        gsap.set(img, { scale: 1, yPercent: 0 });
-      }
 
       if (index === 0) {
         gsap.set(card, { yPercent: 0, pointerEvents: 'auto' });
       } else {
-        gsap.set(card, { yPercent: 100, pointerEvents: 'none' });
+        gsap.set(card, { yPercent: 120, pointerEvents: 'none' });
       }
     });
 
-    // Master Pinned Stacking Timeline
+    // Master Timeline for continuous scroll scrubbing
     const masterTl = gsap.timeline({ defaults: { ease: 'power1.inOut' } });
 
     for (let step = 0; step < totalCards - 1; step++) {
       const stepStartTime = step;
-      const incomingCard = cardItems[step + 1];
+      const nextCard = cardItems[step + 1];
 
-      // 1. Incoming card rises from below the viewport (yPercent: 100 -> 0)
-      if (incomingCard) {
-        masterTl.to(incomingCard, {
+      // 1. Next card translates smoothly up from below into active center
+      if (nextCard) {
+        masterTl.to(nextCard, {
           yPercent: 0,
           duration: 1,
           ease: 'power1.inOut',
-          onStart: () => { incomingCard.style.pointerEvents = 'auto'; },
-          onReverseComplete: () => { incomingCard.style.pointerEvents = 'none'; },
+          onStart: () => { nextCard.style.pointerEvents = 'auto'; },
+          onReverseComplete: () => { nextCard.style.pointerEvents = 'none'; },
         }, stepStartTime);
-
-        const incomingImg = incomingCard.querySelector('.elysium-stack-img');
-        if (incomingImg) {
-          masterTl.fromTo(incomingImg, {
-            scale: 1.06,
-            yPercent: 3,
-          }, {
-            scale: 1.0,
-            yPercent: 0,
-            duration: 1,
-            ease: 'power1.out',
-          }, stepStartTime);
-        }
       }
 
-      // 2. All cards settled so far (0..step) progressively scale down and shift up subtly
+      // 2. Adjust all cards landed so far into their cascading ladder positions
+      // Cards underneath shift UPWARDS so their top colored rounded edges remain visible at top
       for (let i = 0; i <= step; i++) {
         const slab = cardItems[i].querySelector('.elysium-stack-slab');
         const shade = cardItems[i].querySelector('.elysium-stack-shade');
-        const depth = (step + 1) - i;
+        const stackDepth = (step + 1) - i; // 1 for immediate previous, 2 for earlier, etc.
 
-        const targetScale = Math.max(0.85, 1.0 - (depth * scaleStep));
-        const targetY = depth * shiftYStep;
-        const targetShade = Math.min(0.30, depth * 0.075);
+        const targetY = stackDepth * stepY;
+        const targetScale = Math.max(0.82, 1 - (stackDepth * scaleMultiplier));
+        const targetShadeOpacity = Math.min(0.20, stackDepth * 0.05);
 
         if (slab) {
           masterTl.to(slab, {
@@ -751,7 +736,7 @@
 
         if (shade) {
           masterTl.to(shade, {
-            opacity: targetShade,
+            opacity: targetShadeOpacity,
             duration: 1,
             ease: 'power1.inOut',
           }, stepStartTime);
@@ -759,24 +744,23 @@
       }
     }
 
-    // Scroll Distance per Card Transition
-    const scrollDistancePerCard = isMobile ? 600 : (isTablet ? 750 : 850);
-    const totalPinDistance = (totalCards - 1) * scrollDistancePerCard;
+    // ScrollTrigger Pinned Arena
+    const pinDistance = (totalCards - 1) * (isMobile ? 550 : 750);
 
     const st = ScrollTrigger.create({
       trigger: section,
       start: 'top top',
-      end: '+=' + totalPinDistance,
+      end: '+=' + pinDistance,
       pin: stage,
       pinSpacing: true,
-      scrub: 0.5,
+      scrub: 0.6,
       anticipatePin: 1,
       fastScrollEnd: true,
       invalidateOnRefresh: true,
       animation: masterTl,
     });
 
-    console.log('[Elysium Motion] Section 3 Spatial Sanctuary Stacking Deck initialized across ' + totalCards + ' material chapters.');
+    console.log('[Elysium Motion] Section 3 Pinned Stacking Cards active across ' + totalCards + ' cards.');
   }
 
   function initCraftJourneySection() {

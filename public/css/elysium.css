@@ -3484,121 +3484,16 @@ img {
   }
 }
 
-/* ============================================================
-   100VH ARCHITECTURAL STACKING CARDS DECK (SECTION 3 MATERIALITY)
-   Precision-engineered to match 21st.dev / Daniel Petho / Khoa Phan Stacking Cards
-   ============================================================ */
-.elysium-stack-section {
-  position: relative;
-  background-color: #060608;
-  color: #ffffff;
-  width: 100%;
-  overflow: visible;
-  z-index: 20;
-}
-
-.elysium-stack-stage {
-  position: relative;
-  width: 100%;
-  height: 100vh;
-  height: 100dvh;
-  padding-top: clamp(68px, 9vh, 92px);
-  padding-bottom: 2vh;
-  overflow: hidden;
-  display: flex;
-  flex-direction: column;
-  justify-content: flex-start;
-  align-items: center;
-  box-sizing: border-box;
-}
-
-.stack-section-header {
-  position: relative;
-  z-index: 40;
-  flex-shrink: 0;
-  width: 90%;
-  max-width: 1040px;
-  margin: 0 auto;
-}
-
-.elysium-stack-arena {
-  position: relative;
-  width: 100%;
-  flex: 1 1 auto;
-  overflow: hidden;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.stack-card {
-  position: absolute;
-  inset: 0;
-  width: 100%;
-  height: 100%;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  pointer-events: none;
-  box-sizing: border-box;
-  will-change: transform;
-}
-
-.stack-card-inner {
-  position: relative;
-  pointer-events: auto;
-  width: 90vw;
-  max-width: 1040px;
-  height: 480px;
-  max-height: 58vh;
-  margin: 0 auto;
-  border-radius: 28px;
-  transform-origin: top center;
-  will-change: transform, opacity;
-  box-sizing: border-box;
-  box-shadow: 0 25px 60px -15px rgba(0, 0, 0, 0.7), 0 0 0 1px rgba(255, 255, 255, 0.15);
-  display: flex;
-  flex-direction: row;
-  justify-content: space-between;
-  align-items: center;
-  gap: 2rem;
-  padding: 2.2rem 2.8rem;
-  overflow: hidden;
-}
-
-.stack-card-content {
-  flex: 1 1 52%;
-  width: 52%;
-  min-width: 0;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  gap: 0.85rem;
-  z-index: 20;
-  text-align: left;
-}
-
-.stack-card-media {
-  flex: 0 0 45%;
-  width: 45%;
-  height: 100%;
-  position: relative;
-  overflow: hidden;
-  border-radius: 20px;
-  box-shadow: 0 15px 35px -5px rgba(0, 0, 0, 0.5);
-  border: 1px solid rgba(255, 255, 255, 0.2);
-}
-
 /* ==========================================================================
-   SECTION 3 — SPATIAL LIVING SANCTUARY • ARCHITECTURAL PROGRESSION
-   100vh Pinned Stacking Cards Deck (Architectural Slabs)
+   SECTION 3 — ELYSIUM ARCHITECTURAL STACKING CARDS
+   Restrained Monochromatic Material Palette (#ECECEC, Warm Stone, Limestone, Greige)
    ========================================================================== */
 .elysium-stack-section {
   position: relative;
   width: 100%;
   background-color: #070708;
   border-top: 1px solid rgba(255, 255, 255, 0.08);
-  color: #ffffff;
+  color: #111111;
   user-select: none;
   overflow: hidden;
 }
@@ -3611,31 +3506,15 @@ img {
   overflow: hidden;
   display: flex;
   flex-direction: column;
-  justify-content: flex-start;
-  box-sizing: border-box;
-}
-
-.sanctuary-stack-header {
-  position: relative;
-  width: 100%;
-  max-width: 1360px;
-  margin: 0 auto;
-  padding: 1.1rem 1.5rem 0.65rem;
-  display: flex;
-  align-items: flex-end;
-  justify-content: space-between;
-  gap: 1.5rem;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
-  z-index: 40;
-  flex-shrink: 0;
+  justify-content: center;
+  align-items: center;
   box-sizing: border-box;
 }
 
 .elysium-stack-arena {
   position: relative;
   width: 100%;
-  flex: 1 1 auto;
-  height: calc(100% - 75px);
+  height: 100%;
   overflow: hidden;
   display: flex;
   align-items: center;
@@ -3653,64 +3532,67 @@ img {
   pointer-events: none;
   will-change: transform;
   box-sizing: border-box;
-  padding: 12px 16px 20px;
 }
 
 .elysium-stack-card:first-child {
   pointer-events: auto;
 }
 
+/* Floating Architectural Slab Frame */
 .elysium-stack-slab {
   position: relative;
-  width: calc(100vw - 48px);
-  max-width: 1320px;
-  height: calc(100% - 16px);
-  max-height: 680px;
-  min-height: 480px;
+  width: 90vw;
+  max-width: 1000px;
+  height: 480px;
+  max-height: 58vh;
   margin: 0 auto;
-  border-radius: 4px;
-  border: 1px solid rgba(255, 255, 255, 0.12);
-  box-shadow: 0 30px 80px -20px rgba(0, 0, 0, 0.85), 0 0 0 1px rgba(255, 255, 255, 0.06);
+  border-radius: 28px;
+  padding: 24px 28px 24px 44px;
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  box-shadow: 0 20px 50px -10px rgba(0, 0, 0, 0.35), 0 2px 8px rgba(0, 0, 0, 0.08);
   display: flex;
   flex-direction: row;
-  align-items: stretch;
+  align-items: center;
+  justify-content: space-between;
+  gap: 2rem;
   overflow: hidden;
   transform-origin: top center;
-  will-change: transform;
+  will-change: transform, opacity;
   pointer-events: auto;
   box-sizing: border-box;
 }
 
-/* Subtle Mineral Slab Palettes */
-.card-tone-travertine {
-  background: #11100e;
-  background: linear-gradient(145deg, #161411 0%, #0d0c0b 100%);
-  border-color: rgba(214, 198, 175, 0.22);
+/* ==========================================================================
+   AUTHENTIC MATERIAL PALETTES (SUBTLE NATURAL STONE & MINERAL TONES)
+   ========================================================================== */
+/* CARD 01: Travertine (Warm limestone) */
+.card-mat-travertine {
+  background-color: #E6E2DA;
+  color: #111111;
 }
 
-.card-tone-clay {
-  background: #13100d;
-  background: linear-gradient(145deg, #18130e 0%, #0e0c0a 100%);
-  border-color: rgba(202, 156, 122, 0.22);
+/* CARD 02: Stoneware (Soft ceramic grey-beige) */
+.card-mat-stoneware {
+  background-color: #D9D5CE;
+  color: #111111;
 }
 
-.card-tone-plaster {
-  background: #101214;
-  background: linear-gradient(145deg, #14171a 0%, #0c0d0e 100%);
-  border-color: rgba(180, 190, 195, 0.22);
+/* CARD 03: Mineral Plaster (Neutral architectural plaster grey) */
+.card-mat-plaster {
+  background-color: #ECECEC;
+  color: #111111;
 }
 
-.card-tone-oak {
-  background: #14100b;
-  background: linear-gradient(145deg, #1a140d 0%, #0d0b07 100%);
-  border-color: rgba(212, 175, 55, 0.24);
+/* CARD 04: Aged Oak (Warm muted greige) */
+.card-mat-oak {
+  background-color: #D1CCC3;
+  color: #111111;
 }
 
-.card-tone-synthesis {
-  background: #080809;
-  background: linear-gradient(145deg, #101014 0%, #050506 100%);
-  border-color: rgba(245, 212, 143, 0.35);
-  box-shadow: 0 35px 90px -20px rgba(0, 0, 0, 0.9), 0 0 40px rgba(212, 175, 55, 0.08);
+/* CARD 05: Spatial Synthesis (Light architectural stone grey) */
+.card-mat-synthesis {
+  background-color: #E7E7E5;
+  color: #111111;
 }
 
 .elysium-stack-shade {
@@ -3719,192 +3601,57 @@ img {
   background-color: #000000;
   opacity: 0;
   pointer-events: none;
-  z-index: 25;
+  z-index: 15;
   border-radius: inherit;
   will-change: opacity;
 }
 
-/* Left Column Editorial Content (~45%) */
+/* Left Half Content (~50%) - Editorial Dark Charcoal Typography */
 .elysium-stack-content {
-  flex: 0 0 45%;
-  width: 45%;
+  flex: 1 1 50%;
+  width: 50%;
   min-width: 0;
   display: flex;
   flex-direction: column;
-  justify-content: space-between;
-  padding: 2.2rem 2.5rem;
-  z-index: 20;
+  justify-content: center;
   text-align: left;
+  z-index: 20;
   box-sizing: border-box;
-  background: inherit;
-}
-
-.elysium-stack-content-synthesis {
-  flex: 0 0 48%;
-  width: 48%;
-}
-
-.elysium-stack-badge {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.5rem;
-  font-family: var(--font-mono, monospace);
-  font-size: 0.72rem;
-  letter-spacing: 0.25em;
-  text-transform: uppercase;
-  color: #d4af37;
-  margin-bottom: 0.4rem;
-}
-
-.elysium-badge-num {
-  font-weight: 700;
-  color: #d4af37;
-}
-
-.elysium-badge-sep {
-  opacity: 0.5;
-}
-
-.elysium-badge-cat {
-  font-weight: 500;
-  color: #e7e5e4;
-  letter-spacing: 0.2em;
+  padding-right: 1.2rem;
 }
 
 .elysium-stack-title {
-  font-family: var(--font-sans, sans-serif);
-  font-size: clamp(1.45rem, 2.3vw, 2.15rem);
-  font-weight: 300;
-  letter-spacing: 0.04em;
-  color: #ffffff;
+  font-family: var(--font-sans, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif);
+  font-size: clamp(1.85rem, 2.4vw, 2.35rem);
+  font-weight: 700;
+  color: #111111;
   line-height: 1.15;
-  margin: 0;
-  text-transform: uppercase;
-}
-
-.elysium-stack-subtitle {
-  font-family: var(--font-serif, serif);
-  font-style: italic;
-  font-size: 0.88rem;
-  color: #a8a29e;
-  letter-spacing: 0.03em;
-  margin-top: 0.3rem;
-  line-height: 1.4;
+  margin: 0 0 1.25rem 0;
+  letter-spacing: -0.015em;
 }
 
 .elysium-stack-desc {
-  font-size: clamp(0.82rem, 1.0vw, 0.9rem);
-  font-weight: 300;
-  color: #d6d3d1;
-  line-height: 1.55;
-  margin: 0.75rem 0 0.85rem;
+  font-family: var(--font-sans, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif);
+  font-size: clamp(0.95rem, 1.05vw, 1.05rem);
+  font-weight: 400;
+  color: #333333;
+  line-height: 1.62;
+  margin: 0;
+  max-width: 440px;
 }
 
-.elysium-stack-specs {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 0.5rem;
-  margin: 0.4rem 0 0.9rem;
-}
-
-.elysium-spec-pill {
-  background: rgba(255, 255, 255, 0.035);
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  padding: 0.5rem 0.6rem;
-  border-radius: 2px;
-  display: flex;
-  flex-direction: column;
-  gap: 0.2rem;
-}
-
-.elysium-spec-pill .spec-label {
-  font-family: var(--font-mono, monospace);
-  font-size: 0.58rem;
-  letter-spacing: 0.18em;
-  text-transform: uppercase;
-  color: #a8a29e;
-}
-
-.elysium-spec-pill .spec-val {
-  font-size: 0.72rem;
-  font-weight: 500;
-  color: #ffffff;
-  line-height: 1.25;
-}
-
-.elysium-stack-actions {
-  display: flex;
-  align-items: center;
-  gap: 1rem;
-  margin-top: auto;
-  padding-top: 0.5rem;
-}
-
-.elysium-btn-plate {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.4rem;
-  padding: 0.65rem 1.35rem;
-  background: #ffffff;
-  color: #000000;
-  font-family: var(--font-mono, monospace);
-  font-size: 0.68rem;
-  font-weight: 600;
-  text-transform: uppercase;
-  letter-spacing: 0.2em;
-  border-radius: 2px;
-  transition: all 0.25s ease;
-  text-decoration: none;
-}
-
-.elysium-btn-plate:hover {
-  background: #d4af37;
-  color: #000000;
-  transform: translateY(-1px);
-}
-
-.elysium-btn-gold {
-  background: linear-gradient(135deg, #f5d48f 0%, #d4af37 100%);
-  color: #000000;
-  font-weight: 700;
-}
-
-.elysium-btn-subtle {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.4rem;
-  padding: 0.65rem 1.15rem;
-  border: 1px solid rgba(255, 255, 255, 0.25);
-  color: #ffffff;
-  font-family: var(--font-mono, monospace);
-  font-size: 0.68rem;
-  text-transform: uppercase;
-  letter-spacing: 0.2em;
-  border-radius: 2px;
-  transition: all 0.25s ease;
-  text-decoration: none;
-}
-
-.elysium-btn-subtle:hover {
-  background: rgba(255, 255, 255, 0.1);
-  border-color: #ffffff;
-}
-
-/* Right Column Media Photography (~55%) */
+/* Right Half Media (~48%) with Neutral Architectural Frame */
 .elysium-stack-media {
-  flex: 0 0 55%;
-  width: 55%;
+  flex: 0 0 48%;
+  width: 48%;
   height: 100%;
   position: relative;
   overflow: hidden;
-  background: #000000;
-}
-
-.elysium-media-inner {
-  position: relative;
-  width: 100%;
-  height: 100%;
-  overflow: hidden;
+  border-radius: 20px;
+  background: #141414;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+  border: 1px solid rgba(0, 0, 0, 0.06);
+  box-sizing: border-box;
 }
 
 .elysium-stack-img {
@@ -3912,105 +3659,56 @@ img {
   height: 100%;
   object-fit: cover;
   object-position: center;
-  will-change: transform;
+  border-radius: 20px;
+  display: block;
 }
 
-.elysium-media-gradient {
-  position: absolute;
-  inset: 0;
-  background: linear-gradient(to right, rgba(0, 0, 0, 0.35) 0%, transparent 35%, rgba(0, 0, 0, 0.25) 100%);
-  pointer-events: none;
-}
-
-.elysium-media-tag {
-  position: absolute;
-  bottom: 1rem;
-  left: 1.25rem;
-  padding: 0.35rem 0.75rem;
-  background: rgba(0, 0, 0, 0.65);
-  backdrop-filter: blur(8px);
-  -webkit-backdrop-filter: blur(8px);
-  border: 1px solid rgba(255, 255, 255, 0.15);
-  border-radius: 2px;
-  font-family: var(--font-mono, monospace);
-  font-size: 0.62rem;
-  letter-spacing: 0.18em;
-  text-transform: uppercase;
-  color: #e7e5e4;
-  pointer-events: none;
-  z-index: 10;
-}
-
-.elysium-media-dim {
-  position: absolute;
-  bottom: 1rem;
-  right: 1.25rem;
-  padding: 0.35rem 0.75rem;
-  background: rgba(0, 0, 0, 0.65);
-  backdrop-filter: blur(8px);
-  -webkit-backdrop-filter: blur(8px);
-  border: 1px solid rgba(255, 255, 255, 0.15);
-  border-radius: 2px;
-  font-family: var(--font-mono, monospace);
-  font-size: 0.62rem;
-  letter-spacing: 0.18em;
-  color: #a8a29e;
-  pointer-events: none;
-  z-index: 10;
-}
-
-/* Tablet & Mobile Layouts */
+/* Responsive Tablet & Mobile */
 @media (max-width: 1023px) {
   .elysium-stack-slab {
     flex-direction: column !important;
-    height: calc(100% - 10px) !important;
-    max-height: 74vh !important;
-    overflow-y: auto !important;
+    height: auto !important;
+    max-height: 70vh !important;
+    padding: 1.6rem 1.8rem !important;
+    gap: 1.25rem !important;
   }
   .elysium-stack-content {
-    flex: 1 1 auto !important;
     width: 100% !important;
-    padding: 1.4rem 1.5rem !important;
+    flex: 1 1 auto !important;
+    padding-right: 0 !important;
   }
   .elysium-stack-media {
-    flex: 0 0 200px !important;
     width: 100% !important;
-    height: 200px !important;
-  }
-  .elysium-stack-specs {
-    grid-template-columns: repeat(2, 1fr) !important;
+    flex: 0 0 190px !important;
+    height: 190px !important;
   }
 }
 
 @media (max-width: 767px) {
-  .elysium-stack-card {
-    padding: 8px 10px 14px !important;
-  }
   .elysium-stack-slab {
-    width: calc(100vw - 20px) !important;
-    max-height: 78vh !important;
-  }
-  .elysium-stack-content {
-    padding: 1.1rem 1.15rem !important;
-  }
-  .elysium-stack-media {
-    flex: 0 0 160px !important;
-    height: 160px !important;
+    width: calc(100vw - 28px) !important;
+    max-height: 76vh !important;
+    padding: 1.35rem 1.4rem !important;
+    border-radius: 22px !important;
   }
   .elysium-stack-title {
-    font-size: 1.25rem !important;
+    font-size: 1.45rem !important;
+    margin-bottom: 0.75rem !important;
   }
-  .elysium-stack-specs {
-    grid-template-columns: 1fr !important;
-    gap: 0.35rem !important;
+  .elysium-stack-desc {
+    font-size: 0.88rem !important;
+    line-height: 1.5 !important;
+  }
+  .elysium-stack-media {
+    flex: 0 0 150px !important;
+    height: 150px !important;
+    border-radius: 16px !important;
   }
 }
 
 /* Reduced Motion Mode */
 @media (prefers-reduced-motion: reduce) {
-  .elysium-stack-section {
-    overflow: visible !important;
-  }
+  .elysium-stack-section,
   .elysium-stack-stage {
     height: auto !important;
     overflow: visible !important;
@@ -4038,4 +3736,215 @@ img {
   .elysium-stack-shade {
     display: none !important;
   }
+}
+
+/* ==========================================================================
+   GLOBAL ELYSIUM #ECECEC LIGHT THEME & BLACK TEXT SYSTEM
+   ========================================================================== */
+:root {
+  --color-bg-site: #ececec;
+  --color-text-main: #111111;
+  --color-text-body: #222222;
+  --color-text-muted: #555555;
+  --color-border-subtle: rgba(0, 0, 0, 0.08);
+}
+
+html,
+body {
+  background-color: #ececec !important;
+  color: #111111 !important;
+}
+
+/* Global Typography Colors */
+h1, h2, h3, h4, h5, h6 {
+  color: #111111 !important;
+}
+
+p, span, li, a, label {
+  color: inherit;
+}
+
+::selection {
+  background-color: #111111 !important;
+  color: #ececec !important;
+}
+
+/* Site Header */
+.site-header {
+  color: #111111;
+}
+
+.site-header.header-scrolled,
+.header-blur {
+  background-color: rgba(236, 236, 236, 0.92) !important;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.08) !important;
+}
+
+.site-header a,
+.header-nav-wrap a {
+  color: #333333 !important;
+}
+
+.site-header a:hover,
+.header-nav-wrap a:hover {
+  color: #000000 !important;
+}
+
+/* Button & Pill Styles */
+.btn-slide-white {
+  background-color: #111111 !important;
+  color: #ffffff !important;
+  border: 1px solid #111111 !important;
+}
+
+.btn-slide-white:hover {
+  background-color: #333333 !important;
+  color: #ffffff !important;
+}
+
+.btn-slide-subtle {
+  background-color: transparent !important;
+  color: #111111 !important;
+  border: 1px solid rgba(0, 0, 0, 0.25) !important;
+}
+
+.btn-slide-subtle:hover {
+  background-color: rgba(0, 0, 0, 0.05) !important;
+  border-color: #000000 !important;
+}
+
+/* Section Backgrounds across Entire Site */
+.section-lusion-reel {
+  background-color: #ececec !important;
+  color: #111111 !important;
+}
+
+.elysium-stack-section,
+#spatial-sanctuary-container {
+  background-color: #ececec !important;
+  border-top-color: rgba(0, 0, 0, 0.08) !important;
+  color: #111111 !important;
+}
+
+.section-craft-journey {
+  background-color: #ececec !important;
+  border-top-color: rgba(0, 0, 0, 0.08) !important;
+  color: #111111 !important;
+}
+
+.section-craft-journey h2,
+.section-craft-journey .craft-stage-title {
+  color: #111111 !important;
+}
+
+.section-craft-journey p,
+.section-craft-journey .craft-stage-desc {
+  color: #333333 !important;
+}
+
+.section-craft-journey .craft-stage-num {
+  color: #111111 !important;
+  background-color: rgba(0, 0, 0, 0.05) !important;
+  border-color: rgba(0, 0, 0, 0.12) !important;
+}
+
+.section-craft-journey svg line {
+  stroke: rgba(0, 0, 0, 0.15) !important;
+}
+
+.section-featured-pieces {
+  background-color: #ececec !important;
+  border-top-color: rgba(0, 0, 0, 0.08) !important;
+  color: #111111 !important;
+}
+
+.featured-piece-card {
+  background-color: #f7f7f7 !important;
+  border: 1px solid rgba(0, 0, 0, 0.08) !important;
+  box-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.08) !important;
+}
+
+.featured-piece-card h3,
+.featured-piece-card .product-name-link {
+  color: #111111 !important;
+}
+
+.featured-piece-card .product-name-link:hover h3 {
+  color: #000000 !important;
+}
+
+.featured-piece-card span {
+  color: #333333 !important;
+}
+
+.section-trust-voice,
+#trust-voice-container {
+  background-color: #ececec !important;
+  border-top-color: rgba(0, 0, 0, 0.08) !important;
+  color: #111111 !important;
+}
+
+.Horizontal,
+#trust-horizontal-wrapper {
+  background-color: #ececec !important;
+}
+
+.section-testimonial-stage {
+  background-color: #ececec !important;
+  border-top-color: rgba(0, 0, 0, 0.08) !important;
+}
+
+.testimonial-card,
+#elysium-testimonial-card {
+  background-color: #ffffff !important;
+  border: 1px solid rgba(0, 0, 0, 0.10) !important;
+  box-shadow: 0 20px 50px -15px rgba(0, 0, 0, 0.12) !important;
+  color: #111111 !important;
+}
+
+.testimonial-card h3,
+.testimonial-card p,
+.testimonial-card strong {
+  color: #111111 !important;
+}
+
+.testimonial-card span {
+  color: #333333 !important;
+}
+
+/* Footer Section */
+footer,
+.footer-fullscreen {
+  background-color: #e4e4e4 !important;
+  border-top: 1px solid rgba(0, 0, 0, 0.08) !important;
+  color: #111111 !important;
+}
+
+footer h2, footer h3, footer h4, footer a {
+  color: #111111 !important;
+}
+
+footer p, footer span, footer li {
+  color: #333333 !important;
+}
+
+/* Subpages Container & Cards */
+main {
+  background-color: #ececec !important;
+  color: #111111 !important;
+}
+
+.material-card,
+.philosophy-card,
+.story-card,
+.contact-form-container {
+  background-color: #f7f7f7 !important;
+  border: 1px solid rgba(0, 0, 0, 0.08) !important;
+  color: #111111 !important;
+}
+
+input, textarea, select {
+  background-color: #ffffff !important;
+  color: #111111 !important;
+  border: 1px solid rgba(0, 0, 0, 0.15) !important;
 }
