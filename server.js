@@ -1,11 +1,13 @@
 const express = require('express');
+const compression = require('compression');
 const path = require('path');
 const fs = require('fs');
 const app = express();
 const PORT = process.env.PORT || 3000;
 
+app.use(compression());
 app.use(express.static(path.join(__dirname, 'public'), {
-  maxAge: process.env.NODE_ENV === 'production' ? '1d' : 0,
+  maxAge: process.env.NODE_ENV === 'production' || process.env.VERCEL === '1' ? '30d' : 0,
   etag: true,
 }));
 
@@ -23,6 +25,7 @@ if (process.env.NODE_ENV !== 'production' && process.env.VERCEL !== '1') {
   });
 
   app.get('/dev/ping', (req, res) => res.send('ok'));
+  app.get('/favicon.ico', (req, res) => res.status(204).end());
 
   let reloadDebounceTimer = null;
   const broadcastReload = () => {
@@ -252,30 +255,54 @@ const MATERIALS = [
   },
 ];
 
-const CRAFT_STEPS = [
+const MARQUEE_IMAGES = [
   {
-    step: '01',
-    title: 'Extraction & Selection',
-    duration: '2 to 3 days per block',
-    description: 'Our raw blocks are sourced directly from independent historical quarries in Tuscany and the Peloponnese, picking only blocks showing robust natural fault lines.',
-    tools: ['Pneumatic splitting wedges', 'Diamond-tipped hand saws', 'Traditional iron picks'],
-    supervisor: 'Sandro Moretti',
+    src: '/images-marquee/pexels-artbovich-6758245.webp',
+    alt: 'Artisan Ceramic Sculpture and Handcrafted Form',
   },
   {
-    step: '02',
-    title: 'Precision Sculpting',
-    duration: '15 to 30 hours per piece',
-    description: 'Artisans execute shaping using traditional manual processes—chisels for stone, kickwheels for clay, and ancient copper saws for wood joints, keeping wood-glues and chemical compounds out of our processes.',
-    tools: ['Manual kickwheels', 'Tempered iron flat chisels', 'Traditional copper joints'],
-    supervisor: 'Kenji Yoshino & Matteo Ghiberti',
+    src: '/images-marquee/pexels-cottonbro-4503266.webp',
+    alt: 'Stone Masonry Atelier and Raw Material Sculpting',
   },
   {
-    step: '03',
-    title: 'Tactile Hand Buffing',
-    duration: '5 to 8 days of drying & curing',
-    description: 'Instead of synthetic coatings, we hand-rub surfaces with pulverized pumice stone, linseed oil, and organic desert wax. This preserves natural wood breathing and the limestone aroma.',
-    tools: ['Pulverized pumice stones', 'Purified natural mountain beeswax', 'Broad brush fiber rags'],
-    supervisor: 'Eleni Kora',
+    src: '/images-marquee/pexels-dropshado-34428636.webp',
+    alt: 'Minimalist Architectural Geometry and Natural Lighting',
+  },
+  {
+    src: '/images-marquee/pexels-efnanyll-16052116.webp',
+    alt: 'Hand-Turned Terra Vessel with Mineral Patina',
+  },
+  {
+    src: '/images-marquee/pexels-helloaesthe-16039832.webp',
+    alt: 'Curated Aesthetic Living Interior and Sculptural Accents',
+  },
+  {
+    src: '/images-marquee/pexels-icaro-breno-53443986-31858862.webp',
+    alt: 'Raw Travertine Geomorphic Texture and Natural Pores',
+  },
+  {
+    src: '/images-marquee/pexels-karola-g-5978722.webp',
+    alt: 'Artisan Hand-Formed Stoneware Craftsmanship',
+  },
+  {
+    src: '/images-marquee/pexels-karola-g-7193706.webp',
+    alt: 'Tactile Earthenware Vessels and Studio Ceramics',
+  },
+  {
+    src: '/images-marquee/pexels-leah-newhouse-50725-6480707%20(1).webp',
+    alt: 'Sculpted Organic Clay Silhouette and Gentle Shadows',
+  },
+  {
+    src: '/images-marquee/pexels-stephen-leonardi-587681991-37923286.webp',
+    alt: 'Monolithic Mountain Quarry Stratification and Raw Slate',
+  },
+  {
+    src: '/images-marquee/pexels-thevisionaryvows-33331303.webp',
+    alt: 'Earthy Textured Lime Plaster Surface and Warm Tones',
+  },
+  {
+    src: '/images-marquee/pexels-yusramizgingunay-15948887.webp',
+    alt: 'Quiet Monastic Living Sanctuary with Handcrafted Stone',
   },
 ];
 
@@ -339,6 +366,7 @@ function renderPage({ title, description, path, content, isHeroPage = false }) {
   <meta property="og:image" content="${BRAND.domain}/images/photo-1600121848594-d8644e57abab">
   <link rel="preload" href="/fonts/Geist-Light.ttf" as="font" type="font/ttf" crossorigin>
   <link rel="preload" href="/fonts/Geist-Medium.ttf" as="font" type="font/ttf" crossorigin>
+  ${isHeroPage ? '<link rel="preload" href="/hero-frames/ezgif-frame-001.jpg" as="image" fetchpriority="high">' : ''}
   <link rel="stylesheet" href="/css/tailwind.min.css">
   <link rel="stylesheet" href="/css/elysium.css?v=6.0">
   <script type="application/ld+json">${JSON.stringify(orgSchema)}</script>
@@ -1012,94 +1040,24 @@ app.get('/', (req, res) => {
     </div>
   </section>`;
 
-  // SECTION 4: THE CRAFT JOURNEY & INTERACTIVE BEFORE/AFTER SLIDER (3-Point Section)
-  const sectionCraftJourney = `
-  <section class="section-craft-journey relative bg-[#060606] border-t border-stone-800 text-white z-10 overflow-hidden py-12 sm:py-16 lg:py-20 px-6 md:px-12 lg:px-20">
-    <div class="max-w-7xl mx-auto w-full space-y-6 sm:space-y-8 my-auto">
-      
-      <!-- Section Header (Clean Normal Font Style) -->
-      <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-end border-b border-stone-800 pb-4">
-        <div class="lg:col-span-8 space-y-1">
-          <span class="text-[11px] font-mono tracking-[0.3em] uppercase text-stone-400 block">OUR PROCESS</span>
-          <h2 class="text-2xl sm:text-4xl font-light tracking-wide text-white uppercase leading-tight">
-            From Raw Earth to Living Sanctuary.
-          </h2>
-        </div>
-        <div class="lg:col-span-4">
-          <p class="text-xs text-stone-300 font-light leading-relaxed">
-            Three rigorous stages. Zero shortcuts. Every raw block is hand-sculpted in Rajkot and individually catalogued.
-          </p>
-        </div>
-      </div>
+  // SECTION 4: THE ARCHITECTURAL LINE SANCTUARY (User Provided Vector Art)
+  let sanctuaryInlineSvg = '';
+  try {
+    sanctuaryInlineSvg = fs.readFileSync(path.join(__dirname, 'public', 'svg-section4.svg'), 'utf8');
+  } catch (e) {
+    sanctuaryInlineSvg = `<svg id="sanctuary-line-art-svg" viewBox="0 48 2048 1700" class="w-full h-auto max-h-[92svh] select-none mx-auto block"></svg>`;
+  }
 
-      <!-- 3-Stage Progressive Timeline -->
-      <div class="craft-timeline-container relative grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-center">
-        
-        <!-- Left 7 Cols: The 3 Steps -->
-        <div class="lg:col-span-7 relative pl-8 sm:pl-10">
-          
-          <svg class="craft-svg-track absolute left-3 top-3 bottom-6 w-1 h-[calc(100%-1.5rem)] overflow-visible" aria-hidden="true">
-            <line x1="2" y1="0" x2="2" y2="100%" stroke="rgba(255,255,255,0.1)" stroke-width="2" />
-            <line id="craft-scrub-line" x1="2" y1="0" x2="2" y2="100%" stroke="#d4af37" stroke-width="2.5" stroke-dasharray="1000" stroke-dashoffset="1000" />
-          </svg>
+  const sectionLineArtScroll = `
+  <section class="section-scroll-draw relative min-h-[100svh] h-[100svh] w-full flex items-center justify-center overflow-hidden" id="section-scroll-draw" aria-label="Architectural Sanctuary • Line Drawing Process">
+    <!-- Visually hidden accessible description for screen readers -->
+    <div class="sr-only">
+      Minimalist single-line vector illustration of a living sanctuary featuring an armchair, floor lamp, side table with succulent houseplant, and a tropical potted plant, drawn dynamically in black line contours as you scroll.
+    </div>
 
-          <div class="space-y-6 sm:space-y-7">
-            ${CRAFT_STEPS.map((step, idx) => `
-              <div class="craft-stage-item relative" data-stage="${idx}">
-                <div class="craft-stage-dot absolute -left-[27px] sm:-left-[39px] top-1 w-3.5 h-3.5 rounded-full bg-black border-2 border-stone-600 transition-colors duration-400 flex items-center justify-center">
-                  <span class="craft-dot-inner w-1.5 h-1.5 rounded-full bg-stone-700 transition-all duration-400"></span>
-                </div>
-
-                <div class="space-y-1.5">
-                  <div class="flex items-baseline gap-3">
-                    <span class="craft-stage-num text-base sm:text-lg font-mono text-amber-400 font-semibold tracking-wider inline-block">${step.step}</span>
-                    <h3 class="craft-stage-title text-sm sm:text-base font-light text-white uppercase tracking-wide">${step.title}</h3>
-                  </div>
-
-                  <p class="craft-stage-desc text-xs text-stone-300 font-light leading-relaxed max-w-lg">
-                    ${step.description}
-                  </p>
-
-                  <div class="craft-stage-meta flex flex-wrap gap-3 text-[10px] font-mono text-stone-400 uppercase tracking-widest pt-0.5">
-                    <span>Duration: ${step.duration}</span>
-                  </div>
-                </div>
-              </div>
-            `).join('')}
-          </div>
-        </div>
-
-        <!-- Right 5 Cols: Interactive Before/After Split Curtain -->
-        <div class="lg:col-span-5">
-          <div class="transformation-card bg-stone-950 rounded-2xl overflow-hidden border border-stone-800">
-            <div id="split-curtain-container" class="split-curtain-viewport relative aspect-[4/3] max-h-[46vh] overflow-hidden cursor-ew-resize rounded-2xl select-none" role="slider" aria-valuemin="0" aria-valuemax="100" aria-valuenow="50">
-              
-              <img
-                src="/images/atelier_materials.jpg"
-                alt="Raw Geomorphic Travertine Block"
-                class="absolute inset-0 w-full h-full object-cover object-center filter brightness-90 pointer-events-none"
-              />
-
-              <div id="split-curtain-clip" class="absolute inset-0 overflow-hidden pointer-events-none z-10" style="clip-path: polygon(50% 0, 100% 0, 100% 100%, 50% 100%);">
-                <img
-                  src="/images/chapter_living_room.jpg"
-                  alt="Finished Solis Travertine Console"
-                  class="absolute inset-0 w-full h-full object-cover object-center pointer-events-none"
-                />
-              </div>
-
-              <div id="split-curtain-handle" class="absolute top-0 bottom-0 w-1 bg-white shadow-md pointer-events-none z-20" style="left: 50%;">
-                <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 px-2.5 py-1 rounded-[2px] bg-black text-[9px] font-mono uppercase tracking-widest text-white shadow-xl">
-                  Drag
-                </div>
-              </div>
-
-            </div>
-          </div>
-        </div>
-
-      </div>
-
+    <!-- Edge-to-edge SVG viewport stage -->
+    <div class="sanctuary-svg-wrapper w-full h-full flex items-center justify-center" id="sanctuary-svg-container" style="opacity: 0;">
+      ${sanctuaryInlineSvg}
     </div>
   </section>`;
 
@@ -1293,7 +1251,7 @@ app.get('/', (req, res) => {
     title: 'Elysium | Artisan Minimalist Home Decor, Handcrafted in India',
     description: BRAND.heroStatement,
     path: '/',
-    content: heroSection + sectionManifestoAndExpedition + sectionLivingSanctuary + sectionCraftJourney + sectionFeaturedPieces + sectionTrustVoice,
+    content: heroSection + sectionManifestoAndExpedition + sectionLivingSanctuary + sectionLineArtScroll + sectionFeaturedPieces + sectionTrustVoice,
     isHeroPage: true,
   }));
 });
@@ -1588,7 +1546,11 @@ app.get('/our-story', (req, res) => {
           <h2 class="text-3xl sm:text-4xl font-light tracking-wide text-white uppercase font-sans">From Quarry & Earth to Home</h2>
         </div>
         <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
-          ${CRAFT_STEPS.map(step => `
+          ${[
+            { step: '01', title: 'Extraction & Selection', duration: '2 to 3 days per block', description: 'Our raw blocks are sourced directly from independent historical quarries in Tuscany and the Peloponnese, picking only blocks showing robust natural fault lines.', supervisor: 'Sandro Moretti' },
+            { step: '02', title: 'Precision Sculpting', duration: '15 to 30 hours per piece', description: 'Artisans execute shaping using traditional manual processes—chisels for stone, kickwheels for clay, and ancient copper saws for wood joints, keeping wood-glues and chemical compounds out of our processes.', supervisor: 'Kenji Yoshino & Matteo Ghiberti' },
+            { step: '03', title: 'Tactile Hand Buffing', duration: '5 to 8 days of drying & curing', description: 'Instead of synthetic coatings, we hand-rub surfaces with pulverized pumice stone, linseed oil, and organic desert wax. This preserves natural wood breathing and the limestone aroma.', supervisor: 'Eleni Kora' }
+          ].map(step => `
             <div class="bg-stone-900/60 p-8 border border-stone-800 space-y-6">
               <div class="space-y-2">
                 <span class="text-xs font-mono font-bold text-stone-500">PHASE ${step.step} • ${step.duration}</span>
