@@ -66,7 +66,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-  // Smooth Anchor Scrolling with Lenis (Task 9)
+  // Smooth Anchor Scrolling with Lenis (Spam & Rapid Jump Resilient)
   document.querySelectorAll('a[href^="#"]').forEach((anchor) => {
     anchor.addEventListener('click', (e) => {
       const targetId = anchor.getAttribute('href');
@@ -75,7 +75,15 @@ document.addEventListener('DOMContentLoaded', () => {
         if (targetEl) {
           e.preventDefault();
           if (window.__elysiumLenis) {
-            window.__elysiumLenis.scrollTo(targetEl, { duration: 1.0, offset: -70 });
+            // Cancel any in-flight scroll animation instantly to prevent freeze/lag on spam
+            window.__elysiumLenis.stop();
+            window.__elysiumLenis.start();
+            window.__elysiumLenis.scrollTo(targetEl, {
+              offset: -70,
+              duration: 0.8,
+              force: true,
+              lock: false,
+            });
           } else {
             targetEl.scrollIntoView({ behavior: 'smooth' });
           }
@@ -226,4 +234,99 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   initImageBlurUpLoaders();
+
+  // 6. rAF-Throttled Header Scroll State (toggles .header-scrolled after 50px of scroll)
+  const siteHeader = document.querySelector('.site-header');
+  if (siteHeader) {
+    let headerTicking = false;
+    const updateHeaderOnScroll = () => {
+      const scrollY = window.pageYOffset || document.documentElement.scrollTop;
+      if (scrollY > 50) {
+        siteHeader.classList.add('header-scrolled');
+      } else {
+        siteHeader.classList.remove('header-scrolled');
+      }
+      headerTicking = false;
+    };
+
+    window.addEventListener('scroll', () => {
+      if (!headerTicking) {
+        window.requestAnimationFrame(updateHeaderOnScroll);
+        headerTicking = true;
+      }
+    }, { passive: true });
+
+    updateHeaderOnScroll();
+  }
+
+  // 7. Mobile Featured Pieces Swipeable Carousel Dots
+  const featuredGrid = document.getElementById('featured-pieces-carousel') || document.querySelector('.featured-pieces-grid');
+  const featuredDots = document.querySelectorAll('.featured-carousel-dot');
+  if (featuredGrid && featuredDots.length > 0) {
+    let carouselTicking = false;
+    const updateFeaturedDots = () => {
+      const scrollLeft = featuredGrid.scrollLeft;
+      const firstChild = featuredGrid.firstElementChild;
+      const cardWidth = firstChild ? firstChild.offsetWidth + 16 : 280;
+      const activeIdx = Math.min(featuredDots.length - 1, Math.max(0, Math.round(scrollLeft / cardWidth)));
+
+      featuredDots.forEach((dot, idx) => {
+        if (idx === activeIdx) {
+          dot.classList.add('active', 'bg-white', 'w-6');
+          dot.classList.remove('bg-stone-600', 'w-2');
+        } else {
+          dot.classList.remove('active', 'bg-white', 'w-6');
+          dot.classList.add('bg-stone-600', 'w-2');
+        }
+      });
+      carouselTicking = false;
+    };
+
+    featuredGrid.addEventListener('scroll', () => {
+      if (!carouselTicking) {
+        window.requestAnimationFrame(updateFeaturedDots);
+        carouselTicking = true;
+      }
+    }, { passive: true });
+
+    featuredDots.forEach((dot) => {
+      dot.addEventListener('click', (e) => {
+        const idx = parseInt(e.currentTarget.getAttribute('data-idx') || '0', 10);
+        const firstChild = featuredGrid.firstElementChild;
+        const cardWidth = firstChild ? firstChild.offsetWidth + 16 : 280;
+        featuredGrid.scrollTo({ left: idx * cardWidth, behavior: 'smooth' });
+      });
+    });
+  }
+
+  // 8. Mobile Story Chapters IntersectionObserver Reveal (One-time only, no pin, no Lenis dependency)
+  const mobileChapters = document.querySelectorAll('.mobile-story-chapter');
+  if (mobileChapters.length > 0 && 'IntersectionObserver' in window) {
+    const chapterObserver = new IntersectionObserver((entries, observer) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('is-revealed');
+          observer.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.15, rootMargin: '0px 0px -50px 0px' });
+
+    mobileChapters.forEach((ch) => chapterObserver.observe(ch));
+  }
+
+  // 9. Mobile Play Showreel Button Trigger
+  const mobilePlayBtn = document.getElementById('lusion-mobile-play-btn');
+  const modal = document.getElementById('lusion-video-modal');
+  const modalVideo = document.getElementById('lusion-modal-video');
+  if (mobilePlayBtn && modal) {
+    mobilePlayBtn.addEventListener('click', () => {
+      modal.classList.add('active');
+      modal.style.opacity = '1';
+      modal.style.pointerEvents = 'auto';
+      // Native controls enabled, do not autoplay with sound
+      if (modalVideo) {
+        modalVideo.controls = true;
+      }
+    });
+  }
 });

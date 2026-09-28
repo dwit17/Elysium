@@ -36,6 +36,12 @@
       return;
     }
 
+    // Skip heavy 181-frame canvas image loading & ScrollTrigger scrub on mobile (<768px)
+    if (window.innerWidth < 768) {
+      container.style.display = 'none';
+      return;
+    }
+
     const ctx = canvas.getContext('2d', { alpha: false, desynchronized: true });
     if (!ctx) return;
 
@@ -187,7 +193,7 @@
         heroScrollTrigger = ScrollTrigger.create({
           trigger: container,
           start: 'top top',
-          end: '+=2000',
+          end: () => (window.innerWidth < 768 ? '+=1200' : (window.innerWidth < 1024 ? '+=1600' : '+=2000')),
           pin: true,
           scrub: 0.1,
           anticipatePin: 1,

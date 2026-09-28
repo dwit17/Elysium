@@ -58,8 +58,8 @@
           }
         });
 
-        // lagSmoothing(0) ensures instant frame synchronization without sluggish lag
-        gsap.ticker.lagSmoothing(0);
+        // lagSmoothing(500, 33) ensures lag protection and stops freezes during rapid jumps/scrolling
+        gsap.ticker.lagSmoothing(500, 33);
         window.__elysiumLenis = lenisInstance;
         console.log('[Elysium GSAP] Lenis smooth scroll initialized & bridged to GSAP ticker.');
       } catch (err) {
@@ -218,14 +218,15 @@
           vUv = aTexCoord;
           float p = clamp(uProgress, 0.0, 1.0);
           float aspect = uResolution.x / max(uResolution.y, 1.0);
+          bool isPortrait = aspect < 1.0;
 
-          // Starting card position: bottom-left aligned cleanly below title
-          vec2 startCenter = vec2(-0.52, -0.46);
-          vec2 startSize = vec2(0.38, 0.38 / aspect * 1.45);
+          // Starting card position: on landscape bottom-left, on portrait centered lower
+          vec2 startCenter = isPortrait ? vec2(0.0, -0.36) : vec2(-0.52, -0.46);
+          vec2 startSize = isPortrait ? vec2(0.68, 0.68 * aspect * 1.05) : vec2(0.38, 0.38 / aspect * 1.45);
 
-          // Docked card position: centered full viewport frame
+          // Docked card position: centered viewport frame
           vec2 endCenter = vec2(0.0, 0.0);
-          vec2 endSize = vec2(0.908, 0.75);
+          vec2 endSize = isPortrait ? vec2(0.92, 0.72) : vec2(0.908, 0.75);
 
           // Smooth cubic expansion
           float expandEased = smoothstep(0.14, 0.78, p);
@@ -538,39 +539,101 @@
       };
     });
 
-    mm.add('(max-width: 1023px)', () => {
+    // TABLET (768px - 1023px)
+    mm.add('(min-width: 768px) and (max-width: 1023px)', () => {
       gsap.set(intro, { opacity: 1, y: 0 });
-      gsap.set(dockedUi, { opacity: 1 });
-      gsap.set([playWordLeft, playWordRight, playPill, plusMarks], { opacity: 1, x: 0, scale: 1 });
+      gsap.set(dockedUi, { opacity: 0, pointerEvents: 'none' });
+      gsap.set(playWordLeft, { x: -40, opacity: 0 });
+      gsap.set(playWordRight, { x: 40, opacity: 0 });
+      gsap.set(playPill, { scale: 0.45, opacity: 0 });
+      gsap.set(plusMarks, { scale: 0, opacity: 0 });
+
+      const tabletTl = gsap.timeline({ defaults: { ease: 'none' } });
+
+      tabletTl.to(intro, {
+        y: -70,
+        opacity: 0,
+        duration: 0.28,
+        ease: 'power2.inOut',
+      }, 0.00);
 
       if (drawPathCore) {
-        gsap.to(drawPathCore, {
+        tabletTl.to(drawPathCore, {
           strokeDashoffset: 0,
+          duration: 0.72,
           ease: 'none',
-          scrollTrigger: {
-            trigger: section,
-            start: 'top top',
-            end: '+=1600',
-            scrub: 0.4,
-          }
-        });
+        }, 0.00);
+
+        if (svgLineWrap) {
+          tabletTl.to(svgLineWrap, {
+            opacity: 0,
+            duration: 0.12,
+            ease: 'power2.out',
+          }, 0.58);
+        }
       }
 
-      const mobileSt = ScrollTrigger.create({
+      tabletTl.to(dockedUi, {
+        opacity: 1, pointerEvents: 'auto', duration: 0.14,
+        ease: 'power1.out',
+      }, 0.70);
+
+      tabletTl.to([playWordLeft, playWordRight], {
+        x: 0,
+        opacity: 1,
+        duration: 0.16,
+        ease: 'power2.out',
+      }, 0.72);
+
+      tabletTl.to(playPill, {
+        scale: 1.0,
+        opacity: 1,
+        duration: 0.18,
+        ease: 'back.out(1.5)',
+      }, 0.74);
+
+      tabletTl.to(plusMarks, {
+        scale: 1.0,
+        rotation: 90,
+        opacity: 0.65,
+        stagger: 0.02,
+        duration: 0.18,
+        ease: 'power2.out',
+      }, 0.73);
+
+      const tabletSt = ScrollTrigger.create({
         trigger: section,
         start: 'top top',
         end: '+=1600',
         pin: stage,
-        scrub: 0.4,
+        scrub: 0.45,
         anticipatePin: 1,
+        fastScrollEnd: true,
+        invalidateOnRefresh: true,
+        animation: tabletTl,
         onUpdate: (self) => {
           targetProgress = self.progress;
+        },
+        onToggle: (self) => {
+          isSectionVisible = self.isActive;
         },
       });
 
       return () => {
-        if (mobileSt) mobileSt.kill();
+        if (tabletSt) tabletSt.kill();
       };
+    });
+
+    // MOBILE (< 768px) - Standalone Clean Hero Flow
+    mm.add('(max-width: 767px)', () => {
+      gsap.set(intro, { opacity: 1, y: 0, clearProps: 'transform' });
+      gsap.set(stage, { clearProps: 'transform' });
+      if (dockedUi) gsap.set(dockedUi, { display: 'none' });
+      if (svgLineWrap) gsap.set(svgLineWrap, { display: 'none' });
+      if (canvas) gsap.set(canvas, { display: 'none' });
+
+      // No ScrollTrigger pin on mobile - scrolls naturally into next section
+      return () => {};
     });
 
     let startTime = performance.now();
@@ -611,10 +674,16 @@
       if (webglApi) webglApi.resize();
     });
 
+    const modalVideo = document.getElementById('lusion-modal-video');
+
     function openModal() {
       if (!modal) return;
       modal.classList.add('active');
       gsap.to(modal, { opacity: 1, pointerEvents: 'auto', duration: 0.35, ease: 'power2.out' });
+      if (modalVideo) {
+        modalVideo.controls = true;
+        // Do NOT autoplay with sound on mobile - require explicit tap
+      }
       if (modalImg) modalImg.src = montageImages[montageIdx];
     }
 
@@ -622,6 +691,10 @@
       if (!modal) return;
       modal.classList.remove('active');
       gsap.to(modal, { opacity: 0, pointerEvents: 'none', duration: 0.25, ease: 'power2.in' });
+      if (modalVideo) {
+        modalVideo.pause();
+        modalVideo.currentTime = 0;
+      }
     }
 
     if (playTrigger) playTrigger.addEventListener('click', openModal);
@@ -656,6 +729,12 @@
     const cardItems = Array.from(section.querySelectorAll('.elysium-stack-card'));
     if (cardItems.length < 2) return;
 
+    // Check mobile screen (<768px): Abandon pinned/stacking scroll mechanic completely
+    if (window.innerWidth < 768) {
+      console.log('[Elysium Motion] Mobile screen: Section 3 pinned card stacking abandoned for clean normal-flow vertical blocks.');
+      return;
+    }
+
     // Check prefers-reduced-motion
     const prefersReducedMotion = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
     if (prefersReducedMotion) {
@@ -671,7 +750,7 @@
     });
 
     const totalCards = cardItems.length;
-    const isMobile = window.innerWidth < 768;
+    const isMobile = false;
     const isTablet = window.innerWidth < 1024;
 
     // Vertical top ladder offset & scale step matching 21st.dev
@@ -747,12 +826,10 @@
     }
 
     // ScrollTrigger Pinned Arena
-    const pinDistance = (totalCards - 1) * (isMobile ? 550 : 750);
-
     const st = ScrollTrigger.create({
       trigger: section,
       start: 'top top',
-      end: '+=' + pinDistance,
+      end: () => '+=' + ((totalCards - 1) * (window.innerWidth < 768 ? 480 : (window.innerWidth < 1024 ? 600 : 750))),
       pin: stage,
       pinSpacing: true,
       scrub: 0.6,
@@ -766,170 +843,425 @@
   }
 
   /**
-   * 4. SECTION 4 — MARQUEE ALONG SVG PATH COMPONENT (HIGH PERFORMANCE 60FPS PORT)
-   * Exact behavior ported from 21st.dev by @danielpetho (marquee-along-svg-path-scroll).
-   * High-Performance Engine Features:
-   *  - Pre-computed 2,000-point Look-Up Table (LUT) with typed Float32Array: 0 bezier calculations per frame!
-   *  - Cached z-index updates (only updates DOM when integer level changes)
-   *  - Direct Lenis velocity bridge for jitter-free scroll reactivity
-   *  - True rAF pause when off-screen (0% CPU/GPU overhead when not visible)
-   *  - ResizeObserver for responsive scaling
-   */
-  /**
-   * 4. SECTION 4 — THE 3D KINETIC CRAFT HORIZON (Awwwards-Grade GSAP Spatial Experience)
-   * Features:
-   *  - Pure 3D spatial perspective horizon with hardware-accelerated transforms
-   *  - Real-time gyroscopic mouse tilt parallax via gsap.quickTo
-   *  - Interactive dynamic spotlight following the cursor
-   *  - Magnetic stage navigation tabs with active indicator glide
-   *  - Silky drag, swipe, and click-to-focus 3D card transitions
-   *  - Smooth story panel crossfade and metric updates
-   *  - 100% Zero CPU overhead when off-screen
-   */
-  /**
-   * 4. SECTION 4 — ARCHITECTURAL LINE SANCTUARY (SPATIAL LEFT-TO-RIGHT STROKE ANIMATION)
-   *  - Animates existing discrete SVG paths sorted by their horizontal visual position (centerX).
-   *  - Progressively draws left -> center -> right as the user scrolls down.
-   *  - Zero connector lines, zero masks, zero modifications to artwork geometry.
-   *  - Fully scrubbed and reversible on scroll up.
-   *  - 100% visible at completion before scrolling to the next section.
+   * 4. SECTION 4 — ARCHITECTURAL LINE SANCTUARY (EDGE-TO-EDGE SCROLL DRAW)
+   * Pure, immersive scroll-driven SVG line art drawing from left edge to right edge.
+   * As the user scrolls through the pinned section, the path draws progressively across the screen.
    */
   function initScrollDrawSection() {
     const section = document.getElementById('section-scroll-draw');
+    const stage = document.getElementById('scroll-draw-sticky');
     const svg = document.getElementById('sanctuary-line-art-svg');
-    const svgContainer = document.getElementById('sanctuary-svg-container');
-    if (!section || !svg || !svgContainer || typeof gsap === 'undefined') return;
+    if (!section || !stage || !svg || typeof gsap === 'undefined' || typeof ScrollTrigger === 'undefined') return;
 
-    const paths = Array.from(svg.querySelectorAll('path'));
-    if (!paths.length) return;
+    const floorLead = svg.querySelector('#sanctuary-floor-lead');
+    const strokes = Array.from(svg.querySelectorAll('.sanctuary-stroke:not(#sanctuary-floor-lead)'));
 
-    // 1. Measure each path and set initial hidden state
-    const measurements = [];
-    for (let i = 0; i < paths.length; i++) {
-      const p = paths[i];
-      let len = 0;
-      let bbox = { x: 0, y: 0, width: 0, height: 0 };
+    // Bounding domain: from -300 (far-left edge) to 920 (far-right edge) = total 1220px
+    const minDomain = -300;
+    const maxDomain = 920;
+    const domainSpan = maxDomain - minDomain;
+
+    let floorLen = 1220;
+    if (floorLead) {
       try {
-        len = p.getTotalLength();
-        bbox = p.getBBox();
-      } catch (e) {
-        len = 100;
-      }
-      const safeLen = Math.ceil(len) + 2;
-      p.style.strokeDasharray = `${safeLen} ${safeLen * 2}`;
-      p.style.strokeDashoffset = `${safeLen}`;
-      p.style.opacity = '0';
-
-      measurements.push({
-        path: p,
-        length: safeLen,
-        minX: bbox.x,
-        maxX: bbox.x + bbox.width,
-        centerX: bbox.x + bbox.width / 2,
-      });
+        floorLen = floorLead.getTotalLength() || 1220;
+        gsap.set(floorLead, {
+          strokeDasharray: floorLen,
+          strokeDashoffset: floorLen,
+          opacity: 1,
+          stroke: '#111111',
+        });
+      } catch (e) { }
     }
 
-    // Reveal SVG container cleanly
-    gsap.set(svgContainer, { opacity: 1 });
+    // Initialize all individual strokes with their exact length and opacity: 0 (ZERO phantom dots!)
+    const strokeData = [];
+    strokes.forEach((strk) => {
+      let len = 0;
+      try {
+        len = strk.getTotalLength();
+      } catch (e) { }
 
-    // 2. Prefers-reduced-motion check
+      if (len > 0) {
+        gsap.set(strk, {
+          strokeDasharray: len,
+          strokeDashoffset: len,
+          opacity: 0,
+          stroke: '#111111',
+        });
+
+        const minX = parseFloat(strk.getAttribute('data-min-x')) || 0;
+        // Normalized horizontal progression [0, 1] across the canvas
+        const normX = Math.max(0, Math.min(1, (minX - minDomain) / domainSpan));
+
+        strokeData.push({
+          el: strk,
+          len: len,
+          normX: normX,
+        });
+      }
+    });
+
     if (prefersReducedMotion) {
-      paths.forEach((p) => {
-        p.style.strokeDashoffset = '0';
-        p.style.opacity = '1';
+      if (floorLead) gsap.set(floorLead, { strokeDashoffset: 0 });
+      strokeData.forEach((s) => {
+        gsap.set(s.el, { strokeDashoffset: 0, opacity: 1 });
       });
-      console.log('[Elysium Motion] Section 4: Prefers reduced motion active (all paths visible).');
       return;
     }
 
-    // 3. Compute horizontal bounds and normalized progress (0 -> 1)
-    const minX = Math.min(...measurements.map((m) => m.centerX));
-    const maxX = Math.max(...measurements.map((m) => m.centerX));
-    const spanX = Math.max(maxX - minX, 1);
+    // Scroll distance for slow, silky smooth drawing cadence
+    const scrollDistance = Math.round(window.innerHeight * (window.innerWidth < 768 ? 2.2 : 2.8));
 
-    measurements.forEach((m) => {
-      m.progress = (m.centerX - minX) / spanX;
+    // Master ScrollTrigger Timeline
+    const tl = gsap.timeline({
+      scrollTrigger: {
+        trigger: section,
+        start: 'top top',
+        end: () => `+=${scrollDistance}`,
+        pin: stage,
+        pinSpacing: true,
+        scrub: 0.8,
+        anticipatePin: 1,
+        invalidateOnRefresh: true,
+      },
     });
 
-    // Sort by spatial visual position from far-left to far-right
-    measurements.sort((a, b) => a.progress - b.progress);
-
-    // 4. Build master GSAP timeline scrubbed by ScrollTrigger
-    if (typeof ScrollTrigger !== 'undefined') {
-      const isMobile = window.innerWidth < 768;
-      const pinDistance = isMobile ? 2400 : 3000;
-
-      const tl = gsap.timeline({
-        scrollTrigger: {
-          trigger: section,
-          start: 'top top',
-          end: `+=${pinDistance}`,
-          pin: true,
-          scrub: 1.5,
-          anticipatePin: 1,
-          invalidateOnRefresh: true,
-        },
-      });
-
-      // Spread the stroke drawing across 0.0 -> 0.85 of the timeline
-      // Remaining 0.85 -> 1.0 is a dwell holding the 100% completed artwork before unpinning
-      const drawWindow = 0.84;
-
-      measurements.forEach((item) => {
-        const startPos = item.progress * drawWindow;
-        // Dynamic duration: small paths draw swiftly, larger contour strokes take slightly longer
-        const duration = Math.max(0.05, Math.min(0.18, (item.length / 450) * 0.12));
-
-        tl.set(item.path, { opacity: 1 }, startPos);
-        tl.to(
-          item.path,
-          {
-            strokeDashoffset: 0,
-            duration: duration,
-            ease: 'none',
-          },
-          startPos
-        );
-      });
-
-      // Dwell buffer at the end so the user sees the complete artwork in full
-      tl.to({}, { duration: 0.12 }, 0.88);
-
-      console.log(
-        `[Elysium Motion] Section 4 initialized with ${measurements.length} spatial discrete paths (pin: ${pinDistance}px, X: ${minX.toFixed(1)} -> ${maxX.toFixed(1)}).`
-      );
+    // 1. Floor baseline draws continuously from far left to far right (0.00 -> 1.00)
+    if (floorLead) {
+      tl.to(floorLead, {
+        strokeDashoffset: 0,
+        ease: 'none',
+        duration: 1.0,
+      }, 0);
     }
+
+    // 2. Each stroke physically draws along its geometry as the flowing wave reaches it
+    strokeData.forEach((item) => {
+      // Map horizontal X position to timeline start time [0.04, 0.86]
+      const startTime = 0.04 + item.normX * 0.78;
+      // Duration of individual stroke drawing (flowing along curve)
+      const strokeDuration = 0.16;
+
+      // Reveal stroke opacity as it starts drawing (prevents pre-draw dots)
+      tl.to(item.el, {
+        opacity: 1,
+        duration: 0.02,
+        ease: 'none',
+      }, startTime);
+
+      // Smoothly draw the stroke along its path
+      tl.to(item.el, {
+        strokeDashoffset: 0,
+        duration: strokeDuration,
+        ease: 'power1.out',
+      }, startTime);
+    });
+
+    // Debounced Resize Re-measurement Handler
+    let resizeTimer = null;
+    window.addEventListener('resize', () => {
+      clearTimeout(resizeTimer);
+      resizeTimer = setTimeout(() => {
+        try {
+          if (floorLead) {
+            const freshLen = floorLead.getTotalLength();
+            if (freshLen > 0) {
+              floorLen = freshLen;
+              floorLead.style.strokeDasharray = `${floorLen}`;
+            }
+          }
+          strokeData.forEach((s) => {
+            const fresh = s.el.getTotalLength();
+            if (fresh > 0) {
+              s.len = fresh;
+              s.el.style.strokeDasharray = `${fresh}`;
+            }
+          });
+          ScrollTrigger.refresh();
+        } catch (e) { }
+      }, 200);
+    });
+
+    console.log(`[Elysium ScrollDraw] Section 4 active: ${strokeData.length} individual strokes flowing left-to-right like water.`);
   }
 
 
 
   /**
-   * 5. SECTION 5 — CURATED EDITORIAL COLLECTION
+   * 5. SECTION 5 — CURATED EDITORIAL COLLECTION (CODEGRID 3 IMAGES -> 1 COMBINED IMAGE -> 3D FLIP)
+   * 1:1 Implementation of Codegrid's ScrollTrigger-driven 3-images-to-1-image combining and 3D card flip.
+   * - Starts as 3 separate distinct images with generous gap, rounded corners, and individual shadow framing.
+   * - Phase 1 (0.00 -> 0.40): Combining! Three images glide together, gap closes (28px -> 0px),
+   *   border-radius flattens (18px -> 0px), outer cards slide inward to unite into ONE single continuous 16:9 atelier masterpiece.
+   *   isGapAnimationCompleted flag marks this milestone.
+   * - Phase 2 (0.42 -> 0.85): 3D Flip! The combined cards rotateY 180° with anti-gravity swinging arc
+   *   (left card tilts Z -6.5° & dips Y 22px, right card tilts Z +6.5° & dips Y 22px, center floats).
+   * - Phase 3 (0.85 -> 1.00): Settling & reveal of curated horology artifacts and interactive CTA links.
+   * - Fully reversible, 60fps/120fps hardware accelerated, integrated with Lenis smooth scroll.
+   */
+  /**
+   * 5. SECTION 5 — FEATURED PIECES (CURATED COLLECTION)
+   * 3-to-1 Merge & 3D Flip Hero Architecture (Redomedia / Codegrid Reference)
+   *
+   * Phase 1 (progress 0 -> 0.55):
+   * Three separate panels begin in a relaxed fanned pose (outer cards fanned ±7°, dipped 34px, 28px gap).
+   * As the user scrolls, gaps close to 0, rotations/offsets ease to 0, touching inner corner radii flatten
+   * from 24px -> 0px, outer corner radii ease to 16px. The three panels merge into one continuous artwork.
+   *
+   * Phase 2 (progress 0.55 -> 1.0):
+   * Once merged, crossing the threshold (~0.60) fires a one-shot 180° Y-flip on all three card inners
+   * to reveal the back curated collection artifact details. Guarded by a boolean flag (hasFlipped)
+   * so it executes cleanly once per direction crossing, free from scrub jitter.
+   */
+  /**
+   * 5. SECTION 5 — FEATURED PIECES (CURATED COLLECTION)
+   * 1-Image Beginning -> Split into 3 Cards -> 3D Flip (Codegrid Architecture)
+   *
+   * Flow:
+   * 1. Beginning (progress 0.0 -> 0.10):
+   *    1 single unified panoramic artwork image in the center (0 gap, flat touching inner seams, 16px soft outer corners).
+   * 2. Split Phase (progress 0.10 -> 0.48):
+   *    The single image splits into 3 cards! Gap opens up (0 -> 28px), outer cards fan out (±7°, 32px dip),
+   *    touching inner corner radii round out (0 -> 20px), and individual drop shadows bloom.
+   * 3. Split Dwell (progress 0.48 -> 0.54):
+   *    The 3 cards hold in their fanned-out pose.
+   * 4. 3D Flip Phase (progress 0.54 -> 0.78):
+   *    The 3 cards flip 180° in 3D with cascading depth, revealing the back faces (title, medium, year, description, WhatsApp CTA).
+   * 5. Generous Read & Dwell Hold (progress 0.78 -> 1.00):
+   *    The flipped cards stay completely resting and pinned on screen for ~800px of scrolling so the user
+   *    can comfortably read every piece's details and click CTAs without the next section popping into view early!
    */
   function initFeaturedPiecesSection() {
-    const section = document.querySelector('.section-featured-pieces');
-    if (!section || typeof gsap === 'undefined' || typeof ScrollTrigger === 'undefined') return;
+    const section = document.querySelector('.featured-pin') || document.querySelector('.section-featured-pieces') || document.getElementById('section-curated-collection');
+    const pinInner = document.querySelector('.pin-inner') || document.querySelector('.featured-pin-inner') || document.getElementById('featured-split-sticky');
+    const header = document.getElementById('featured-section-header') || document.querySelector('.featured-header');
+    const track = document.getElementById('featured-cards-track') || document.querySelector('.featured-cards-track');
+    const cards = gsap.utils.toArray('.featured-card');
+    const cardInners = gsap.utils.toArray('.featured-flip-inner');
 
-    const cards = section.querySelectorAll('.featured-piece-card');
-    if (cards.length === 0) return;
+    if (!section || !pinInner || !track || cards.length !== 3 || typeof gsap === 'undefined' || typeof ScrollTrigger === 'undefined') return;
 
-    if (!prefersReducedMotion) {
-      gsap.set(cards, { opacity: 0, y: 35 });
-      gsap.to(cards, {
-        opacity: 1,
-        y: 0,
-        stagger: 0.12,
-        duration: 0.85,
-        ease: 'power3.out',
-        scrollTrigger: {
-          trigger: section.querySelector('.featured-pieces-grid') || section,
-          start: 'top 82%',
-          toggleActions: 'play none none none',
-        },
-      });
+    const isMobile = window.innerWidth < 640;
+    const isTablet = window.innerWidth >= 640 && window.innerWidth < 1024;
+
+    // Accessibility prefers-reduced-motion check
+    if (prefersReducedMotion) {
+      if (header) gsap.set(header, { opacity: 1, y: 0 });
+      gsap.set(track, { gap: isMobile ? '14px' : '28px', scale: 1 });
+      gsap.set(cards, { borderRadius: isMobile ? '8px' : '12px', rotateZ: 0, y: 0, x: 0 });
+      gsap.set(cardInners, { rotateY: -180 });
+      return;
     }
 
-    console.log(`[Elysium Motion] Section 5 (Featured Pieces) initialized with ${cards.length} cards.`);
+    // Exact Redomedia physical metrics
+    const targetGap = isMobile ? 12 : (isTablet ? 20 : 32);
+    const leftRotZ = isMobile ? -8 : -14;
+    const rightRotZ = isMobile ? 6 : 10;
+    const leftY = isMobile ? 18 : 30;
+    const midY = isMobile ? -4 : -8;
+    const rightY = isMobile ? 14 : 22;
+    const leftX = isMobile ? -4 : -8;
+    const rightX = isMobile ? 4 : 8;
+    const cornerRadius = isMobile ? 8 : 12;
+
+    // Generous runway (4.4 screen heights on desktop, 3.6 on mobile) guarantees user never gets pushed into next section prematurely
+    const pinDistance = window.innerHeight * (isMobile ? 3.6 : 4.4);
+
+    // BASELINE STATE (Progress = 0):
+    // Header hidden slightly lower; 1 unified seamless image slab touching with 0 gap, outer corners rounded
+    if (header) {
+      gsap.set(header, { opacity: 0, y: 35 });
+    }
+    gsap.set(track, {
+      gap: '0px',
+      scale: 1.18,
+      transformPerspective: 1200,
+    });
+    gsap.set(cards[0], {
+      rotateZ: 0,
+      y: 0,
+      x: 0,
+      transformOrigin: 'bottom right',
+    });
+    gsap.set([cards[0], cards[0].querySelectorAll('.card-inner, .card-front, .card-front img')], {
+      borderTopLeftRadius: cornerRadius,
+      borderBottomLeftRadius: cornerRadius,
+      borderTopRightRadius: 0,
+      borderBottomRightRadius: 0,
+    });
+
+    gsap.set(cards[1], {
+      rotateZ: 0,
+      y: 0,
+      x: 0,
+      marginLeft: '-1px',
+      marginRight: '-1px',
+      zIndex: 2,
+      transformOrigin: 'center center',
+    });
+    gsap.set([cards[1], cards[1].querySelectorAll('.card-inner, .card-front, .card-front img')], {
+      borderRadius: 0,
+      borderTopLeftRadius: 0,
+      borderBottomLeftRadius: 0,
+      borderTopRightRadius: 0,
+      borderBottomRightRadius: 0,
+    });
+
+    gsap.set(cards[2], {
+      rotateZ: 0,
+      y: 0,
+      x: 0,
+      transformOrigin: 'bottom left',
+    });
+    gsap.set([cards[2], cards[2].querySelectorAll('.card-inner, .card-front, .card-front img')], {
+      borderTopRightRadius: cornerRadius,
+      borderBottomRightRadius: cornerRadius,
+      borderTopLeftRadius: 0,
+      borderBottomLeftRadius: 0,
+    });
+
+    gsap.set(cardInners, {
+      rotateY: 0,
+      transformStyle: 'preserve-3d',
+    });
+
+    // Master Timeline with ScrollTrigger (Virtual duration: 11.2 units)
+    const tl = gsap.timeline({
+      scrollTrigger: {
+        trigger: section,
+        pin: true, // pin the section itself for rock-solid stability!
+        start: 'top top',
+        end: () => `+=${pinDistance}`,
+        scrub: 1.0, // silky smooth synchronized scrub
+        anticipatePin: 1,
+        invalidateOnRefresh: true,
+      },
+    });
+
+    // =========================================================================
+    // PHASE 1: ENTRY & SCALE CONVERGENCE (0.0 -> 1.4)
+    // Header reveals with smooth fade + rise; card track scales from 1.18 to 1.0
+    // =========================================================================
+    if (header) {
+      tl.to(header, {
+        opacity: 1,
+        y: 0,
+        duration: 1.3,
+        ease: 'power2.out',
+      }, 0);
+    }
+    tl.to(track, {
+      scale: 1.0,
+      duration: 1.4,
+      ease: 'power2.out',
+    }, 0);
+
+    // =========================================================================
+    // PHASE 2: CONTEMPLATION HOLD (1.4 -> 2.4)
+    // Unified 1-piece image rests in screen center
+    // =========================================================================
+    tl.to({}, { duration: 1.0 }, 1.4);
+
+    // =========================================================================
+    // PHASE 3: THE SPLIT & SEPARATION (2.4 -> 4.8)
+    // Gap expands from 0 to targetGap; margins normalize; all corners round out
+    // =========================================================================
+    tl.to(track, {
+      gap: `${targetGap}px`,
+      duration: 2.4,
+      ease: 'power2.inOut',
+    }, 2.4);
+
+    tl.to(cards[1], {
+      marginLeft: '0px',
+      marginRight: '0px',
+      duration: 2.4,
+      ease: 'power2.inOut',
+    }, 2.4);
+
+    tl.to([cards[0], cards[0].querySelectorAll('.card-inner, .card-front, .card-front img, .card-back')], {
+      borderRadius: `${cornerRadius}px`,
+      duration: 2.4,
+      ease: 'power2.inOut',
+    }, 2.4);
+
+    tl.to([cards[1], cards[1].querySelectorAll('.card-inner, .card-front, .card-front img, .card-back')], {
+      borderRadius: `${cornerRadius}px`,
+      duration: 2.4,
+      ease: 'power2.inOut',
+    }, 2.4);
+
+    tl.to([cards[2], cards[2].querySelectorAll('.card-inner, .card-front, .card-front img, .card-back')], {
+      borderRadius: `${cornerRadius}px`,
+      duration: 2.4,
+      ease: 'power2.inOut',
+    }, 2.4);
+
+    // =========================================================================
+    // PHASE 4: SPLIT REST (4.8 -> 5.2)
+    // Brief settling pause before the 3D flip begins
+    // =========================================================================
+    tl.to({}, { duration: 0.4 }, 4.8);
+
+    // =========================================================================
+    // PHASE 5: 3D FLIP & SIGNATURE REDOMEDIA CARD FAN (5.2 -> 7.4)
+    // Cards flip 180° on Y with 1200px perspective and cascading depth;
+    // Left card tilts to -14° and dips down +30px;
+    // Center card elevates upright at scale 1.02 and y -8px;
+    // Right card tilts to +10° and dips down +22px.
+    // =========================================================================
+    // Card 1 (Left): flips to -180deg and settles in its tilted fan pose
+    tl.to(cardInners[0], {
+      rotateY: -180,
+      duration: 2.0,
+      ease: 'power2.inOut',
+    }, 5.2);
+    tl.to(cards[0], {
+      rotateZ: leftRotZ,
+      y: leftY,
+      x: leftX,
+      duration: 2.0,
+      ease: 'power2.inOut',
+    }, 5.2);
+
+    // Card 2 (Center): flips to -180deg with slight +0.15s stagger and stays elevated
+    tl.to(cardInners[1], {
+      rotateY: -180,
+      duration: 2.0,
+      ease: 'power2.inOut',
+    }, 5.35);
+    tl.to(cards[1], {
+      y: midY,
+      scale: 1.02,
+      duration: 2.0,
+      ease: 'power2.inOut',
+    }, 5.35);
+
+    // Card 3 (Right): flips to -180deg with +0.3s stagger and settles in its tilted fan pose
+    tl.to(cardInners[2], {
+      rotateY: -180,
+      duration: 2.0,
+      ease: 'power2.inOut',
+    }, 5.5);
+    tl.to(cards[2], {
+      rotateZ: rightRotZ,
+      y: rightY,
+      x: rightX,
+      duration: 2.0,
+      ease: 'power2.inOut',
+    }, 5.5);
+
+    // =========================================================================
+    // PHASE 6: EXTENDED READ & DWELL HOLD (7.4 -> 11.2)
+    // A full 3.8 virtual units (~34% of the total scroll distance = ~1,400px of scrolling!)
+    // The flipped cards remain completely pinned, resting, and interactive.
+    // The user has ample time to comfortably read every card, inspect the materials,
+    // and click the WhatsApp buttons without the next section popping into view early!
+    // =========================================================================
+    tl.to({}, { duration: 3.8 }, 7.4);
+
+    console.log('[Elysium Motion] Section 5 (Redomedia Section 3 Complete 1-to-3 Split, 3D Flip & Signature Fan with 3.8-unit Dwell) initialized.');
   }
 
   /**
@@ -942,7 +1274,12 @@
     const text = document.querySelector('.Horizontal__text');
     if (!wrapper || !text || typeof gsap === 'undefined' || typeof ScrollTrigger === 'undefined') return;
 
-    if (prefersReducedMotion || isCompactScreen()) {
+    if (window.innerWidth < 768) {
+      gsap.set(text, { paddingLeft: '0', paddingRight: '0', whiteSpace: 'normal', width: '100%', x: 0 });
+      return;
+    }
+
+    if (prefersReducedMotion) {
       gsap.set(text, { paddingLeft: '1.5rem', paddingRight: '1.5rem', whiteSpace: 'normal', width: '100%', x: 0 });
       return;
     }
@@ -984,7 +1321,7 @@
           trigger: wrapper,
           pin: true,
           start: 'clamp(top top)',
-          end: '+=1600px',
+          end: () => (window.innerWidth < 768 ? '+=900px' : (window.innerWidth < 1024 ? '+=1300px' : '+=1600px')),
           scrub: 0.8,
           anticipatePin: 1,
           invalidateOnRefresh: true,
@@ -1330,7 +1667,10 @@
       });
     });
 
-    startAutoAdvance();
+    // Auto-advance only on desktop; manual swipe/tap only on mobile
+    if (window.innerWidth >= 768) {
+      startAutoAdvance();
+    }
     console.log('[Elysium Motion] Testimonial component initialized with 3 rotating narratives & fragment assembly.');
   }
 
@@ -1358,6 +1698,210 @@
             once: true,
           },
         });
+      });
+    }
+  }
+
+  /**
+   * 7. SECTION 7 — STACKED SVG CASCADE & ISOLATED S INTERACTIVE CTA
+   * Exact 1:1 reproduction of Pensatori-Irrazionali & YouTube Architecture.
+   * 6 SVG layers cascade upwards cleanly. The middle letter 'S' detaches from
+   * 'ELYSIUM' (leaving 'ELY  IUM'), travels downward, scales, and docks as the
+   * leading letter 'S' in 'START A CONVERSATION WITH US', triggering the scramble reveal.
+   */
+  function initElysiumContactCascadeSection() {
+    const section = document.getElementById('section-elysium-contact');
+    const stickyStage = document.getElementById('elysium-contact-sticky');
+    const svgStack = document.getElementById('elysium-svg-stack');
+    if (!section || !stickyStage || !svgStack || typeof gsap === 'undefined' || typeof ScrollTrigger === 'undefined') return;
+
+    const layers = [
+      section.querySelector('.elysium-svg-layer.layer-1'),
+      section.querySelector('.elysium-svg-layer.layer-2'),
+      section.querySelector('.elysium-svg-layer.layer-3'),
+      section.querySelector('.elysium-svg-layer.layer-4'),
+      section.querySelector('.elysium-svg-layer.layer-5')
+    ];
+    const frontLayer = section.querySelector('.elysium-svg-layer.layer-6');
+    const bgLayerS = section.querySelectorAll('.bg-layer-s');
+    const isolatedSGroup = document.getElementById('isolated-s-group');
+    const ctaBox = document.getElementById('elysium-cta-box');
+    const ctaLeadingS = document.getElementById('cta-leading-s');
+    const ctaRemainder = document.getElementById('cta-remainder');
+
+    function getResponsiveMetrics() {
+      const isMobile = window.innerWidth < 768;
+      const isTablet = window.innerWidth >= 768 && window.innerWidth < 1024;
+      return {
+        isMobile,
+        isTablet,
+        yStep: isMobile ? 12 : (isTablet ? 16 : 20),
+        scaleStep: isMobile ? 0.006 : 0.007,
+        sTravelY: isMobile ? 110 : (isTablet ? 140 : 170),
+        pinDistance: window.innerHeight * (isMobile ? 2.0 : 2.5),
+        remainderPhrase: isMobile ? 'TART A CONVERSATION' : 'TART A CONVERSATION WITH US'
+      };
+    }
+
+    let metrics = getResponsiveMetrics();
+
+    // Baseline reset: All layers occupy identical overlapping positions
+    gsap.set(layers, { y: 0, scale: 1, transformOrigin: '50% 100%' });
+    if (frontLayer) gsap.set(frontLayer, { y: 0, scale: 1, transformOrigin: '50% 100%' });
+    if (bgLayerS.length) gsap.set(bgLayerS, { opacity: 1 });
+    // Note: isolated-s-group has local center at 42px 100px (glyph center)
+    if (isolatedSGroup) gsap.set(isolatedSGroup, { y: 0, rotation: 0, scale: 1, opacity: 1, transformOrigin: '42px 100px' });
+    if (ctaBox) gsap.set(ctaBox, { xPercent: -50, yPercent: -50, y: metrics.sTravelY, scale: 0.88, opacity: 0, pointerEvents: 'none' });
+    if (ctaRemainder) gsap.set(ctaRemainder, { opacity: 0, textContent: '' });
+    if (ctaLeadingS) gsap.set(ctaLeadingS, { opacity: 0 });
+
+    if (prefersReducedMotion) {
+      layers.forEach((layer, idx) => {
+        if (layer) gsap.set(layer, { y: -metrics.yStep * (idx + 1), scale: 1 - metrics.scaleStep * (idx + 1) });
+      });
+      if (bgLayerS.length) gsap.set(bgLayerS, { opacity: 0 });
+      if (isolatedSGroup) gsap.set(isolatedSGroup, { opacity: 0 });
+      if (ctaBox) {
+        gsap.set(ctaBox, { opacity: 1, scale: 1, pointerEvents: 'auto' });
+        if (ctaLeadingS) gsap.set(ctaLeadingS, { opacity: 1 });
+        if (ctaRemainder) gsap.set(ctaRemainder, { opacity: 1, textContent: metrics.remainderPhrase });
+      }
+      return;
+    }
+
+    // ScrambleText state machine
+    let isRevealed = false;
+    let scrambleInterval = null;
+    const chars = '✦01CONVERSATIONWITHUS';
+
+    function runScramble(targetText) {
+      if (scrambleInterval) clearInterval(scrambleInterval);
+      if (ctaRemainder) {
+        gsap.to(ctaRemainder, { opacity: 1, duration: 0.15 });
+      }
+      let step = 0;
+      const totalSteps = 12;
+      scrambleInterval = setInterval(() => {
+        step++;
+        const resolvedLen = Math.floor((step / totalSteps) * targetText.length);
+        let output = targetText.slice(0, resolvedLen);
+        for (let i = resolvedLen; i < targetText.length; i++) {
+          if (targetText[i] === ' ') output += ' ';
+          else output += chars[Math.floor(Math.random() * chars.length)];
+        }
+        if (ctaRemainder) ctaRemainder.textContent = output;
+        if (step >= totalSteps) {
+          clearInterval(scrambleInterval);
+          if (ctaRemainder) ctaRemainder.textContent = targetText;
+        }
+      }, 30);
+    }
+
+    // Master ScrollTrigger Timeline
+    const masterTimeline = gsap.timeline({
+      scrollTrigger: {
+        trigger: section,
+        start: 'top top',
+        end: `+=${metrics.pinDistance}`,
+        pin: stickyStage,
+        pinSpacing: true,
+        scrub: 0.6,
+        anticipatePin: 1,
+        onUpdate: (self) => {
+          const p = self.progress;
+
+          // Scramble reveal triggered once per crossing of threshold
+          if (p >= 0.58 && !isRevealed) {
+            isRevealed = true;
+            runScramble(metrics.remainderPhrase);
+          } else if (p < 0.54 && isRevealed) {
+            isRevealed = false;
+            if (scrambleInterval) clearInterval(scrambleInterval);
+            if (ctaRemainder) {
+              ctaRemainder.textContent = '';
+              gsap.set(ctaRemainder, { opacity: 0 });
+            }
+          }
+
+          if (ctaBox) {
+            ctaBox.style.pointerEvents = (p >= 0.60) ? 'auto' : 'none';
+          }
+        }
+      }
+    });
+
+    // 1. Cascade Phase: The 5 background SVG copies subtly ripple upwards in depth (0.00 -> 0.35)
+    layers.forEach((layer, idx) => {
+      if (!layer) return;
+      const order = 5 - idx; // layer 5 is closest behind front layer 6
+      masterTimeline.to(layer, {
+        y: -metrics.yStep * order,
+        scale: 1 - metrics.scaleStep * order,
+        duration: 0.35,
+        ease: 'power1.out'
+      }, 0.02 * order);
+    });
+
+    // Fade background 'S' letters to leave clean negative gap in E L Y   I U M (0.22 -> 0.36)
+    if (bgLayerS.length) {
+      masterTimeline.to(bgLayerS, {
+        opacity: 0,
+        duration: 0.14,
+        ease: 'power1.out'
+      }, 0.22);
+    }
+
+    // 2. S Detachment, Own-Center Rotation & Graceful Descent (0.26 -> 0.58)
+    if (isolatedSGroup && ctaBox) {
+      // Phase 1: Separates and begins subtle tilt around its center (42px 100px)
+      masterTimeline.to(isolatedSGroup, {
+        y: metrics.sTravelY * 0.42,
+        rotation: -18,
+        scale: 1.04,
+        duration: 0.20,
+        ease: 'power2.inOut'
+      }, 0.26)
+      // Phase 2: Travels down to CTA position and scales into dock
+      .to(isolatedSGroup, {
+        y: metrics.sTravelY,
+        rotation: 0,
+        scale: 0.32,
+        opacity: 0,
+        duration: 0.18,
+        ease: 'power2.out'
+      }, 0.46);
+
+      // CTA Box emerges smoothly and docks the leading S
+      masterTimeline.fromTo(ctaBox,
+        { opacity: 0, scale: 0.85 },
+        { 
+          opacity: 1, 
+          scale: 1, 
+          duration: 0.18, 
+          ease: 'power2.out' 
+        }, 
+        0.45
+      );
+
+      if (ctaLeadingS) {
+        masterTimeline.fromTo(ctaLeadingS,
+          { opacity: 0, scale: 1.3 },
+          { opacity: 1, scale: 1, duration: 0.14, ease: 'power2.out' },
+          0.48
+        );
+      }
+    }
+
+    // Subtle magnetic hover for desktop
+    if (ctaBox && window.matchMedia('(hover: hover) and (pointer: fine)').matches) {
+      ctaBox.addEventListener('mousemove', (e) => {
+        const rect = ctaBox.getBoundingClientRect();
+        const x = (e.clientX - rect.left - rect.width / 2) * 0.12;
+        const y = (e.clientY - rect.top - rect.height / 2) * 0.18;
+        gsap.to(ctaBox, { x, y: metrics.sTravelY + y, duration: 0.2, ease: 'power1.out', overwrite: 'auto' });
+      });
+      ctaBox.addEventListener('mouseleave', () => {
+        gsap.to(ctaBox, { x: 0, y: metrics.sTravelY, duration: 0.4, ease: 'power2.out', overwrite: 'auto' });
       });
     }
   }
@@ -1416,7 +1960,7 @@
     // 0. Initialize Lenis smooth scroller
     initLenisSmoothScroll();
 
-    // 1. Homepage Body Sections (Atelier Reveal, Horizontal Suite, Materiality, Process Trace, Featured, Trust)
+    // 1. Homepage Body Sections (Atelier Reveal, Horizontal Suite, Materiality, Process Trace, Featured, Trust, Elysium Cascade Contact)
     initLusionSection2();
     // initHorizontalGallerySection (Replaced by Section 2 Lusion showreel)
     initSpatialSanctuarySection();
@@ -1425,6 +1969,13 @@
     initFeaturedPiecesSection();
     initTrustVoiceSection();
     initTestimonialComponent();
+    initElysiumContactCascadeSection();
+
+    // Recalculate and sort all pinning positions in precise document flow
+    if (typeof ScrollTrigger !== 'undefined') {
+      ScrollTrigger.sort();
+      ScrollTrigger.refresh();
+    }
 
     // 2. Interactive GSAP Button Hover Physics
     initButtonHoverAnimations();
@@ -1436,7 +1987,7 @@
     // 4. Asset-driven ScrollTrigger refresh (Promise.all on decode/load of critical images)
     function waitForCriticalAssetsAndRefresh() {
       const promises = [];
-      const images = Array.from(document.querySelectorAll('.image-blur-up, .featured-piece-img, .elysium-stack-img, .product-img-container img'));
+      const images = Array.from(document.querySelectorAll('.image-blur-up, .featured-piece-img, .featured-slice-img, .elysium-stack-img, .product-img-container img'));
 
       images.forEach((img) => {
         if (img.complete && img.naturalWidth > 0) {

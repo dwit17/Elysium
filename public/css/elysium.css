@@ -83,7 +83,7 @@
   /* LAYOUT & COMPONENT TOKENS */
   --header-h: 68px;
   --radius-media: 20px;
-  --radius-btn: 2px;
+  --radius-btn: 10px;
   --radius-pill: 999px;
   --radius-card: 20px;
   --max-text-ch: 60ch;
@@ -213,7 +213,7 @@ p { font-size: var(--text-body); line-height: 1.6; max-width: var(--max-text-ch)
 
 /* ==========================================================================
    UNIFIED PURE WHITE LUXURY BUTTON SYSTEM
-   - Resting State: Pure white surface (#ffffff), Black typography (#111111), Refined 8px curved edge, NO borders
+   - Resting State: Pure white surface (#ffffff), Black typography (#111111), Refined 10px curved edge, NO borders
    - Consistent layout everywhere (Header, Footer, Navbar, Sections, Drawers, Modals)
    - Hover Animation: Smooth bottom-to-up fill transition with ink overlay & white text inversion
    ========================================================================== */
@@ -232,7 +232,7 @@ p { font-size: var(--text-body); line-height: 1.6; max-width: var(--max-text-ch)
   justify-content: center !important;
   min-height: 48px !important;
   padding: 0 28px !important;
-  border-radius: var(--radius-btn, 2px) !important;
+  border-radius: var(--radius-btn, 10px) !important;
   background-color: #ffffff !important;
   color: #111111 !important;
   border: none !important;
@@ -262,7 +262,7 @@ p { font-size: var(--text-body); line-height: 1.6; max-width: var(--max-text-ch)
   min-height: 40px !important;
   padding: 0 22px !important;
   font-size: 12.5px !important;
-  border-radius: var(--radius-btn, 2px) !important;
+  border-radius: var(--radius-btn, 10px) !important;
 }
 
 /* Bottom-to-Up Ink Fill Pseudo-Element */
@@ -681,6 +681,7 @@ video,
   color: #a1a1aa;
   border: 1px solid #27272a;
   padding: 0.6rem 1.2rem;
+  border-radius: var(--radius-btn, 10px) !important;
   font-family: var(--font-mono);
   font-size: 0.75rem;
   text-transform: uppercase;
@@ -811,32 +812,22 @@ select {
   filter: grayscale(0%) contrast(1.06) brightness(1.02) !important;
 }
 
-/* Baroque Box / Card Frame (For Text, Quotes & Specs) */
+/* Architectural Card Frame */
 .baroque-box-frame {
   position: relative;
-  background: linear-gradient(145deg, rgba(24, 24, 27, 0.8) 0%, rgba(9, 9, 11, 0.95) 100%);
-  border: 1px solid rgba(212, 175, 55, 0.25);
+  background: #ffffff;
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  border-radius: var(--radius-card, 20px);
   padding: 2rem;
-  box-shadow: 0 12px 35px -10px rgba(0, 0, 0, 0.8),
-    inset 0 0 20px rgba(0, 0, 0, 0.6);
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.04);
   transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
-  overflow: visible;
+  overflow: hidden;
 }
 
 .baroque-box-frame:hover {
-  border-color: rgba(245, 158, 11, 0.55);
-  box-shadow: 0 20px 45px -12px rgba(0, 0, 0, 0.95),
-    0 0 25px rgba(245, 158, 11, 0.18);
+  border-color: rgba(0, 0, 0, 0.16);
+  box-shadow: 0 16px 36px rgba(0, 0, 0, 0.08);
   transform: translateY(-2px);
-}
-
-.baroque-box-frame:hover .baroque-corner {
-  color: #fbbf24;
-  filter: drop-shadow(0 0 8px rgba(245, 158, 11, 0.75));
-}
-
-.baroque-box-frame:hover .baroque-inner-border {
-  border-color: rgba(245, 158, 11, 0.4);
 }
 
 /* Responsive Corner Scales */
@@ -1650,95 +1641,30 @@ select {
    Inspired by Hand-Hewn Organic White Oak Timber (Reference Image 2)
    ========================================================================== */
 
-.wooden-art-frame,
-.baroque-box-frame {
+.wooden-art-frame {
   position: relative;
-  padding: clamp(28px, 3.8vw, 44px);
-  /* Organic White Oak Grain (Blonde Pale Timber with delicate creamy yellow undertones) */
-  background:
-    repeating-linear-gradient(90deg, rgba(160, 135, 95, 0.04) 0px, rgba(160, 135, 95, 0.04) 1px, transparent 1px, transparent 4px),
-    linear-gradient(135deg, #e4dac1 0%, #ccbe9f 35%, #ddd2b7 65%, #ece3cb 100%);
-  border: 6px solid #d3c5a6;
-  outline: 1px solid rgba(75, 60, 40, 0.25);
-  border-radius: 3px;
-  box-shadow:
-    inset 0 1.5px 0 rgba(255, 255, 255, 0.75),
-    inset 0 -1.5px 0 rgba(90, 75, 55, 0.35),
-    inset 1.5px 0 0 rgba(255, 255, 255, 0.5),
-    inset -1.5px 0 0 rgba(90, 75, 55, 0.3),
-    0 14px 35px -8px rgba(0, 0, 0, 0.85),
-    0 3px 8px rgba(0, 0, 0, 0.5);
+  background: #ffffff;
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  border-radius: var(--radius-card, 20px);
+  padding: clamp(20px, 2.5vw, 32px);
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.04);
   overflow: hidden;
-  transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.5s ease, border-color 0.5s ease;
+  transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.4s ease, border-color 0.4s ease;
 }
 
-/* Ambient Sweeping Sunlight Sheen across White Oak Timber */
 .wood-light-sheen {
-  position: absolute;
-  top: -50%;
-  left: -50%;
-  width: 200%;
-  height: 200%;
-  background: linear-gradient(115deg,
-      transparent 0%,
-      transparent 40%,
-      rgba(255, 255, 255, 0.08) 48%,
-      rgba(255, 255, 255, 0.18) 50%,
-      rgba(255, 255, 255, 0.08) 52%,
-      transparent 60%,
-      transparent 100%);
-  pointer-events: none;
-  z-index: 8;
-  animation: woodSheenSweep 8s ease-in-out infinite;
+  display: none;
 }
 
-@keyframes woodSheenSweep {
-  0% {
-    transform: translateX(-60%) translateY(-60%);
-  }
-
-  50% {
-    transform: translateX(30%) translateY(30%);
-  }
-
-  100% {
-    transform: translateX(-60%) translateY(-60%);
-  }
-}
-
-/* Inner Shadowbox Cavity & Pale Timber Bevel Lip */
 .wooden-inner-mat {
-  position: absolute;
-  inset: 6px;
-  border: 1px solid rgba(185, 170, 140, 0.35);
-  border-radius: 1px;
-  background: radial-gradient(circle at 50% 0%, #151310 0%, #0a0908 100%);
-  box-shadow:
-    inset 0 3px 14px rgba(0, 0, 0, 0.95),
-    inset 0 0 0 1px rgba(0, 0, 0, 0.85);
-  pointer-events: none;
-  z-index: 4;
-  transition: border-color 0.5s ease, box-shadow 0.5s ease;
+  display: none;
 }
 
 /* Interactive Hover States */
-.wooden-art-frame:hover,
-.baroque-box-frame:hover {
-  transform: translateY(-4px);
-  border-color: #dfd2b5;
-  box-shadow:
-    inset 0 1.5px 0 rgba(255, 255, 255, 0.9),
-    inset 0 -1.5px 0 rgba(90, 75, 55, 0.45),
-    0 22px 48px -12px rgba(0, 0, 0, 0.95),
-    0 0 25px rgba(228, 218, 193, 0.25);
-}
-
-.wooden-art-frame:hover .wooden-inner-mat,
-.baroque-box-frame:hover .wooden-inner-mat {
-  border-color: rgba(223, 210, 181, 0.6);
-  box-shadow:
-    inset 0 4px 18px rgba(0, 0, 0, 0.98),
-    inset 0 0 0 1px rgba(0, 0, 0, 0.9);
+.wooden-art-frame:hover {
+  transform: translateY(-3px);
+  border-color: rgba(0, 0, 0, 0.16);
+  box-shadow: 0 16px 36px rgba(0, 0, 0, 0.08);
 }
 
 /* ============================================================
@@ -1959,6 +1885,7 @@ select {
   position: relative;
   background: #ffffff;
   color: #000000;
+  border-radius: var(--radius-btn, 10px) !important;
   overflow: hidden;
   z-index: 1;
   transition: color 0.3s ease;
@@ -1973,6 +1900,7 @@ select {
   height: 100%;
   background: #e7e5e4;
   z-index: -1;
+  border-radius: inherit;
   transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
@@ -1985,6 +1913,7 @@ select {
   background: transparent;
   color: #ffffff;
   border: 1px solid rgba(255, 255, 255, 0.3);
+  border-radius: var(--radius-btn, 10px) !important;
   overflow: hidden;
   z-index: 1;
   transition: border-color 0.3s ease, color 0.3s ease;
@@ -2000,6 +1929,7 @@ select {
   background: #ffffff;
   transform: translateY(100%);
   z-index: -1;
+  border-radius: inherit;
   transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
@@ -2086,80 +2016,8 @@ select {
   padding-bottom: clamp(2rem, 5vh, 4rem) !important;
 }
 
-/* SECTION 4: ARCHITECTURAL LINE SANCTUARY (SCROLL-DRAW) */
-.section-scroll-draw {
-  position: relative;
-  background-color: var(--bg, #ececec) !important;
-  min-height: 100svh;
-  height: 100svh;
-  width: 100%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  overflow: hidden;
-  box-sizing: border-box;
-  z-index: 10;
-}
+/* SECTION 4: ARCHITECTURAL LINE SANCTUARY (SCROLL-DRAW) - Handled in Section 4 module below */
 
-.sanctuary-svg-wrapper {
-  width: 100%;
-  max-width: 100vw;
-  height: 100%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 0;
-  box-sizing: border-box;
-  pointer-events: none;
-}
-
-#sanctuary-line-art-svg {
-  stroke: #111111;
-  fill: none;
-  filter: none !important;
-  will-change: stroke-dashoffset;
-  width: 100vw;
-  height: auto;
-  max-height: calc(100svh - 7rem);
-  display: block;
-  margin: auto;
-  transform-origin: center center;
-}
-
-#sanctuary-line-art-svg path {
-  opacity: 1;
-  stroke: #111111;
-  fill: none;
-  stroke-width: 2px;
-  stroke-linecap: round;
-  stroke-linejoin: round;
-  vector-effect: non-scaling-stroke;
-}
-
-@media (max-width: 768px) {
-  #sanctuary-line-art-svg {
-    transform: scale(1.45) translateY(-2%);
-    max-height: calc(100svh - 5rem);
-  }
-}
-
-.draw-milestone.is-active {
-  color: #fbbf24 !important;
-  text-shadow: 0 0 12px rgba(251, 191, 36, 0.4);
-}
-
-.craft-tab-btn {
-  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
-}
-
-.transformation-viewport {
-  transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.4s ease;
-}
-
-.transformation-viewport:hover {
-  border-color: rgba(245, 158, 11, 0.6);
-  box-shadow: 0 10px 30px -5px rgba(245, 158, 11, 0.2);
-}
 
 /* SECTION 4 — FEATURED PIECES */
 .section-featured-pieces {
@@ -2628,11 +2486,12 @@ select {
   align-items: baseline;
   width: max-content;
   white-space: nowrap;
-  gap: 3vw;
+  gap: 1.25rem;
   padding-left: 100vw;
   padding-right: 25vw;
-  font-family: 'Geist', -apple-system, BlinkMacSystemFont, sans-serif;
-  font-weight: 500;
+  font-family: var(--font-heading, 'Geist', -apple-system, sans-serif);
+  font-weight: 300;
+  letter-spacing: -0.015em;
   will-change: transform;
 }
 
@@ -2665,6 +2524,7 @@ select {
   align-items: center;
   justify-content: center;
   overflow: hidden;
+  border-radius: var(--radius-btn, 10px) !important;
   background-color: transparent;
   color: #ffffff !important;
   border: 1px solid rgba(255, 255, 255, 0.35);
@@ -2692,6 +2552,7 @@ select {
   transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
   z-index: -1;
   pointer-events: none;
+  border-radius: inherit;
 }
 
 .btn-slide-white:hover::before,
@@ -2740,6 +2601,7 @@ select {
   align-items: center;
   justify-content: center;
   overflow: hidden;
+  border-radius: var(--radius-btn, 10px) !important;
   background-color: rgba(255, 255, 255, 0.03);
   color: #a8a29e !important;
   border: 1px solid rgba(255, 255, 255, 0.15);
@@ -2765,6 +2627,7 @@ select {
   transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
   z-index: -1;
   pointer-events: none;
+  border-radius: inherit;
 }
 
 .btn-slide-subtle:hover::before,
@@ -3791,29 +3654,50 @@ img {
 @media (max-width: 767px) {
   .lusion-reel-stage {
     padding: 3vh 20px 4vh 20px;
-    height: auto;
+    height: 100vh;
+    height: 100dvh;
     min-height: 100vh;
+    position: relative;
+    box-sizing: border-box;
   }
 
   .lusion-reel-intro {
-    position: relative;
-    inset: auto;
-    padding: 3vh 0;
-    pointer-events: auto;
+    position: absolute;
+    inset: 0;
+    padding: 3.5vh 20px 4vh 20px;
+    pointer-events: none;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    box-sizing: border-box;
   }
 
   .lusion-reel-title-line {
     white-space: normal;
+    font-size: clamp(24px, 7vw, 36px);
+    line-height: 1.12;
+  }
+
+  .lusion-reel-desc {
+    font-size: 0.88rem;
+    line-height: 1.45;
+    max-width: 100%;
+  }
+
+  .lusion-pill-btn {
+    padding: 12px 22px;
+    font-size: 11px;
+    letter-spacing: 0.1em;
   }
 
   .lusion-play-word {
-    font-size: clamp(28px, 10vw, 48px);
+    font-size: clamp(24px, 7vw, 42px);
   }
 
   .lusion-play-pill {
-    width: 80px;
-    height: 50px;
-    margin: 0 12px;
+    width: 68px;
+    height: 44px;
+    margin: 0 10px;
   }
 }
 
@@ -4049,6 +3933,24 @@ img {
   width: 220px;
   height: 220px;
   margin: 0 auto 1.5rem auto;
+}
+
+@media (max-width: 767px) {
+  .testimonial-wreath-wrap {
+    width: 160px;
+    height: 160px;
+    margin: 0 auto 1rem auto;
+  }
+  .testimonial-card {
+    padding: 1.75rem 1.25rem !important;
+  }
+  .testimonial-headline {
+    font-size: 1.65rem !important;
+  }
+  .testimonial-quote {
+    font-size: 0.88rem !important;
+    line-height: 1.5 !important;
+  }
 }
 
 .testimonial-dot.active {
@@ -4348,8 +4250,1599 @@ main {
   color: #111111 !important;
 }
 
+
 input, textarea, select {
   background-color: #ffffff !important;
   color: #111111 !important;
   border: 1px solid rgba(0, 0, 0, 0.15) !important;
+  border-radius: 8px !important;
 }
+
+#macro-zoom-btn {
+  border-radius: var(--radius-btn, 10px) !important;
+}
+
+/* ==========================================================================
+   SECTION 4 — ARCHITECTURAL LINE SANCTUARY
+   100vh viewport single-path scroll-draw animation.
+   Background matches homepage (#ececec) with rich black stroke art.
+   ========================================================================== */
+
+/* ── Section Container (ScrollTrigger Pin Trigger) ───────────────────────── */
+.section-scroll-draw,
+#section-scroll-draw {
+  position: relative;
+  width: 100%;
+  background-color: #ececec !important;
+  border-top: 1px solid rgba(0, 0, 0, 0.08) !important;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.08) !important;
+}
+
+/* ── Viewport Stage (Pinned Target: 100vh) ───────────────────────────────── */
+.scroll-draw-stage,
+.scroll-draw-sticky {
+  position: relative;
+  width: 100%;
+  height: 100vh;
+  height: 100svh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background-color: #ececec !important;
+  overflow: hidden;
+}
+
+/* ── SVG container ───────────────────────────────────────────────────────── */
+.sanctuary-svg-wrapper {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  pointer-events: none;
+  overflow: visible;
+}
+
+/* ── The single compound SVG path ───────────────────────────────────────── */
+.scroll-draw-svg,
+#sanctuary-line-art-svg {
+  width: 100%;
+  height: auto;
+  max-height: 88vh;
+  max-height: 88svh;
+  object-fit: contain;
+  overflow: visible;
+  display: block;
+}
+
+/* Ghost blueprint skeleton (faint architectural guide) */
+#sanctuary-ghost-path,
+.sanctuary-ghost-path {
+  stroke: #111111 !important;
+  stroke-opacity: 0.10 !important;
+  stroke-width: 1.2px !important;
+  stroke-linecap: round !important;
+  stroke-linejoin: round !important;
+  fill: none !important;
+}
+
+/* Active progressive drawing path & floor guide */
+#sanctuary-line-art,
+#sanctuary-draw-path,
+.sanctuary-draw-path,
+#sanctuary-floor-lead,
+.sanctuary-floor-path {
+  stroke: #111111;
+  stroke-width: 2.2px;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  fill: none !important;
+}
+
+#sanctuary-floor-lead {
+  will-change: stroke-dashoffset;
+}
+
+/* Glowing golden tracer point */
+.sanctuary-draw-tracer {
+  pointer-events: none;
+  will-change: transform, left, top, opacity;
+}
+
+/* Hotspots */
+.sanctuary-hotspots {
+  will-change: opacity, transform;
+}
+
+.sanctuary-hotspot {
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  box-shadow: 0 10px 30px -5px rgba(0, 0, 0, 0.12), 0 0 0 1px rgba(0, 0, 0, 0.05);
+  cursor: pointer;
+  user-select: none;
+}
+
+/* ── prefers-reduced-motion — collapse to normal document flow ───────────── */
+@media (prefers-reduced-motion: reduce) {
+  .section-scroll-draw,
+  #section-scroll-draw {
+    height: auto;
+  }
+  .scroll-draw-stage,
+  .scroll-draw-sticky {
+    position: relative;
+    height: auto;
+    min-height: 60vh;
+  }
+  #sanctuary-line-art {
+    stroke-dashoffset: 0 !important;
+    will-change: auto;
+  }
+  #sanctuary-image-layer {
+    opacity: 1 !important;
+    filter: none !important;
+    transform: none !important;
+  }
+}
+
+/* ==========================================================================
+   ELYSIUM MOBILE REBUILD & OPTIMIZATION (<768px)
+   Tasks 1–8: Header/Nav, Hero, Video Modal, Story Chapters, Line Art,
+   Featured Carousel, Testimonials, and Stacked Footer.
+   ========================================================================== */
+
+/* 1. Header / Nav Mobile Styles */
+@media (max-width: 767px) {
+  .site-header {
+    height: 64px;
+    background-color: transparent;
+    transition: background-color 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
+  }
+
+  .site-header.header-scrolled {
+    background-color: rgba(236, 236, 236, 0.96) !important;
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border-bottom: 1px solid rgba(0, 0, 0, 0.08) !important;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.04);
+  }
+
+  .site-header a:active,
+  .site-header button:active {
+    opacity: 0.7;
+    transform: scale(0.96);
+  }
+
+  #mobile-menu-btn {
+    min-width: 48px;
+    min-height: 48px;
+  }
+
+  #mobile-menu-drawer {
+    height: 100svh !important;
+    min-height: 100svh !important;
+    max-height: 100svh !important;
+    overscroll-behavior: contain;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .mobile-nav-link {
+    min-height: 52px;
+    display: flex;
+    align-items: center;
+    font-size: 1.45rem;
+    letter-spacing: 0.16em;
+    font-weight: 300;
+    transition: color 0.15s ease, transform 0.15s ease;
+  }
+
+  .mobile-nav-link:active {
+    color: #555555 !important;
+    transform: translateX(4px);
+  }
+
+  .mobile-whatsapp-fab {
+    width: 52px;
+    height: 52px;
+    border-radius: 50%;
+    background-color: #111111;
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.35);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.2s ease;
+  }
+
+  .mobile-whatsapp-fab:active {
+    transform: scale(0.90);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
+  }
+}
+
+@media (min-width: 768px) {
+  .mobile-whatsapp-fab {
+    display: none !important;
+  }
+}
+
+/* 2. Hero ("THE ATELIER" / "Every Piece Begins with a Name") Mobile Styles */
+@media (max-width: 767px) {
+  #hero-scroll-container {
+    display: none !important;
+  }
+
+  .section-lusion-reel {
+    min-height: 90vh !important;
+    height: 100svh !important;
+    max-height: 100svh !important;
+    position: relative !important;
+    overflow: hidden !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    background-color: #ececec !important;
+  }
+
+  .lusion-reel-stage {
+    height: 100svh !important;
+    min-height: 90vh !important;
+    max-height: 100svh !important;
+    padding: 76px 24px 32px 24px !important;
+    display: flex !important;
+    flex-direction: column !important;
+    justify-content: center !important;
+    align-items: flex-start !important;
+    width: 100% !important;
+    box-sizing: border-box !important;
+  }
+
+  .lusion-reel-intro {
+    position: relative !important;
+    inset: auto !important;
+    padding: 0 !important;
+    display: flex !important;
+    flex-direction: column !important;
+    justify-content: center !important;
+    height: auto !important;
+    width: 100% !important;
+    pointer-events: auto !important;
+    z-index: 10 !important;
+    opacity: 1 !important;
+    transform: none !important;
+  }
+
+  .lusion-reel-top-block {
+    max-width: 100% !important;
+    margin-bottom: 1.25rem !important;
+  }
+
+  .lusion-reel-eyebrow {
+    font-size: 0.75rem !important;
+    letter-spacing: 0.35em !important;
+    color: #666666 !important;
+    margin-bottom: 0.5rem !important;
+  }
+
+  .lusion-reel-title-block {
+    width: 100% !important;
+  }
+
+  .lusion-reel-title-line {
+    font-size: clamp(2rem, 8vw, 3.5rem) !important;
+    line-height: 1.1 !important;
+    letter-spacing: -0.02em !important;
+    white-space: normal !important;
+    padding-left: 0 !important;
+    color: #111111 !important;
+  }
+
+  .lusion-reel-content-block {
+    max-width: 100% !important;
+    margin-top: 0 !important;
+    margin-bottom: 0 !important;
+    width: 100% !important;
+  }
+
+  .lusion-reel-desc {
+    font-size: 0.95rem !important;
+    line-height: 1.55 !important;
+    color: #333333 !important;
+    max-width: 100% !important;
+  }
+
+  .lusion-pill-btn {
+    width: 100% !important;
+    min-height: 48px !important;
+    padding: 14px 24px !important;
+    font-size: 11.5px !important;
+    letter-spacing: 0.14em !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    text-align: center !important;
+    box-sizing: border-box !important;
+    background-color: #111111 !important;
+    color: #ffffff !important;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15) !important;
+  }
+
+  .lusion-pill-btn .lusion-pill-dot {
+    background-color: #ffffff !important;
+  }
+
+  .lusion-pill-btn:active {
+    transform: scale(0.98) !important;
+  }
+
+  .lusion-webgl-canvas,
+  .lusion-line-container,
+  .lusion-reel-ui {
+    display: none !important;
+  }
+}
+
+/* 3. Video Modal Mobile Styles */
+@media (max-width: 767px) {
+  .lusion-video-modal {
+    height: 100svh !important;
+    min-height: 100svh !important;
+    padding: 0 !important;
+  }
+
+  .lusion-modal-close {
+    top: 1rem !important;
+    right: 1rem !important;
+    width: 48px !important;
+    height: 48px !important;
+    min-width: 48px !important;
+    min-height: 48px !important;
+  }
+
+  .lusion-modal-close:active {
+    transform: scale(0.9) !important;
+  }
+}
+
+/* 4. Story Chapters Mobile Plain Vertical Stack */
+@media (max-width: 767px) {
+  .elysium-stack-section,
+  #spatial-sanctuary-container {
+    height: auto !important;
+    min-height: auto !important;
+    overflow: visible !important;
+  }
+
+  .elysium-stack-stage {
+    display: none !important;
+  }
+
+  .mobile-story-chapters {
+    display: block !important;
+  }
+
+  .mobile-story-chapter {
+    opacity: 0;
+    transform: translateY(20px);
+    transition: opacity 0.6s ease-out, transform 0.6s ease-out;
+    will-change: opacity, transform;
+  }
+
+  .mobile-story-chapter.is-revealed {
+    opacity: 1 !important;
+    transform: translateY(0) !important;
+  }
+}
+
+/* 5. Section 4 — Sanctuary Architectural Drawing Mobile Styles */
+@media (max-width: 767px) {
+  .section-scroll-draw,
+  #section-scroll-draw {
+    width: 100% !important;
+    position: relative !important;
+  }
+
+  .scroll-draw-stage,
+  #scroll-draw-sticky {
+    padding: 1.25rem 0.75rem !important;
+    min-height: 100svh !important;
+  }
+
+  .sanctuary-frame {
+    border-radius: 1rem !important;
+    max-height: 60svh !important;
+  }
+
+  .sanctuary-hotspot {
+    padding: 0.25rem 0.5rem !important;
+    font-size: 8px !important;
+  }
+}
+
+/* 6. Featured Pieces Horizontal Swipeable Carousel Mobile Styles */
+@media (max-width: 767px) {
+  .featured-pieces-grid {
+    display: flex !important;
+    overflow-x: auto !important;
+    scroll-snap-type: x mandatory !important;
+    -webkit-overflow-scrolling: touch !important;
+    scrollbar-width: none !important;
+    padding: 0 24px 16px 24px !important;
+    margin-left: -24px !important;
+    margin-right: -24px !important;
+    gap: 16px !important;
+  }
+
+  .featured-pieces-grid::-webkit-scrollbar {
+    display: none !important;
+  }
+
+  .featured-piece-card {
+    flex: 0 0 80vw !important;
+    max-width: 80vw !important;
+    scroll-snap-align: start !important;
+    scroll-snap-stop: always !important;
+    box-sizing: border-box !important;
+  }
+
+  .featured-piece-card:active {
+    transform: scale(0.98) !important;
+  }
+
+  .featured-carousel-dot {
+    min-width: 28px !important;
+    min-height: 28px !important;
+  }
+}
+
+/* 7. Voices / Testimonials Mobile Styles */
+@media (max-width: 767px) {
+  .section-trust-voice,
+  #trust-voice-container {
+    height: auto !important;
+    min-height: auto !important;
+    overflow: visible !important;
+  }
+
+  .Horizontal,
+  #trust-horizontal-wrapper {
+    height: auto !important;
+    min-height: auto !important;
+    padding: 3rem 1.5rem !important;
+  }
+
+  .Horizontal__text {
+    white-space: normal !important;
+    font-size: clamp(1.4rem, 6vw, 2.25rem) !important;
+    line-height: 1.3 !important;
+  }
+
+  .testimonial-card,
+  #elysium-testimonial-card {
+    padding: 1.5rem !important;
+    width: 100% !important;
+  }
+
+  .testimonial-quote {
+    font-size: 0.95rem !important;
+    line-height: 1.6 !important;
+  }
+
+  .testimonial-dot {
+    min-width: 44px !important;
+    min-height: 44px !important;
+  }
+}
+
+/* 8. Footer Mobile Vertical Stack */
+@media (max-width: 767px) {
+  .footer-fullscreen {
+    height: auto !important;
+    min-height: auto !important;
+    max-height: none !important;
+    padding: 0 !important;
+  }
+
+  .footer-decor-fullscreen {
+    padding: 3rem 1.5rem 2rem 1.5rem !important;
+    height: auto !important;
+  }
+
+  #footer-hero-head {
+    font-size: clamp(1.6rem, 6.5vw, 2.5rem) !important;
+    text-align: center !important;
+    width: 100% !important;
+  }
+
+  .footer-txt a {
+    padding: 6px 0;
+    display: inline-block;
+  }
+
+  .footer-txt a:active {
+    opacity: 0.6;
+  }
+}
+
+/* ==========================================================================
+   SECTION 5: CODEGRID 3-PANEL IMAGE SPLIT & 3D FLIP ARCHITECTURE
+   ========================================================================== */
+/* ==========================================================================
+   SECTION 5: REDOMEDIA SECTION 3 REPLICATION ARCHITECTURE (1-to-3 Split & 3D Flip)
+   ========================================================================== */
+.section-featured-pin,
+.featured-pin,
+.section-featured-pieces {
+  position: relative;
+  width: 100%;
+  min-height: 100vh;
+  min-height: 100svh;
+  height: 100vh;
+  background-color: var(--bg, #ececec);
+  color: var(--ink, #111111);
+  border-top: 1px solid rgba(0, 0, 0, 0.08);
+  overflow: hidden;
+  z-index: 10;
+}
+
+.featured-pin-inner,
+.pin-inner {
+  position: relative;
+  width: 100%;
+  height: 100vh;
+  height: 100svh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: clamp(1.5rem, 3.5vh, 3.25rem);
+  padding: 1.5rem 1rem;
+  overflow: hidden;
+  box-sizing: border-box;
+  z-index: 1;
+}
+
+@media (min-width: 640px) {
+  .featured-pin-inner,
+  .pin-inner {
+    padding: 2.25rem 2rem;
+  }
+}
+
+@media (min-width: 1024px) {
+  .featured-pin-inner,
+  .pin-inner {
+    padding: 2.5rem 3.5rem;
+  }
+}
+
+/* Section Header (Redomedia STIX Two Text Italic Serif) */
+.featured-header,
+.featured-pin header {
+  position: relative;
+  z-index: 10;
+  text-align: center;
+  max-width: 820px;
+  margin: 0 auto;
+  will-change: opacity, transform;
+}
+
+.featured-eyebrow,
+.featured-pin header .eyebrow,
+.featured-header .eyebrow {
+  font-family: 'Geist Mono', monospace;
+  font-size: clamp(8.5px, 0.8vw, 10.5px);
+  letter-spacing: 0.32em;
+  text-transform: uppercase;
+  color: rgba(17, 17, 17, 0.55);
+  font-weight: 500;
+  display: inline-block;
+  margin-bottom: 0.4rem;
+}
+
+.featured-title,
+.featured-pin header h2,
+.featured-header h2 {
+  font-family: 'STIX Two Text', 'Playfair Display', Georgia, serif;
+  font-size: clamp(2rem, 4.4vw, 3.25rem);
+  font-weight: 400;
+  letter-spacing: -0.04em;
+  color: #111111;
+  line-height: 1.05;
+  margin: 0;
+}
+
+.featured-title .italic,
+.featured-pin header h2 .italic,
+.featured-header h2 .italic {
+  font-style: italic;
+  font-family: inherit;
+  font-weight: 400;
+  color: #111111;
+}
+
+/* 3D Perspective Stage Container (1200px perspective matching Redomedia) */
+.featured-stage,
+.stage {
+  position: relative;
+  width: 100%;
+  max-width: 1066px;
+  margin: auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  perspective: 1200px;
+  -webkit-perspective: 1200px;
+  perspective-origin: 50% 50%;
+  transform-style: preserve-3d;
+  will-change: transform;
+  z-index: 5;
+}
+
+/* 3-Cards Flex Track — NO outer drop shadow */
+.featured-cards-track {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transform-style: preserve-3d;
+  will-change: gap, transform;
+  gap: 0px;
+  width: 1066px;
+  max-width: 100%;
+  height: 464px;
+}
+
+@media (max-width: 639px) {
+  .featured-cards-track {
+    height: 240px;
+  }
+}
+
+/* Individual Card (334px x 464px aspect matching Redomedia) — NO drop shadow */
+.featured-card,
+.card,
+.featured-flip-card {
+  position: relative;
+  transform-style: preserve-3d;
+  will-change: transform, border-radius;
+  width: 334px;
+  height: 464px;
+  max-width: 32vw;
+  max-height: min(60vh, 480px);
+  box-sizing: border-box;
+  cursor: pointer;
+}
+
+/* INITIAL JOINED 1-PIECE STATE:
+   Card 1: outer-left rounded (14px), right square (0px)
+   Card 2: perfectly square (0px on all corners)
+   Card 3: left square (0px), outer-right rounded (14px) */
+#featured-card-1,
+#featured-card-1 .card-inner,
+#featured-card-1 .card-front,
+#featured-card-1 .card-front img {
+  border-top-left-radius: 14px;
+  border-bottom-left-radius: 14px;
+  border-top-right-radius: 0px !important;
+  border-bottom-right-radius: 0px !important;
+}
+
+#featured-card-2,
+#featured-card-2 .card-inner,
+#featured-card-2 .card-front,
+#featured-card-2 .card-front img {
+  border-radius: 0px !important;
+}
+
+#featured-card-3,
+#featured-card-3 .card-inner,
+#featured-card-3 .card-front,
+#featured-card-3 .card-front img {
+  border-top-right-radius: 14px;
+  border-bottom-right-radius: 14px;
+  border-top-left-radius: 0px !important;
+  border-bottom-left-radius: 0px !important;
+}
+
+@media (max-width: 639px) {
+  .featured-card,
+  .card,
+  .featured-flip-card {
+    width: clamp(100px, 30vw, 125px);
+    height: clamp(155px, 46vw, 195px);
+    border-radius: 8px;
+  }
+}
+
+/* Card 3D Inner Flipper */
+.card-inner,
+.featured-flip-inner {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  transform-style: preserve-3d;
+  will-change: transform;
+  border-radius: inherit;
+  transform-origin: center center;
+}
+
+/* Front & Back Faces */
+.card-front,
+.card-back {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  border-radius: inherit;
+  overflow: hidden;
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+  transform-style: preserve-3d;
+  box-sizing: border-box;
+}
+
+/* Front Face: Showing 1/3 Slice of Base Panorama */
+.card-front {
+  transform: rotateY(0deg) translateZ(1px);
+  background-color: transparent;
+  border: none;
+}
+
+.card-front img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+  display: block;
+  user-select: none;
+  -webkit-user-drag: none;
+  border-radius: inherit;
+}
+
+/* Back Face (Revealed on 180° Flip - Exact Redomedia Design System) */
+.card-back {
+  transform: rotateY(-180deg) translateZ(1px);
+  border-radius: 12px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: clamp(1rem, 1.8vw, 1.75rem);
+  box-sizing: border-box;
+  user-select: none;
+  position: relative;
+  overflow: hidden;
+}
+
+@media (max-width: 639px) {
+  .card-back {
+    padding: 0.65rem 0.5rem;
+    border-radius: 8px;
+  }
+}
+
+/* Tactile Grain Noise Overlay (Redomedia Organic Depth) */
+.card-noise-overlay {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 1;
+  mix-blend-mode: overlay;
+  opacity: 0.22;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+  background-size: 128px 128px;
+}
+
+/* --- CARD 1 BACK: Brushed Titanium / Platinum Silver Gradient --- */
+.card-back-silver {
+  background: linear-gradient(166deg, #e3e3e3 0%, #c5c5c5 100%);
+  border: 1px solid rgba(0, 0, 0, 0.12);
+  box-shadow: inset 0px 1px 0px 0px rgba(255, 255, 255, 0.9);
+}
+
+.card-back-silver .card-back-icon {
+  color: rgba(0, 0, 0, 0.7);
+}
+
+.card-back-silver .card-back-badge {
+  color: rgba(0, 0, 0, 0.85);
+  background: rgba(0, 0, 0, 0.08);
+  border: 1px solid rgba(0, 0, 0, 0.18);
+}
+
+.card-back-silver .card-back-title {
+  color: #050505;
+}
+
+.card-back-silver .card-back-copy {
+  color: rgba(0, 0, 0, 0.65);
+}
+
+.card-back-silver .card-back-meta-row {
+  border-bottom: 1px solid rgba(0, 0, 0, 0.12);
+}
+
+.card-back-silver .card-back-spec {
+  color: rgba(0, 0, 0, 0.55);
+}
+
+.card-back-silver .card-back-price {
+  color: #000000;
+}
+
+.card-back-silver .card-back-cta {
+  background: #000000;
+  color: #ffffff;
+  border: none;
+}
+
+.card-back-silver .card-back-cta:hover {
+  background: #1a1a1a;
+}
+
+/* --- CARD 2 BACK: Warm Architectural Patinated Copper / Burnished Hazel Bronze --- */
+.card-back-copper,
+.card-back-crimson {
+  background: linear-gradient(175deg, #be7850 0%, #854b2b 45%, #3d2010 100%);
+  border: 1px solid rgba(220, 165, 130, 0.28);
+  box-shadow: inset 0px 1px 0px 0px rgba(255, 215, 185, 0.45);
+}
+
+.card-back-copper .card-back-icon,
+.card-back-crimson .card-back-icon {
+  color: rgba(255, 235, 220, 0.95);
+}
+
+.card-back-copper .card-back-badge,
+.card-back-crimson .card-back-badge {
+  color: #fff4ed;
+  background: rgba(255, 255, 255, 0.12);
+  border: 1px solid rgba(255, 255, 255, 0.22);
+}
+
+.card-back-copper .card-back-title,
+.card-back-crimson .card-back-title {
+  color: #ffffff;
+}
+
+.card-back-copper .card-back-copy,
+.card-back-crimson .card-back-copy {
+  color: rgba(255, 240, 230, 0.88);
+}
+
+.card-back-copper .card-back-meta-row,
+.card-back-crimson .card-back-meta-row {
+  border-bottom: 1px solid rgba(255, 255, 255, 0.18);
+}
+
+.card-back-copper .card-back-spec,
+.card-back-crimson .card-back-spec {
+  color: rgba(255, 235, 220, 0.72);
+}
+
+.card-back-copper .card-back-price,
+.card-back-crimson .card-back-price {
+  color: #ffffff;
+}
+
+.card-back-copper .card-back-cta,
+.card-back-crimson .card-back-cta {
+  background: #fdfaf5;
+  color: #2b170c;
+  border: none;
+  font-weight: 700;
+}
+
+.card-back-copper .card-back-cta:hover,
+.card-back-crimson .card-back-cta:hover {
+  background: #ffffff;
+  color: #000000;
+}
+
+/* --- CARD 3 BACK: Stealth Obsidian Onyx Gradient --- */
+.card-back-obsidian {
+  background: linear-gradient(180deg, rgb(30, 30, 30) 0%, rgb(16, 16, 16) 100%);
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  box-shadow: inset 0px 1px 0px 0px rgba(255, 255, 255, 0.22);
+}
+
+.card-back-obsidian .card-back-icon {
+  color: rgba(255, 255, 255, 0.75);
+}
+
+.card-back-obsidian .card-back-badge {
+  color: rgb(234, 231, 224);
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.18);
+}
+
+.card-back-obsidian .card-back-title {
+  color: #ffffff;
+}
+
+.card-back-obsidian .card-back-copy {
+  color: rgba(255, 255, 255, 0.88);
+}
+
+.card-back-obsidian .card-back-meta-row {
+  border-bottom: 1px solid rgba(255, 255, 255, 0.15);
+}
+
+.card-back-obsidian .card-back-spec {
+  color: rgba(255, 255, 255, 0.7);
+}
+
+.card-back-obsidian .card-back-price {
+  color: #ffffff;
+}
+
+.card-back-obsidian .card-back-cta {
+  background: rgba(255, 255, 255, 0.12);
+  color: rgb(234, 231, 224);
+  border: 1px solid rgba(255, 255, 255, 0.25);
+}
+
+.card-back-obsidian .card-back-cta:hover {
+  background: rgba(255, 255, 255, 0.2);
+}
+
+/* Card Back Internal Content Rows */
+.card-back-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  position: relative;
+  z-index: 2;
+}
+
+.card-back-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+@media (max-width: 639px) {
+  .card-back-icon svg {
+    width: 18px;
+    height: 18px;
+  }
+}
+
+.card-back-badge {
+  font-family: monospace;
+  font-size: clamp(7px, 0.72vw, 8.5px);
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  border-radius: 4px;
+  padding: 3px 8px;
+  font-weight: 600;
+}
+
+@media (max-width: 639px) {
+  .card-back-badge {
+    font-size: 6px;
+    padding: 2px 5px;
+  }
+}
+
+.card-back-body {
+  margin: auto 0;
+  position: relative;
+  z-index: 2;
+}
+
+.card-back-title {
+  font-family: 'STIX Two Text', 'Geist', sans-serif;
+  font-size: clamp(1.35rem, 1.8vw, 1.85rem);
+  font-weight: 400;
+  letter-spacing: -0.035em;
+  line-height: 1.08;
+  margin: 0 0 0.5rem 0;
+}
+
+@media (max-width: 639px) {
+  .card-back-title {
+    font-size: 11px;
+    line-height: 1.1;
+    margin-bottom: 0.2rem;
+  }
+}
+
+.card-back-copy {
+  font-family: 'Geist', -apple-system, BlinkMacSystemFont, sans-serif;
+  font-size: clamp(0.78rem, 0.85vw, 0.9rem);
+  line-height: 1.35;
+  margin: 0;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+@media (max-width: 639px) {
+  .card-back-copy {
+    font-size: 7.5px;
+    line-height: 1.25;
+    -webkit-line-clamp: 2;
+  }
+}
+
+.card-back-bottom {
+  display: flex;
+  flex-direction: column;
+  gap: 0.65rem;
+  width: 100%;
+  position: relative;
+  z-index: 2;
+}
+
+@media (max-width: 639px) {
+  .card-back-bottom {
+    gap: 0.35rem;
+  }
+}
+
+.card-back-meta-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-bottom: 0.45rem;
+}
+
+@media (max-width: 639px) {
+  .card-back-meta-row {
+    padding-bottom: 0.2rem;
+  }
+}
+
+.card-back-spec {
+  font-family: monospace;
+  font-size: clamp(7.5px, 0.72vw, 9px);
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+@media (max-width: 639px) {
+  .card-back-spec {
+    font-size: 6px;
+  }
+}
+
+.card-back-price {
+  font-family: monospace;
+  font-size: clamp(11px, 1.1vw, 13.5px);
+  font-weight: 600;
+  letter-spacing: 0.04em;
+}
+
+@media (max-width: 639px) {
+  .card-back-price {
+    font-size: 8.5px;
+  }
+}
+
+.card-back-cta {
+  display: inline-flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  padding: clamp(0.45rem, 0.75vw, 0.65rem) 0.85rem;
+  border-radius: 6px;
+  font-family: monospace;
+  font-size: clamp(8px, 0.8vw, 10px);
+  font-weight: 600;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  text-decoration: none;
+  cursor: pointer;
+  transition: transform 0.2s ease, opacity 0.2s ease, background 0.2s ease;
+  pointer-events: auto;
+  box-sizing: border-box;
+}
+
+@media (max-width: 639px) {
+  .card-back-cta {
+    padding: 0.25rem 0.45rem;
+    font-size: 6.5px;
+    border-radius: 4px;
+  }
+}
+
+.card-back-cta:hover {
+  transform: translateY(-1px);
+  opacity: 0.92;
+}
+
+.card-back-cta:active {
+  transform: translateY(0);
+}
+
+/* ==========================================================================
+   SECTION 7: STACKED SVG CASCADE & ISOLATED S INTERACTIVE CTA
+   (Exact 1:1 Pensatori-Irrazionali & YouTube Architecture)
+   ========================================================================== */
+
+.section-elysium-contact {
+  position: relative;
+  width: 100%;
+  background-color: #ececec;
+  color: #2b2b2b;
+  overflow: hidden;
+  border-top: 1px solid rgba(0, 0, 0, 0.08);
+}
+
+.elysium-contact-pin-inner {
+  width: 100%;
+  height: 100vh;
+  min-height: 600px;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: 24px 32px;
+  box-sizing: border-box;
+  overflow: hidden;
+  user-select: none;
+}
+
+@media (max-width: 767px) {
+  .elysium-contact-pin-inner {
+    padding: 16px 20px;
+    min-height: 520px;
+  }
+}
+
+.elysium-contact-topbar {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-family: -apple-system, BlinkMacSystemFont, 'Geist', 'Inter', sans-serif;
+  font-size: 13px;
+  color: #737373;
+  letter-spacing: 0.02em;
+  padding-bottom: 16px;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.08);
+  z-index: 20;
+  pointer-events: none;
+}
+
+.svg-spotlight-stage {
+  position: relative;
+  width: 100%;
+  max-width: 1440px;
+  margin-left: auto;
+  margin-right: auto;
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: visible;
+}
+
+.svg-stack {
+  position: relative;
+  width: min(94%, 1240px);
+  aspect-ratio: 1100 / 200;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: visible;
+}
+
+.elysium-svg-layer {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+  will-change: transform, opacity;
+  transform-origin: 50% 100%;
+  pointer-events: none;
+}
+
+.elysium-svg-layer.layer-1 { opacity: 0.18; fill: #888888; }
+.elysium-svg-layer.layer-2 { opacity: 0.32; fill: #6e6e6e; }
+.elysium-svg-layer.layer-3 { opacity: 0.48; fill: #545454; }
+.elysium-svg-layer.layer-4 { opacity: 0.65; fill: #3c3c3c; }
+.elysium-svg-layer.layer-5 { opacity: 0.82; fill: #282828; }
+.elysium-svg-layer.layer-6 { opacity: 1.00; fill: #1c1c1c; }
+
+/* Individual isolated S group */
+.isolated-s-group {
+  will-change: transform, opacity;
+  transform-origin: 42px 100px;
+  pointer-events: none;
+}
+
+.svg-hero-s {
+  fill: #1c1c1c;
+  will-change: transform;
+}
+
+/* CTA Button & Leading S Typography */
+.elysium-cta-box {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 14px 34px;
+  background-color: #1c1c1c;
+  color: #ffffff;
+  border-radius: 4px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.18);
+  white-space: nowrap;
+  text-decoration: none;
+  cursor: pointer;
+  z-index: 50;
+  will-change: transform, opacity;
+  transition: background-color 0.2s ease, transform 0.15s ease;
+  pointer-events: none;
+  opacity: 0;
+}
+
+.elysium-cta-box:hover {
+  background-color: #000000;
+  transform: translate(-50%, -50%) scale(1.04);
+}
+
+.cta-phrase-wrap {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-family: -apple-system, BlinkMacSystemFont, 'Geist', 'Inter', sans-serif;
+  font-size: clamp(11px, 0.9vw, 13px);
+  font-weight: 600;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: #ffffff;
+}
+
+.cta-leading-s {
+  display: inline-block;
+  font-weight: 800;
+  color: #ffffff;
+  will-change: transform, opacity;
+}
+
+.cta-remainder {
+  display: inline-block;
+  color: #ffffff;
+  will-change: opacity;
+}
+
+@media (max-width: 767px) {
+  .svg-stack {
+    width: 96%;
+  }
+  
+  .elysium-cta-box {
+    padding: 11px 22px;
+  }
+  
+  .cta-phrase-wrap {
+    font-size: 10px;
+    letter-spacing: 0.12em;
+  }
+}
+
+/* ==========================================================================
+   SECTION 2: LUSION REEL HEADING DYNAMIC OVERLAP COLOR INVERSION
+   Text turns bright white dynamically when covered by dark SVG path
+   ========================================================================== */
+.lusion-reel-stage {
+  isolation: isolate;
+  background-color: #ececec;
+}
+
+.lusion-title-text {
+  color: #ffffff;
+  mix-blend-mode: difference;
+  display: inline-block;
+  will-change: color;
+}
+
+/* ==========================================================================
+   ELYSIUM — OUR STORY ATELIER EXPERIENCE
+   Continuous SVG Scroll-Draw Path, Node Follower, Text Reveal, Carousel & CTA
+   ========================================================================== */
+
+.story-page-wrapper {
+  background-color: #ececec;
+  color: #111111;
+  font-family: 'Geist', 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  position: relative;
+  overflow-x: hidden;
+  width: 100%;
+}
+
+.story-container {
+  max-width: 1360px;
+  margin-left: auto;
+  margin-right: auto;
+  padding-left: clamp(1.25rem, 4vw, 3.5rem);
+  padding-right: clamp(1.25rem, 4vw, 3.5rem);
+  position: relative;
+  z-index: 10;
+}
+
+/* Story Typography Scales */
+.story-h1 {
+  font-size: clamp(2.5rem, 6.2vw, 5.25rem);
+  font-weight: 300;
+  line-height: 1.05;
+  letter-spacing: -0.02em;
+  color: #111111;
+  text-transform: uppercase;
+}
+
+.story-h2 {
+  font-size: clamp(1.85rem, 4vw, 3.5rem);
+  font-weight: 300;
+  line-height: 1.15;
+  letter-spacing: -0.015em;
+  color: #111111;
+}
+
+.story-h3 {
+  font-size: clamp(1.25rem, 2vw, 1.85rem);
+  font-weight: 400;
+  line-height: 1.3;
+  color: #111111;
+}
+
+.story-eyebrow {
+  font-family: 'Geist Mono', 'SFMono-Regular', Consolas, monospace;
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.18em;
+  color: #78716c;
+}
+
+.story-path-svg-wrap {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 5;
+  overflow: visible;
+}
+
+/* ====================================================================
+   ATELIER STORY JOURNEY FLIGHT PATH SYSTEM
+   ==================================================================== */
+
+.story-page-wrapper {
+  background-color: #f6f5f1;
+  color: #111111;
+  min-height: 100vh;
+}
+
+.journey {
+  position: relative;
+  padding-top: 2rem;
+  padding-bottom: 4rem;
+}
+
+/* Continuous SVG Flight Path Container */
+.dash-journey {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 2;
+  overflow: visible;
+}
+
+.dash-journey svg {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+}
+
+/* Scroll-Driven Flying Plane Node (Appropriate 34px size in CSS pixels) */
+.plane.plane-journey {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 34px !important;
+  height: 34px !important;
+  min-width: 34px !important;
+  min-height: 34px !important;
+  max-width: 34px !important;
+  max-height: 34px !important;
+  pointer-events: none;
+  z-index: 25;
+  will-change: transform;
+}
+
+.plane.plane-journey svg {
+  width: 34px !important;
+  height: 34px !important;
+  display: block;
+}
+
+.journey-item-1 {
+  max-width: 90%;
+}
+
+.journey-item-2 {
+  background-color: #ffffff;
+  border-radius: 16px;
+  padding: clamp(2rem, 4vw, 3rem);
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.04);
+}
+
+/* Story Cards */
+.story-card {
+  background-color: #ffffff;
+  border-radius: 16px;
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.03);
+  transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.story-card-interactive:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 16px 36px rgba(0, 0, 0, 0.08);
+}
+
+/* Interactive 5-Slide Carousel */
+.story-carousel-card {
+  background-color: #ffffff;
+  border-radius: 16px;
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  padding: clamp(2rem, 4vw, 3rem);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  min-height: 400px;
+  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.04);
+}
+
+.story-carousel-btn {
+  position: relative !important;
+  width: 44px;
+  height: 44px;
+  min-width: 44px;
+  border-radius: 50% !important;
+  border: 1px solid rgba(17, 17, 17, 0.18) !important;
+  background-color: #ffffff !important;
+  color: #111111 !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  cursor: pointer !important;
+  overflow: hidden !important;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05) !important;
+  transition: color 0.35s cubic-bezier(0.16, 1, 0.3, 1),
+              box-shadow 0.35s cubic-bezier(0.16, 1, 0.3, 1),
+              transform 0.25s cubic-bezier(0.16, 1, 0.3, 1),
+              border-color 0.3s ease !important;
+  z-index: 1 !important;
+}
+
+.story-carousel-btn::before {
+  content: '' !important;
+  position: absolute !important;
+  top: 0 !important;
+  left: 0 !important;
+  width: 100% !important;
+  height: 100% !important;
+  background-color: #111111 !important;
+  transform: translateY(100%) !important;
+  transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1) !important;
+  z-index: 1 !important;
+  border-radius: 50% !important;
+  pointer-events: none !important;
+}
+
+.story-carousel-btn:hover::before,
+.story-carousel-btn:focus-visible::before {
+  transform: translateY(0%) !important;
+}
+
+.story-carousel-btn:hover {
+  color: #ffffff !important;
+  border-color: #111111 !important;
+  transform: scale(1.08) !important;
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.18) !important;
+}
+
+.story-carousel-btn:active {
+  transform: scale(0.95) !important;
+}
+
+.story-carousel-btn svg {
+  position: relative !important;
+  z-index: 2 !important;
+  color: inherit !important;
+  transition: color 0.35s cubic-bezier(0.16, 1, 0.3, 1), transform 0.3s ease !important;
+}
+
+.story-carousel-btn:hover svg {
+  color: #ffffff !important;
+}
+
+.story-carousel-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background-color: rgba(17, 17, 17, 0.2);
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.story-carousel-dot.active {
+  background-color: #111111;
+  transform: scale(1.4);
+}
+
+/* Atelier CTA Box */
+.story-cta-box {
+  background-color: transparent;
+  border: 1px solid rgba(17, 17, 17, 0.16);
+  border-radius: 20px;
+  padding: clamp(2.5rem, 5vw, 4rem);
+  position: relative;
+  background-image: radial-gradient(circle at 100% 100%, rgba(0,0,0,0.02) 0%, transparent 70%);
+}
+
+.story-pill-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6rem;
+  border: 1px solid rgba(17, 17, 17, 0.25);
+  border-radius: 9999px;
+  padding: 0.75rem 1.6rem;
+  font-family: 'Geist Mono', monospace;
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: #111111;
+  background-color: #ffffff;
+  transition: all 0.25s ease;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.04);
+}
+
+.story-pill-btn:hover {
+  background-color: #111111;
+  color: #ffffff;
+  border-color: #111111;
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+}
+
+.story-pill-btn svg {
+  transition: transform 0.25s ease;
+}
+
+.story-pill-btn:hover svg {
+  transform: translateX(4px);
+}
+
+/* Responsive Overrides */
+@media (max-width: 767px) {
+  .journey {
+    padding-top: 1.5rem;
+    padding-bottom: 2.5rem;
+  }
+  .journey-item-1 {
+    max-width: 100%;
+    margin-top: 0.5rem;
+  }
+}
+
