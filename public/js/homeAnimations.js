@@ -1085,10 +1085,7 @@
       transformOrigin: 'bottom right',
     });
     gsap.set([cards[0], cards[0].querySelectorAll('.card-inner, .card-front, .card-front img')], {
-      borderTopLeftRadius: cornerRadius,
-      borderBottomLeftRadius: cornerRadius,
-      borderTopRightRadius: 0,
-      borderBottomRightRadius: 0,
+      borderRadius: 0,
     });
 
     gsap.set(cards[1], {
@@ -1115,10 +1112,7 @@
       transformOrigin: 'bottom left',
     });
     gsap.set([cards[2], cards[2].querySelectorAll('.card-inner, .card-front, .card-front img')], {
-      borderTopRightRadius: cornerRadius,
-      borderBottomRightRadius: cornerRadius,
-      borderTopLeftRadius: 0,
-      borderBottomLeftRadius: 0,
+      borderRadius: 0,
     });
 
     gsap.set(cardInners, {
@@ -1285,63 +1279,81 @@
     }
 
     let ctx = gsap.context(() => {
-      // 1. Text splitting into words & chars via SplitText, SplitType, or inline fallback
-      let splitChars = [];
-      if (typeof SplitText !== 'undefined') {
-        const split = SplitText.create(text, { type: 'chars, words' });
-        splitChars = split.chars;
-      } else if (typeof SplitType !== 'undefined') {
-        const split = new SplitType(text, { types: 'chars, words', tagName: 'span' });
-        splitChars = split.chars;
-      } else {
-        const words = text.innerText.trim().split(/\s+/);
-        text.innerHTML = '';
-        words.forEach((word, wIdx) => {
-          const wordSpan = document.createElement('span');
-          wordSpan.className = 'word inline-flex';
-          word.split('').forEach((ch) => {
-            const charSpan = document.createElement('span');
-            charSpan.className = 'char inline-block';
-            charSpan.innerText = ch;
-            wordSpan.appendChild(charSpan);
-            splitChars.push(charSpan);
-          });
-          text.appendChild(wordSpan);
-          if (wIdx < words.length - 1) {
-            text.appendChild(document.createTextNode(' '));
-          }
-        });
-      }
+      // 1. Text & Inline Media splitting: Wrap words & preserve .stream-img-badge
+      let wordsList = [];
+      const childNodes = Array.from(text.childNodes);
+      text.innerHTML = '';
 
-      // 2. Horizontal scroll tween pinned to viewport (Task 9 calibrated distance)
+      childNodes.forEach((node) => {
+        if (node.nodeType === Node.TEXT_NODE) {
+          const rawText = node.textContent;
+          if (!rawText || !rawText.trim()) return;
+          const words = rawText.trim().split(/\s+/);
+          words.forEach((word, wIdx) => {
+            if (word.length > 0) {
+              const wordSpan = document.createElement('span');
+              wordSpan.className = 'word inline-block will-change-[transform,opacity]';
+              wordSpan.innerText = word;
+              text.appendChild(wordSpan);
+              wordsList.push(wordSpan);
+            }
+            if (wIdx < words.length - 1) {
+              text.appendChild(document.createTextNode(' '));
+            }
+          });
+        } else if (node.nodeType === Node.ELEMENT_NODE) {
+          text.appendChild(node);
+        }
+      });
+
+      // 2. Horizontal scroll tween pinned to viewport (Calibrated for calm, controlled reading)
       const scrollTween = gsap.to(text, {
-        xPercent: -100,
+        x: () => -(text.scrollWidth - window.innerWidth * 0.35),
         ease: 'none',
         scrollTrigger: {
           trigger: wrapper,
           pin: true,
           start: 'clamp(top top)',
-          end: () => (window.innerWidth < 768 ? '+=900px' : (window.innerWidth < 1024 ? '+=1300px' : '+=1600px')),
-          scrub: 0.8,
+          end: () => (window.innerWidth < 768 ? '+=3200px' : (window.innerWidth < 1024 ? '+=5500px' : '+=8500px')),
+          scrub: 0.3,
           anticipatePin: 1,
           invalidateOnRefresh: true,
         },
       });
 
-      // 3. Characters tumble into place via containerAnimation
-      if (splitChars && splitChars.length) {
-        splitChars.forEach((char) => {
-          gsap.from(char, {
-            yPercent: gsap.utils.random(-200, 200),
-            rotation: gsap.utils.random(-20, 20),
-            opacity: 0,
-            ease: 'back.out(1.2)',
+      // 3. Optimized word-level reveal via containerAnimation (drastically reduces ScrollTrigger overhead from 220 down to ~25)
+      if (wordsList && wordsList.length) {
+        wordsList.forEach((word) => {
+          gsap.from(word, {
+            yPercent: 25,
+            opacity: 0.15,
+            ease: 'power2.out',
             scrollTrigger: {
-              trigger: char,
+              trigger: word,
               containerAnimation: scrollTween,
               start: 'left 100%',
-              end: 'left 30%',
-              scrub: 1,
+              end: 'left 70%',
+              scrub: 0.6,
+            },
+          });
+        });
+      }
+
+      // 4. Inline image badges float, scale, and settle smoothly as they scroll into view
+      const imgBadges = text.querySelectorAll('.stream-img-badge');
+      if (imgBadges && imgBadges.length) {
+        imgBadges.forEach((badge) => {
+          gsap.from(badge, {
+            scale: 0.75,
+            yPercent: 25,
+            opacity: 0,
+            ease: 'power2.out',
+            scrollTrigger: {
+              trigger: badge,
+              containerAnimation: scrollTween,
+              start: 'left 100%',
+              end: 'left 70%',
+              scrub: 0.8,
             },
           });
         });
@@ -1352,10 +1364,9 @@
   }
 
   /**
-   * 6B. SECTION 6 TESTIMONIAL COMPONENT — SCULPTURAL FROSTED GLASS & ROTATING NARRATIVES
-   * Single frosted glass card floating over full-bleed blurred atelier backdrop.
-   * Features broken baroque stone fragment assembly, circular portrait reveal, gold sweep highlight,
-   * 5-star overshoot pop, and smooth rotating crossfade between client testimonials.
+   * 6B. SECTION 6 TESTIMONIAL COMPONENT — SCULPTURAL 2-COLUMN TESTIMONIAL STAGE
+   * Clean side-by-side layout: left botanical mandala & circular portrait, right client narrative.
+   * Optimized for silky 60fps scrolling with zero continuous SVG rasterization overhead.
    */
   function initTestimonialComponent() {
     const stage = document.getElementById('trust-testimonial-stage');
@@ -1364,18 +1375,13 @@
 
     const portraitWrap = card.querySelector('.testimonial-portrait-wrap');
     const portraitImg = document.getElementById('testimonial-portrait-img');
-    const fragments = Array.from(card.querySelectorAll('.stone-fragment'));
     const contentContainer = document.getElementById('testimonial-content-container');
     const headline = document.getElementById('testimonial-headline');
     const quote = document.getElementById('testimonial-quote');
-    const highlightBg = card.querySelector('.testimonial-highlight-bg');
     const attribution = document.getElementById('testimonial-attribution-block');
     const author = document.getElementById('testimonial-author');
     const project = document.getElementById('testimonial-project');
-    const tag = document.getElementById('testimonial-tag');
-    const stars = Array.from(card.querySelectorAll('.testimonial-star'));
-    const dotsNav = document.getElementById('testimonial-dots-nav');
-    const dots = dotsNav ? Array.from(dotsNav.querySelectorAll('.testimonial-dot')) : [];
+    const mandalaRing = document.getElementById('testimonial-mandala-ring') || card.querySelector('.stone-frag-mandala');
 
     const testimonials = [
       {
@@ -1383,8 +1389,6 @@
         quote: '“Elysium delivered a custom travertine console that transformed our living room into a monolithic living sanctuary with unmatched tactile reverence.”',
         author: 'Sarah P.',
         project: 'Bespoke Console Commission, South Bombay Residence',
-        tag: 'Custom Commission',
-        rating: '5/5',
         portrait: '/images/maker_portrait.jpg'
       },
       {
@@ -1392,8 +1396,6 @@
         quote: '“The chiseled black granite plinth and vessels created an atmosphere of profound architectural calm in our penthouse gallery.”',
         author: 'Vikram M.',
         project: 'Granite Plinth Suite, Juhu Atelier Villa',
-        tag: 'Architectural Suite',
-        rating: '5/5',
         portrait: '/images/atelier_craftsman.jpg'
       },
       {
@@ -1401,8 +1403,6 @@
         quote: '“Every curve in the raw cast-bronze lighting feels intentional, anchoring the room in warm, shadow-sculpted silence.”',
         author: 'Elena R.',
         project: 'Cast Bronze & Terracotta Series, New Delhi Residence',
-        tag: 'Bronze Commission',
-        rating: '5/5',
         portrait: '/images/atelier_display.jpg'
       }
     ];
@@ -1410,37 +1410,29 @@
     let currentIndex = 0;
     let autoAdvanceTimer = null;
     let isTransitioning = false;
-    const mandalaRing = document.getElementById('testimonial-mandala-ring') || card.querySelector('.stone-frag-mandala');
 
     // 1. Reduced Motion handling
     if (prefersReducedMotion) {
       gsap.set(card, { opacity: 1, scale: 1, y: 0 });
-      gsap.set(fragments, { opacity: 1, x: 0, y: 0, rotation: 0 });
-      if (portraitWrap) gsap.set(portraitWrap, { clipPath: 'circle(50% at 50% 50%)' });
+      if (mandalaRing) gsap.set(mandalaRing, { opacity: 1, scale: 1, rotation: 0 });
+      if (portraitWrap) gsap.set(portraitWrap, { opacity: 1, scale: 1 });
       if (headline) gsap.set(headline, { opacity: 1, y: 0 });
       if (quote) gsap.set(quote, { opacity: 1, y: 0 });
-      if (highlightBg) gsap.set(highlightBg, { clipPath: 'inset(0 0% 0 0)' });
       if (attribution) gsap.set(attribution, { opacity: 1, y: 0 });
-      if (stars.length) gsap.set(stars, { scale: 1, opacity: 1 });
     } else {
-      // Set initial states for GSAP Timeline
-      gsap.set(card, { opacity: 0, scale: 0.94, y: 25 });
-
-      // Clean, ultra-smooth architectural mandala & portrait setup
+      // Set initial states for clean hardware-accelerated entrance
+      gsap.set(card, { opacity: 0, y: 25 });
       if (mandalaRing) {
-        gsap.set(mandalaRing, { transformOrigin: '640px 635.5px', scale: 0.82, rotation: -25, opacity: 0 });
+        gsap.set(mandalaRing, { transformOrigin: '640px 635.5px', scale: 0.9, opacity: 0 });
       }
-
       if (portraitWrap) {
-        gsap.set(portraitWrap, { opacity: 0, scale: 0.88, transformOrigin: '640px 635.5px' });
+        gsap.set(portraitWrap, { opacity: 0, scale: 0.92, transformOrigin: '640px 635.5px' });
       }
       if (headline) gsap.set(headline, { opacity: 0, y: 15 });
-      if (quote) gsap.set(quote, { opacity: 0, y: 20 });
-      if (highlightBg) gsap.set(highlightBg, { clipPath: 'inset(0 100% 0 0)' });
+      if (quote) gsap.set(quote, { opacity: 0, y: 15 });
       if (attribution) gsap.set(attribution, { opacity: 0, y: 10 });
-      if (stars.length) gsap.set(stars, { scale: 0, opacity: 0 });
 
-      // ONE GSAP Timeline for Entrance
+      // ONE Single-Pass GSAP Timeline for Entrance
       const entranceTl = gsap.timeline({
         scrollTrigger: {
           trigger: card,
@@ -1450,127 +1442,67 @@
         },
       });
 
-      // Step 1: Card Entrance
+      // Step 1: Card container fade & rise
       entranceTl.to(card, {
         opacity: 1,
-        scale: 1,
         y: 0,
-        duration: 0.9,
+        duration: 0.8,
         ease: 'power3.out',
       }, 0);
 
-      // Step 2: Portrait Reveal
-      if (portraitWrap) {
-        entranceTl.to(portraitWrap, {
-          scale: 1,
-          opacity: 1,
-          duration: 0.85,
-          ease: 'power2.out',
-        }, 0.18);
-      }
-
-      // Step 3: Mandala Ring Blooms & Spins into position
+      // Step 2: Mandala Emblem & Portrait reveal in parallel
       if (mandalaRing) {
         entranceTl.to(mandalaRing, {
           scale: 1,
-          rotation: 0,
-          opacity: 0.95,
-          duration: 1.15,
+          opacity: 1,
+          duration: 0.9,
           ease: 'power3.out',
-        }, 0.2);
+        }, 0.1);
       }
 
-      // Step 2: Portrait Reveal (scale 0.9 -> 1, opacity 0 -> 1, duration 0.8s, power2.out)
       if (portraitWrap) {
         entranceTl.to(portraitWrap, {
           scale: 1,
           opacity: 1,
           duration: 0.8,
           ease: 'power2.out',
-        }, 0.2);
+        }, 0.15);
       }
 
-      // Step 3: Stone Fragments Assemble into clean precision (duration 0.85s, power3.out, offset start by 0.25s)
-      if (fragments.length > 0) {
-        entranceTl.to(fragments, {
-          x: 0,
-          y: 0,
-          scale: 1,
-          rotation: 0,
-          opacity: 1,
-          duration: 0.85,
-          stagger: 0.05,
-          ease: 'power3.out',
-        }, 0.25);
-      }
-
-      // Step 4: Headline + Quote Fade-in
+      // Step 3: Typography entrance
       if (headline) {
         entranceTl.to(headline, {
           opacity: 1,
           y: 0,
           duration: 0.6,
           ease: 'power3.out',
-        }, '>-0.2');
+        }, 0.25);
       }
 
       if (quote) {
         entranceTl.to(quote, {
           opacity: 1,
           y: 0,
-          duration: 0.7,
+          duration: 0.65,
           ease: 'power3.out',
-        }, '<0.1');
+        }, 0.35);
       }
 
-      // Step 5: Attribution
       if (attribution) {
         entranceTl.to(attribution, {
           opacity: 1,
           y: 0,
           duration: 0.5,
           ease: 'power3.out',
-        }, '>-0.2');
-      }
-
-      if (stars.length > 0) {
-        entranceTl.to(stars, {
-          scale: 1,
-          opacity: 1,
-          duration: 0.4,
-          stagger: 0.08,
-          ease: 'back.out(2)',
-        }, '<0.1');
+        }, 0.45);
       }
     }
 
-    // Step 5b: Continuous Ultra-Smooth Ambient Spin
-    if (mandalaRing && !prefersReducedMotion) {
-      gsap.to(mandalaRing, {
-        rotation: '+=360',
-        duration: 60,
-        repeat: -1,
-        ease: 'none',
-        transformOrigin: '640px 635.5px'
-      });
-    }
-
-    // Step 6: Testimonial Crossfade & Auto-advance (Frame & stone fragments stay static!)
+    // Step 4: Testimonial Crossfade & Auto-advance (Frame & mandala stay static for peak 60fps performance)
     function goToTestimonial(targetIdx) {
       if (isTransitioning || targetIdx === currentIndex) return;
       isTransitioning = true;
       const t = testimonials[targetIdx];
-
-      // Update dot active styling
-      dots.forEach((dot, idx) => {
-        if (idx === targetIdx) {
-          dot.classList.add('active');
-          gsap.to(dot, { scale: 1.25, backgroundColor: '#111111', duration: 0.3 });
-        } else {
-          dot.classList.remove('active');
-          gsap.to(dot, { scale: 1, backgroundColor: '#d6d3d1', duration: 0.3 });
-        }
-      });
 
       if (prefersReducedMotion) {
         if (portraitImg) {
@@ -1581,21 +1513,19 @@
         if (quote) quote.innerHTML = t.quote;
         if (author) author.textContent = t.author;
         if (project) project.textContent = t.project;
-        if (tag) tag.textContent = t.tag;
         currentIndex = targetIdx;
         isTransitioning = false;
         return;
       }
 
-      // Crossfade: fade out dynamic elements (portrait, headline, quote, attribution)
+      // Crossfade text content and portrait image smoothly
       const crossfadeTargets = [contentContainer, portraitWrap].filter(Boolean);
       gsap.to(crossfadeTargets, {
         opacity: 0,
-        y: -8,
+        y: -6,
         duration: 0.3,
         ease: 'power2.inOut',
         onComplete: () => {
-          // Swap data
           if (portraitImg) {
             portraitImg.setAttribute('href', t.portrait);
             if (portraitImg.setAttributeNS) portraitImg.setAttributeNS('http://www.w3.org/1999/xlink', 'href', t.portrait);
@@ -1604,31 +1534,15 @@
           if (quote) quote.innerHTML = t.quote;
           if (author) author.textContent = t.author;
           if (project) project.textContent = t.project;
-          if (tag) tag.textContent = t.tag;
 
-          // Reset highlight sweep in new quote
-          const newHighlight = quote.querySelector('.testimonial-highlight-bg');
-          if (newHighlight) {
-            gsap.set(newHighlight, { clipPath: 'inset(0 100% 0 0)' });
-          }
-
-          // Fade back in
           gsap.fromTo(crossfadeTargets,
-            { opacity: 0, y: 8 },
+            { opacity: 0, y: 6 },
             {
               opacity: 1,
               y: 0,
-              duration: 0.45,
+              duration: 0.4,
               ease: 'power2.out',
               onComplete: () => {
-                // Sweep highlight
-                if (newHighlight) {
-                  gsap.to(newHighlight, {
-                    clipPath: 'inset(0 0% 0 0)',
-                    duration: 0.5,
-                    ease: 'power2.out',
-                  });
-                }
                 currentIndex = targetIdx;
                 isTransitioning = false;
               }
@@ -1638,7 +1552,7 @@
       });
     }
 
-    // Auto-advance every 6s
+    // Auto-advance every 6s smoothly
     function startAutoAdvance() {
       stopAutoAdvance();
       autoAdvanceTimer = setInterval(() => {
@@ -1658,20 +1572,11 @@
     card.addEventListener('mouseenter', stopAutoAdvance);
     card.addEventListener('mouseleave', startAutoAdvance);
 
-    // Manual navigation via dot indicators
-    dots.forEach((dot) => {
-      dot.addEventListener('click', (e) => {
-        const idx = parseInt(e.currentTarget.getAttribute('data-idx') || '0', 10);
-        goToTestimonial(idx);
-        startAutoAdvance(); // Reset timer after manual interaction
-      });
-    });
-
-    // Auto-advance only on desktop; manual swipe/tap only on mobile
+    // Auto-advance only on desktop
     if (window.innerWidth >= 768) {
       startAutoAdvance();
     }
-    console.log('[Elysium Motion] Testimonial component initialized with 3 rotating narratives & fragment assembly.');
+    console.log('[Elysium Motion] Testimonial component initialized with silky 60fps performance.');
   }
 
   /**
@@ -1703,207 +1608,263 @@
   }
 
   /**
-   * 7. SECTION 7 — STACKED SVG CASCADE & ISOLATED S INTERACTIVE CTA
-   * Exact 1:1 reproduction of Pensatori-Irrazionali & YouTube Architecture.
-   * 6 SVG layers cascade upwards cleanly. The middle letter 'S' detaches from
-   * 'ELYSIUM' (leaving 'ELY  IUM'), travels downward, scales, and docks as the
-   * leading letter 'S' in 'START A CONVERSATION WITH US', triggering the scramble reveal.
+   * 7. SECTION 7 — SPOTLIGHT ARCHITECTURAL STACKED EXTRUSION & CONTACT DOCK
+   * Precise implementation of the BUILD reference:
+   * - 6 programmatically generated rear layers behind dominant foreground ELYSIUM wordmark.
+   * - Progressive mathematical stepped extrusion toward TOP-LEFT (-X, -Y).
+  /**
+   * 7. PENSATORI IRRAZIONALI ARCHITECTURAL EXTRUSION & CONTACT DOCK ENGINE
+   * - Look 1: Flat resting wordmark under Contact ... 2026 header.
+   * - Look 2: Side vertical slats fan out via scaleX and origin-bottom masking plates.
+   * - Look 3: Full upward stepped extrusion (scaleY) + letter 'I' 18° clockwise tilt with stepped dashes.
+   * - Look 4: Contact button release, smooth expansion to pill dock, and ScrambleText unscrambling.
    */
   function initElysiumContactCascadeSection() {
-    const section = document.getElementById('section-elysium-contact');
-    const stickyStage = document.getElementById('elysium-contact-sticky');
-    const svgStack = document.getElementById('elysium-svg-stack');
-    if (!section || !stickyStage || !svgStack || typeof gsap === 'undefined' || typeof ScrollTrigger === 'undefined') return;
+    const section = document.querySelector('.home-cta') || document.getElementById('spotlight-section');
+    if (!section || typeof gsap === 'undefined' || typeof ScrollTrigger === 'undefined') return;
 
-    const layers = [
-      section.querySelector('.elysium-svg-layer.layer-1'),
-      section.querySelector('.elysium-svg-layer.layer-2'),
-      section.querySelector('.elysium-svg-layer.layer-3'),
-      section.querySelector('.elysium-svg-layer.layer-4'),
-      section.querySelector('.elysium-svg-layer.layer-5')
-    ];
-    const frontLayer = section.querySelector('.elysium-svg-layer.layer-6');
-    const bgLayerS = section.querySelectorAll('.bg-layer-s');
-    const isolatedSGroup = document.getElementById('isolated-s-group');
-    const ctaBox = document.getElementById('elysium-cta-box');
-    const ctaLeadingS = document.getElementById('cta-leading-s');
-    const ctaRemainder = document.getElementById('cta-remainder');
+    const ctaWrapper = section.querySelector('.cta-wrapper');
+    if (!ctaWrapper) return;
 
-    function getResponsiveMetrics() {
+    const rearLayers = Array.from(section.querySelectorAll('.cta-item-rear'));
+    const frontLayer = section.querySelector('.last-text-wrapper');
+    const testosBtn = section.querySelector('.testos');
+    const testosText = section.querySelector('.testos-text');
+    const rearIGroups = Array.from(section.querySelectorAll('.rear-i-group'));
+
+    if (!frontLayer || !testosBtn) return;
+
+    // ScrambleText setup for testosText
+    const targetButtonLabel = 'CONTACT US';
+    let isLabelRevealed = false;
+    let labelRevealTween;
+
+    if (typeof ScrambleTextPlugin !== 'undefined' && gsap.plugins.scrambleText) {
+      labelRevealTween = gsap.to(testosText, {
+        duration: 0.65,
+        scrambleText: {
+          text: targetButtonLabel,
+          chars: 'upperCase',
+          revealDelay: 0.1,
+          speed: 0.6,
+        },
+        paused: true,
+      });
+    } else {
+      const scramblePool = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+      const proxy = { progress: 0 };
+      labelRevealTween = gsap.to(proxy, {
+        progress: 1,
+        duration: 0.65,
+        ease: 'power2.out',
+        paused: true,
+        onUpdate: () => {
+          const p = proxy.progress;
+          const revealedLen = Math.floor(p * targetButtonLabel.length);
+          let res = '';
+          for (let i = 0; i < targetButtonLabel.length; i++) {
+            if (targetButtonLabel[i] === ' ') res += ' ';
+            else if (i < revealedLen) res += targetButtonLabel[i];
+            else res += scramblePool[Math.floor(Math.random() * scramblePool.length)];
+          }
+          testosText.textContent = res;
+        },
+        onReverseComplete: () => {
+          testosText.textContent = targetButtonLabel;
+        }
+      });
+    }
+
+    // Responsive metrics calculation
+    function getLayoutMetrics() {
       const isMobile = window.innerWidth < 768;
       const isTablet = window.innerWidth >= 768 && window.innerWidth < 1024;
+      
+      // Temporarily ensure settled 0.88 scale to capture pristine geometric metrics
+      gsap.set(ctaWrapper, { scale: 0.88 });
+      const wrapperRect = ctaWrapper.getBoundingClientRect();
+      const sectionRect = section.getBoundingClientRect();
+
+      // Original dimensions and position of testos as the vertical letter 'I'
+      const initW = wrapperRect.width * 0.02114;
+      const initH = wrapperRect.height * 0.9697;
+      const initLeft = wrapperRect.width * 0.58289;
+
+      // Final docked button dimensions at bottom center
+      const targetW = isMobile ? Math.min(window.innerWidth * 0.72, 210) : 230;
+      const targetH = isMobile ? 46 : 50;
+
+      // Target offsets relative to initial position
+      const targetLeft = (wrapperRect.width * 0.5) - (targetW * 0.5);
+      const deltaX = targetLeft - initLeft;
+      
+      // Drop distance to bring button near the bottom of the section
+      const deltaY = (sectionRect.height * 0.38) + (isMobile ? 30 : 60);
+
       return {
         isMobile,
         isTablet,
-        yStep: isMobile ? 12 : (isTablet ? 16 : 20),
-        scaleStep: isMobile ? 0.006 : 0.007,
-        sTravelY: isMobile ? 110 : (isTablet ? 140 : 170),
-        pinDistance: window.innerHeight * (isMobile ? 2.0 : 2.5),
-        remainderPhrase: isMobile ? 'TART A CONVERSATION' : 'TART A CONVERSATION WITH US'
+        initW,
+        initH,
+        targetW,
+        targetH,
+        deltaX,
+        deltaY
       };
     }
 
-    let metrics = getResponsiveMetrics();
+    let metrics = getLayoutMetrics();
+    
+    // Calibrated start scale: visibly larger at section start but 100% contained with clean margins
+    const START_SCALE = 1.05;
+    const SETTLED_SCALE = 0.88;
+    gsap.set(ctaWrapper, { scale: START_SCALE, transformOrigin: 'center center' });
 
-    // Baseline reset: All layers occupy identical overlapping positions
-    gsap.set(layers, { y: 0, scale: 1, transformOrigin: '50% 100%' });
-    if (frontLayer) gsap.set(frontLayer, { y: 0, scale: 1, transformOrigin: '50% 100%' });
-    if (bgLayerS.length) gsap.set(bgLayerS, { opacity: 1 });
-    // Note: isolated-s-group has local center at 42px 100px (glyph center)
-    if (isolatedSGroup) gsap.set(isolatedSGroup, { y: 0, rotation: 0, scale: 1, opacity: 1, transformOrigin: '42px 100px' });
-    if (ctaBox) gsap.set(ctaBox, { xPercent: -50, yPercent: -50, y: metrics.sTravelY, scale: 0.88, opacity: 0, pointerEvents: 'none' });
-    if (ctaRemainder) gsap.set(ctaRemainder, { opacity: 0, textContent: '' });
-    if (ctaLeadingS) gsap.set(ctaLeadingS, { opacity: 0 });
+    window.addEventListener('resize', () => {
+      metrics = getLayoutMetrics();
+      ScrollTrigger.refresh();
+    });
 
     if (prefersReducedMotion) {
-      layers.forEach((layer, idx) => {
-        if (layer) gsap.set(layer, { y: -metrics.yStep * (idx + 1), scale: 1 - metrics.scaleStep * (idx + 1) });
-      });
-      if (bgLayerS.length) gsap.set(bgLayerS, { opacity: 0 });
-      if (isolatedSGroup) gsap.set(isolatedSGroup, { opacity: 0 });
-      if (ctaBox) {
-        gsap.set(ctaBox, { opacity: 1, scale: 1, pointerEvents: 'auto' });
-        if (ctaLeadingS) gsap.set(ctaLeadingS, { opacity: 1 });
-        if (ctaRemainder) gsap.set(ctaRemainder, { opacity: 1, textContent: metrics.remainderPhrase });
+      gsap.set(ctaWrapper, { scale: SETTLED_SCALE });
+      if (testosBtn) {
+        gsap.set(testosBtn, { pointerEvents: 'auto' });
       }
       return;
     }
 
-    // ScrambleText state machine
-    let isRevealed = false;
-    let scrambleInterval = null;
-    const chars = '✦01CONVERSATIONWITHUS';
+    // Master ScrollTrigger timeline pinned on section
+    ScrollTrigger.create({
+      trigger: section,
+      start: 'top top',
+      end: '+=280%',
+      pin: true,
+      pinSpacing: true,
+      anticipatePin: 1,
+      scrub: 0.6,
+      onUpdate: (self) => {
+        const p = self.progress; // 0 to 1
 
-    function runScramble(targetText) {
-      if (scrambleInterval) clearInterval(scrambleInterval);
-      if (ctaRemainder) {
-        gsap.to(ctaRemainder, { opacity: 1, duration: 0.15 });
-      }
-      let step = 0;
-      const totalSteps = 12;
-      scrambleInterval = setInterval(() => {
-        step++;
-        const resolvedLen = Math.floor((step / totalSteps) * targetText.length);
-        let output = targetText.slice(0, resolvedLen);
-        for (let i = resolvedLen; i < targetText.length; i++) {
-          if (targetText[i] === ' ') output += ' ';
-          else output += chars[Math.floor(Math.random() * chars.length)];
-        }
-        if (ctaRemainder) ctaRemainder.textContent = output;
-        if (step >= totalSteps) {
-          clearInterval(scrambleInterval);
-          if (ctaRemainder) ctaRemainder.textContent = targetText;
-        }
-      }, 30);
-    }
+        // =====================================================================
+        // PHASE A (0.00 → 0.35): SCALE-DOWN + SIMULTANEOUS LAYER FAN-OUT
+        //   Word shrinks from 1.05 → 0.88 while rear layers begin scaleY extrusion
+        //   This creates the "settling & dividing" feel — one unified motion.
+        // =====================================================================
+        const pShrink = gsap.utils.clamp(0, 1, p / 0.35);
+        const easeShrink = gsap.parseEase('power2.inOut')(pShrink);
+        const masterScale = gsap.utils.interpolate(START_SCALE, SETTLED_SCALE, easeShrink);
 
-    // Master ScrollTrigger Timeline
-    const masterTimeline = gsap.timeline({
-      scrollTrigger: {
-        trigger: section,
-        start: 'top top',
-        end: `+=${metrics.pinDistance}`,
-        pin: stickyStage,
-        pinSpacing: true,
-        scrub: 0.6,
-        anticipatePin: 1,
-        onUpdate: (self) => {
-          const p = self.progress;
+        gsap.set(ctaWrapper, {
+          scale: masterScale,
+          transformOrigin: 'center center',
+          force3D: true
+        });
 
-          // Scramble reveal triggered once per crossing of threshold
-          if (p >= 0.58 && !isRevealed) {
-            isRevealed = true;
-            runScramble(metrics.remainderPhrase);
-          } else if (p < 0.54 && isRevealed) {
-            isRevealed = false;
-            if (scrambleInterval) clearInterval(scrambleInterval);
-            if (ctaRemainder) {
-              ctaRemainder.textContent = '';
-              gsap.set(ctaRemainder, { opacity: 0 });
-            }
-          }
+        // =====================================================================
+        // PHASE B (0.10 → 0.60): ARCHITECTURAL EXTRUSION (origin-bottom scaleY/scaleX)
+        //   Overlaps with the tail-end of shrink so dividing starts mid-shrink.
+        //   6 rear layers fan upward (scaleY) and slightly outward (scaleX).
+        //   Layer 0 = furthest back = most extrusion. Layer 5 = least.
+        //   Dense 0.09 vertical step spacing forms a continuous, solid 3D block.
+        // =====================================================================
+        const pExtrude = gsap.utils.clamp(0, 1, (p - 0.10) / 0.50);
+        const easeExtrude = gsap.parseEase('power2.out')(pExtrude);
 
-          if (ctaBox) {
-            ctaBox.style.pointerEvents = (p >= 0.60) ? 'auto' : 'none';
-          }
+        // Max scale targets per layer (furthest-back → closest-to-front)
+        const layerConfigs = [
+          { sxMax: 1.20, syMax: 1.55 },   // Layer 0 (furthest back — tallest extrusion)
+          { sxMax: 1.16, syMax: 1.46 },   // Layer 1
+          { sxMax: 1.12, syMax: 1.37 },   // Layer 2
+          { sxMax: 1.08, syMax: 1.28 },   // Layer 3
+          { sxMax: 1.05, syMax: 1.19 },   // Layer 4
+          { sxMax: 1.02, syMax: 1.10 },   // Layer 5 (closest to front — smallest extrusion)
+        ];
+
+        rearLayers.forEach((layerEl, idx) => {
+          const cfg = layerConfigs[idx] || layerConfigs[0];
+          const currentScaleX = gsap.utils.interpolate(1, cfg.sxMax, easeExtrude);
+          const currentScaleY = gsap.utils.interpolate(1, cfg.syMax, easeExtrude);
+
+          gsap.set(layerEl, {
+            scaleX: currentScaleX,
+            scaleY: currentScaleY,
+            transformOrigin: 'bottom center',
+            force3D: true
+          });
+        });
+
+        // =====================================================================
+        // PHASE C (0.30 → 0.60): LETTER 'I' TILT (18° clockwise)
+        //   Starts once extrusion is visibly underway, before button detachment.
+        // =====================================================================
+        const pTilt = gsap.utils.clamp(0, 1, (p - 0.30) / 0.30);
+        const easeTilt = gsap.parseEase('power2.out')(pTilt);
+        const tiltDeg = 18 * easeTilt;
+
+        rearIGroups.forEach(group => {
+          gsap.set(group, {
+            rotation: tiltDeg,
+            transformOrigin: '29.67px 4.48px',
+            force3D: true
+          });
+        });
+
+        // =====================================================================
+        // PHASE D (0.62 → 1.0): BUTTON DETACHMENT, DOCKING & SCRAMBLETEXT
+        //   Letter 'I' (.testos) untilts, expands into pill button, docks at
+        //   bottom center, and "CONTACT US" unscrambles.
+        // =====================================================================
+        const pDock = gsap.utils.clamp(0, 1, (p - 0.62) / 0.34);
+        const easeDock = gsap.parseEase('power2.inOut')(pDock);
+
+        // Rotation: tilt → 0°
+        const buttonRot = gsap.utils.interpolate(tiltDeg, 0, easeDock);
+
+        // Translation towards bottom center dock
+        const transX = metrics.deltaX * easeDock;
+        const transY = metrics.deltaY * easeDock;
+
+        // Dimensions: letter 'I' shape → pill button
+        const currW = gsap.utils.interpolate(metrics.initW, metrics.targetW, easeDock);
+        const currH = gsap.utils.interpolate(metrics.initH, metrics.targetH, easeDock);
+        const currRadius = gsap.utils.interpolate(1, 9999, easeDock);
+        const currBg = easeDock > 0.1 ? '#2c2c2c' : '#434343';
+
+        gsap.set(testosBtn, {
+          x: transX,
+          y: transY,
+          rotation: buttonRot,
+          width: currW,
+          height: currH,
+          borderRadius: `${currRadius}px`,
+          backgroundColor: currBg,
+          boxShadow: easeDock > 0.4 ? '0 12px 32px rgba(0, 0, 0, 0.22)' : 'none',
+          pointerEvents: pDock > 0.6 ? 'auto' : 'none',
+          force3D: true
+        });
+
+        // Text orientation & visibility inside button
+        const textRot = gsap.utils.interpolate(-90, 0, easeDock);
+        const textOp = gsap.utils.clamp(0, 1, (pDock - 0.2) / 0.5);
+
+        gsap.set(testosText, {
+          rotation: textRot,
+          opacity: textOp,
+          force3D: true
+        });
+
+        // ScrambleText trigger
+        if (pDock > 0.5 && !isLabelRevealed) {
+          isLabelRevealed = true;
+          labelRevealTween.play();
+        } else if (pDock <= 0.5 && isLabelRevealed) {
+          isLabelRevealed = false;
+          labelRevealTween.reverse();
         }
       }
     });
 
-    // 1. Cascade Phase: The 5 background SVG copies subtly ripple upwards in depth (0.00 -> 0.35)
-    layers.forEach((layer, idx) => {
-      if (!layer) return;
-      const order = 5 - idx; // layer 5 is closest behind front layer 6
-      masterTimeline.to(layer, {
-        y: -metrics.yStep * order,
-        scale: 1 - metrics.scaleStep * order,
-        duration: 0.35,
-        ease: 'power1.out'
-      }, 0.02 * order);
-    });
-
-    // Fade background 'S' letters to leave clean negative gap in E L Y   I U M (0.22 -> 0.36)
-    if (bgLayerS.length) {
-      masterTimeline.to(bgLayerS, {
-        opacity: 0,
-        duration: 0.14,
-        ease: 'power1.out'
-      }, 0.22);
-    }
-
-    // 2. S Detachment, Own-Center Rotation & Graceful Descent (0.26 -> 0.58)
-    if (isolatedSGroup && ctaBox) {
-      // Phase 1: Separates and begins subtle tilt around its center (42px 100px)
-      masterTimeline.to(isolatedSGroup, {
-        y: metrics.sTravelY * 0.42,
-        rotation: -18,
-        scale: 1.04,
-        duration: 0.20,
-        ease: 'power2.inOut'
-      }, 0.26)
-      // Phase 2: Travels down to CTA position and scales into dock
-      .to(isolatedSGroup, {
-        y: metrics.sTravelY,
-        rotation: 0,
-        scale: 0.32,
-        opacity: 0,
-        duration: 0.18,
-        ease: 'power2.out'
-      }, 0.46);
-
-      // CTA Box emerges smoothly and docks the leading S
-      masterTimeline.fromTo(ctaBox,
-        { opacity: 0, scale: 0.85 },
-        { 
-          opacity: 1, 
-          scale: 1, 
-          duration: 0.18, 
-          ease: 'power2.out' 
-        }, 
-        0.45
-      );
-
-      if (ctaLeadingS) {
-        masterTimeline.fromTo(ctaLeadingS,
-          { opacity: 0, scale: 1.3 },
-          { opacity: 1, scale: 1, duration: 0.14, ease: 'power2.out' },
-          0.48
-        );
-      }
-    }
-
-    // Subtle magnetic hover for desktop
-    if (ctaBox && window.matchMedia('(hover: hover) and (pointer: fine)').matches) {
-      ctaBox.addEventListener('mousemove', (e) => {
-        const rect = ctaBox.getBoundingClientRect();
-        const x = (e.clientX - rect.left - rect.width / 2) * 0.12;
-        const y = (e.clientY - rect.top - rect.height / 2) * 0.18;
-        gsap.to(ctaBox, { x, y: metrics.sTravelY + y, duration: 0.2, ease: 'power1.out', overwrite: 'auto' });
-      });
-      ctaBox.addEventListener('mouseleave', () => {
-        gsap.to(ctaBox, { x: 0, y: metrics.sTravelY, duration: 0.4, ease: 'power2.out', overwrite: 'auto' });
-      });
-    }
+    console.log('[Elysium Motion] Pensatori Irrazionali architectural extrusion (overlapping phases) initialized.');
   }
 
   /**

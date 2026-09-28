@@ -365,9 +365,7 @@ function renderPage({ title, description, path, content, isHeroPage = false }) {
   <meta property="og:image" content="${BRAND.domain}/images/photo-1600121848594-d8644e57abab">
   <link rel="preload" href="/fonts/Geist-Light.ttf" as="font" type="font/ttf" crossorigin>
   <link rel="preload" href="/fonts/Geist-Medium.ttf" as="font" type="font/ttf" crossorigin>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=STIX+Two+Text:ital,wght@0,400..700;1,400..700&display=swap" rel="stylesheet">
+
   ${isHeroPage ? '<link rel="preload" href="/hero-frames/ezgif-frame-001.jpg" as="image" fetchpriority="high">' : ''}
   <link rel="stylesheet" href="/css/tailwind.min.css">
   <link rel="stylesheet" href="/css/elysium.css?v=6.0">
@@ -755,10 +753,10 @@ app.get('/', (req, res) => {
     <div class="lusion-mobile-hero-overlay absolute inset-0 bg-gradient-to-b from-[#ececec]/90 via-[#ececec]/75 to-[#ececec]/95 pointer-events-none hidden max-md:block z-[1]"></div>
 
     <!-- Pinned Viewport Container (Locks in on Desktop, 100svh Natural Flow on Mobile) -->
-    <div id="lusion-reel-stage" class="lusion-reel-stage relative w-full h-screen overflow-hidden flex flex-col justify-between">
+    <div id="lusion-reel-stage" class="lusion-reel-stage relative w-full h-screen overflow-hidden flex flex-col justify-center">
       
       <!-- 1. Dominant Typography & Intro Narrative (Headline, Paragraph, Pill CTA) -->
-      <div id="lusion-reel-intro" class="lusion-reel-intro absolute inset-0 w-full h-full pointer-events-none z-20 flex flex-col justify-between">
+      <div id="lusion-reel-intro" class="lusion-reel-intro absolute inset-0 w-full h-full pointer-events-none z-20 flex flex-col justify-center">
         
         <!-- Top Section: Clamped Headline -->
         <div class="lusion-reel-top-block w-full">
@@ -1109,11 +1107,10 @@ app.get('/', (req, res) => {
   <section class="featured-pin section-featured-pieces relative bg-[#ececec] border-t border-black/[0.08] text-[#111111] z-10 overflow-hidden" id="section-curated-collection">
     
     <!-- 100vh Sticky Viewport Stage pinned by ScrollTrigger -->
-    <div class="pin-inner featured-pin-inner featured-split-stage relative w-full h-[100vh] h-[100svh] flex flex-col justify-between items-center py-6 sm:py-8 lg:py-10 px-4 sm:px-8 lg:px-16 overflow-hidden" id="featured-split-sticky">
+    <div class="pin-inner featured-pin-inner featured-split-stage relative w-full h-[100vh] h-[100svh] flex flex-col justify-between items-center py-3 sm:py-4 lg:py-5 px-4 sm:px-6 lg:px-10" id="featured-split-sticky">
 
       <!-- Section Header (Redomedia STIX Two Text Italic Serif) -->
       <header class="featured-header text-center w-full max-w-4xl mx-auto flex-shrink-0 z-10" id="featured-section-header">
-        <span class="eyebrow featured-eyebrow text-stone-500 font-mono tracking-[0.3em] uppercase text-[10px]">Curated Collection · Architectural Horology</span>
         <h2 class="featured-title text-[#111111]"><span class="italic font-normal">Where</span> are you in your horological journey?</h2>
       </header>
 
@@ -1286,8 +1283,6 @@ app.get('/', (req, res) => {
   </section>`;
 
   // SECTION 6: THE CLIENT VOICE & TESTIMONIAL STAGE (Calibrated for Mobile & Desktop)
-  const quoteRawText = "The travertine console feels less like placed furniture and more like a permanent piece of architecture. It brings a profound, grounding stillness to our living space.";
-
   const sectionTrustVoice = `
   <section class="section-trust-voice relative bg-[#030303] border-t border-stone-800 text-white overflow-hidden" id="trust-voice-container">
     
@@ -1296,33 +1291,23 @@ app.get('/', (req, res) => {
       
       <!-- Quote Text Stream (Smooth character scatter on scroll) -->
       <div class="Horizontal__container w-full my-auto py-6">
-        <h3 class="Horizontal__text text-[clamp(2.2rem,6vw,5rem)] font-light select-none tracking-tight whitespace-normal md:whitespace-nowrap text-stone-100 leading-snug md:leading-tight" id="trust-horizontal-stream">
-          “${quoteRawText}”
+        <h3 class="Horizontal__text text-[clamp(3.25rem,8.5vw,8.5rem)] md:text-[clamp(4.5rem,10.5vw,10.5rem)] font-light select-none tracking-tight whitespace-normal md:whitespace-nowrap text-stone-100 leading-none md:leading-none" id="trust-horizontal-stream">
+          “Bringing the creative transformation of the world <span class="stream-img-badge stream-badge-globe"><img src="/globe.webp" alt="Creative transformation of the world" loading="eager" /></span> to the largest showroom <span class="stream-img-badge stream-badge-showroom"><img src="/showroom.webp" alt="Largest showroom in Saurashtra" loading="eager" /></span> in whole Saurashtra, our handcrafted decor <span class="stream-img-badge stream-badge-tree"><img src="/decor2.webp" alt="Handcrafted artisan decor" loading="eager" /></span> shapes timeless living sanctuaries.”
         </h3>
       </div>
 
     </div>
 
-    <!-- 2. Sculptural Frosted Glass Testimonial Component with Animated Stone Fragments -->
-    <div class="section-testimonial-stage relative w-full py-14 sm:py-20 lg:py-24 px-5 sm:px-10 lg:px-16 overflow-hidden flex flex-col items-center justify-center border-t border-stone-800/80 bg-black min-h-[auto] md:min-h-[100svh]" id="trust-testimonial-stage">
+    <!-- 2. Sculptural Atelier Testimonial Component (2-Column Horizontal Side-by-Side Layout on Solid #ececec) -->
+    <div class="section-testimonial-stage relative w-full py-16 sm:py-24 lg:py-28 px-5 sm:px-10 lg:px-16 overflow-hidden flex flex-col items-center justify-center bg-[#ececec] border-t border-stone-300" id="trust-testimonial-stage">
       
-      <!-- Full-Bleed Blurred Atelier Stone Backdrop -->
-      <div class="absolute inset-0 z-0 overflow-hidden pointer-events-none">
-        <img
-          src="/images/atelier_materials.jpg"
-          alt="Elysium Stone Atelier Texture"
-          class="w-full h-full object-cover object-center filter blur-xl brightness-[0.25] contrast-125 scale-110"
-        />
-        <div class="absolute inset-0 bg-gradient-to-b from-black/90 via-black/75 to-black"></div>
-      </div>
-
-      <!-- Center Floating Frosted Glass Card -->
-      <div id="elysium-testimonial-card" class="testimonial-card relative z-10 w-full max-w-2xl bg-stone-950/80 backdrop-blur-2xl border border-stone-800 rounded-2xl p-6 sm:p-12 text-center shadow-2xl overflow-visible will-change-[transform,opacity]">
+      <!-- Center Testimonial 2-Column Side-by-Side Lockup with Seamless Blended Background & No Borders -->
+      <div id="elysium-testimonial-card" class="testimonial-card relative z-10 w-full max-w-4xl lg:max-w-5xl bg-transparent border-0 shadow-none p-4 sm:p-8 lg:p-10 flex flex-col md:flex-row items-center justify-between gap-8 sm:gap-12 lg:gap-16 overflow-visible will-change-[transform,opacity]">
         
-        <!-- Top Custom Architectural Botanical Mandala Emblem with Circular Portrait -->
-        <div class="testimonial-wreath-wrap relative w-44 sm:w-64 h-auto mx-auto mb-5 sm:mb-6 flex items-center justify-center">
+        <!-- Left: Botanical Mandala Emblem with Circular Portrait -->
+        <div class="testimonial-wreath-wrap relative w-48 h-48 sm:w-60 sm:h-60 lg:w-72 lg:h-72 shrink-0 flex items-center justify-center m-0">
           
-          <svg class="testimonial-frame-svg w-full h-auto pointer-events-none z-10 overflow-visible text-stone-900 drop-shadow-[0_2px_12px_rgba(0,0,0,0.06)] select-none" viewBox="0 0 1280 1271" fill="none">
+          <svg class="testimonial-frame-svg w-full h-auto pointer-events-none z-10 overflow-visible text-stone-900 select-none" viewBox="0 0 1280 1271" fill="none">
             
             <defs>
               <clipPath id="testimonial-circle-clip">
@@ -1357,20 +1342,20 @@ app.get('/', (req, res) => {
 
         </div>
 
-        <!-- Content Container -->
-        <div id="testimonial-content-container" class="space-y-3 sm:space-y-4">
-          <h3 id="testimonial-headline" class="testimonial-headline text-2xl sm:text-4xl font-light text-stone-950 tracking-wide leading-tight">
+        <!-- Right: Text Content Container (Centered vertically alongside SVG) -->
+        <div id="testimonial-content-container" class="testimonial-content-container flex-1 flex flex-col justify-center text-center md:text-left space-y-3 sm:space-y-4">
+          <h3 id="testimonial-headline" class="testimonial-headline text-3xl sm:text-4xl lg:text-5xl font-light text-stone-950 tracking-tight leading-tight">
             “Grounded.”
           </h3>
 
-          <p id="testimonial-quote" class="testimonial-quote text-sm sm:text-base text-stone-700 font-light leading-relaxed max-w-xl mx-auto">
+          <p id="testimonial-quote" class="testimonial-quote text-base sm:text-lg lg:text-xl text-stone-700 font-light leading-relaxed m-0">
             “Elysium delivered a custom travertine console that transformed our living room into a monolithic living sanctuary with unmatched tactile reverence.”
           </p>
 
-          <div id="testimonial-attribution-block" class="testimonial-attribution pt-3 sm:pt-4">
+          <div id="testimonial-attribution-block" class="testimonial-attribution pt-2">
             <div class="text-xs sm:text-sm text-stone-600">
               <strong id="testimonial-author" class="font-medium text-stone-950">Sarah P.</strong>
-              <span class="text-stone-400 mx-1">•</span>
+              <span class="text-stone-400 mx-1.5">•</span>
               <span id="testimonial-project" class="text-stone-500">South Bombay</span>
             </div>
           </div>
@@ -1378,157 +1363,105 @@ app.get('/', (req, res) => {
 
       </div>
 
-      <!-- Navigation Dots (Min 44px tap targets for mobile thumbs) -->
-      <div class="testimonial-dots flex items-center justify-center gap-2 mt-6 sm:mt-8 relative z-20" id="testimonial-dots-nav">
-        <button class="testimonial-dot active min-w-[36px] min-h-[36px] flex items-center justify-center p-2 cursor-pointer" data-idx="0" aria-label="Testimonial 1">
-          <span class="w-2.5 h-2.5 rounded-full bg-stone-950 transition-all block"></span>
-        </button>
-        <button class="testimonial-dot min-w-[36px] min-h-[36px] flex items-center justify-center p-2 cursor-pointer" data-idx="1" aria-label="Testimonial 2">
-          <span class="w-2.5 h-2.5 rounded-full bg-stone-300 transition-all block"></span>
-        </button>
-        <button class="testimonial-dot min-w-[36px] min-h-[36px] flex items-center justify-center p-2 cursor-pointer" data-idx="2" aria-label="Testimonial 3">
-          <span class="w-2.5 h-2.5 rounded-full bg-stone-300 transition-all block"></span>
-        </button>
-      </div>
-
     </div>
 
   </section>`;
 
-  // SECTION 7: STACKED SVG CASCADE & CONVERSATION CTA (Unified Typographic Vector Architecture)
-  const E_path = "M 0 40 L 82 40 L 82 59 L 20 59 L 20 91 L 72 91 L 72 109 L 20 109 L 20 141 L 82 141 L 82 160 L 0 160 Z";
-  const L_path = "M 0 40 L 20 40 L 20 141 L 76 141 L 76 160 L 0 160 Z";
-  const Y_path = "M 0 40 L 24 40 L 46 88 L 68 40 L 92 40 L 56 102 L 56 160 L 36 160 L 36 102 Z";
-  const S_path = "M 80 66 C 80 50 63 40 42 40 C 20 40 2 52 2 70 C 2 87 16 96 36 101 L 48 104 C 68 108 82 116 82 131 C 82 148 64 160 42 160 C 20 160 4 149 4 134 L 24 134 C 24 140 31 142 42 142 C 52 142 62 136 62 129 C 62 118 51 113 32 108 L 22 105 C 8 101 22 84 22 70 C 22 58 31 59 42 59 C 53 59 60 62 60 66 L 80 66 Z";
-  const I_path = "M 0 40 L 20 40 L 20 160 L 0 160 Z";
-  const U_path = "M 0 40 L 20 40 L 20 118 C 20 132 30 141 44 141 C 58 141 68 132 68 118 L 68 40 L 88 40 L 88 118 C 88 144 69 160 44 160 C 19 160 0 144 0 118 Z";
-  const M_path = "M 0 40 L 22 40 L 57 114 L 92 40 L 114 40 L 114 160 L 94 160 L 94 76 L 65 136 L 49 136 L 20 76 L 20 160 L 0 160 Z";
+  // SECTION 7: PENSATORI IRRAZIONALI ARCHITECTURAL EXTRUSION & CONTACT DOCK (Look 1, 2, 3 + Contact Us Button)
+  // Shared letter paths for the word "ELYSIUM" (viewBox 0 0 50 9)
+  const elysiumLetterPaths = `
+    <path class="letter-e" d="M0 8.84659V0.119318H5.26705V1.05682H1.05682V4.00568H4.99432V4.94318H1.05682V7.90909H5.33523V8.84659H0Z"/>
+    <path class="letter-l" d="M7.17188 8.84659V0.119318H8.22869V7.90909H12.2855V8.84659H7.17188Z"/>
+    <path class="letter-y" d="M12.7617 0.119318H13.9719L16.3924 4.19318H16.4947L18.9151 0.119318H20.1254L16.9719 5.25V8.84659H15.9151V5.25L12.7617 0.119318Z"/>
+    <path class="letter-s" d="M26.2649 2.30114C26.2138 1.86932 26.0064 1.53409 25.6428 1.29545C25.2791 1.05682 24.8331 0.9375 24.3047 0.9375C23.9183 0.9375 23.5803 1 23.2905 1.125C23.0036 1.25 22.7791 1.42188 22.6172 1.64062C22.4581 1.85938 22.3786 2.10795 22.3786 2.38636C22.3786 2.61932 22.4339 2.8196 22.5447 2.98722C22.6584 3.15199 22.8033 3.28977 22.9794 3.40057C23.1555 3.50852 23.3402 3.59801 23.5334 3.66903C23.7266 3.73722 23.9041 3.79261 24.0661 3.83523L24.9524 4.07386C25.1797 4.13352 25.4325 4.21591 25.7109 4.32102C25.9922 4.42614 26.2607 4.5696 26.5163 4.75142C26.7749 4.9304 26.9879 5.16051 27.1555 5.44176C27.3232 5.72301 27.407 6.06818 27.407 6.47727C27.407 6.94886 27.2834 7.375 27.0362 7.75568C26.7919 8.13636 26.4339 8.43892 25.9624 8.66335C25.4936 8.88778 24.924 9 24.2536 9C23.6286 9 23.0874 8.89915 22.63 8.69744C22.1754 8.49574 21.8175 8.21449 21.5561 7.85369C21.2976 7.4929 21.1513 7.07386 21.1172 6.59659H22.2081C22.2365 6.92614 22.3473 7.19886 22.5405 7.41477C22.7365 7.62784 22.9837 7.78693 23.282 7.89205C23.5831 7.99432 23.907 8.04545 24.2536 8.04545C24.657 8.04545 25.0192 7.98011 25.3402 7.84943C25.6612 7.71591 25.9155 7.53125 26.103 7.29545C26.2905 7.05682 26.3842 6.77841 26.3842 6.46023C26.3842 6.17045 26.3033 5.93466 26.1413 5.75284C25.9794 5.57102 25.7663 5.4233 25.5021 5.30966C25.2379 5.19602 24.9524 5.09659 24.6456 5.01136L23.5717 4.70455C22.8899 4.50852 22.3501 4.22869 21.9524 3.86506C21.5547 3.50142 21.3558 3.02557 21.3558 2.4375C21.3558 1.94886 21.4879 1.52273 21.7521 1.15909C22.0192 0.792614 22.3771 0.508523 22.826 0.306818C23.2777 0.102273 23.782 0 24.3388 0C24.9013 0 25.4013 0.100852 25.8388 0.302557C26.2763 0.50142 26.6229 0.774148 26.8786 1.12074C27.1371 1.46733 27.2734 1.8608 27.2876 2.30114H26.2649Z"/>
+    <path class="letter-i" d="M30.2013 0.119318V8.84659H29.1445V0.119318H30.2013Z"/>
+    <path class="letter-u" d="M38.0476 0.119318H39.1044V5.89773C39.1044 6.49432 38.9638 7.02699 38.6825 7.49574C38.4041 7.96165 38.0107 8.32955 37.5021 8.59943C36.9936 8.86648 36.397 9 35.7124 9C35.0277 9 34.4311 8.86648 33.9226 8.59943C33.4141 8.32955 33.0192 7.96165 32.7379 7.49574C32.4595 7.02699 32.3203 6.49432 32.3203 5.89773V0.119318H33.3771V5.8125C33.3771 6.23864 33.4709 6.6179 33.6584 6.95028C33.8459 7.27983 34.1129 7.53977 34.4595 7.73011C34.809 7.91761 35.2266 8.01136 35.7124 8.01136C36.1982 8.01136 36.6158 7.91761 36.9652 7.73011C37.3146 7.53977 37.5817 7.27983 37.7663 6.95028C37.9538 6.6179 38.0476 6.23864 38.0476 5.8125V0.119318Z"/>
+    <path class="letter-m" d="M41.2148 0.119318H42.4762L45.4421 7.36364H45.5444L48.5103 0.119318H49.7717V8.84659H48.783V2.21591H48.6978L45.9705 8.84659H45.016L42.2887 2.21591H42.2035V8.84659H41.2148V0.119318Z"/>
+  `;
 
-  const sectionElysiumContact = `
-  <section class="section-elysium-contact" id="section-elysium-contact" aria-label="Elysium Contact & Commissions" role="region">
+  // Foreground front paths (where letter 'I' is opacity-0 to make way for the .testos button)
+  const elysiumForegroundFrontPaths = `
+    <path class="letter-e" d="M0 8.84659V0.119318H5.26705V1.05682H1.05682V4.00568H4.99432V4.94318H1.05682V7.90909H5.33523V8.84659H0Z"/>
+    <path class="letter-l" d="M7.17188 8.84659V0.119318H8.22869V7.90909H12.2855V8.84659H7.17188Z"/>
+    <path class="letter-y" d="M12.7617 0.119318H13.9719L16.3924 4.19318H16.4947L18.9151 0.119318H20.1254L16.9719 5.25V8.84659H15.9151V5.25L12.7617 0.119318Z"/>
+    <path class="letter-s" d="M26.2649 2.30114C26.2138 1.86932 26.0064 1.53409 25.6428 1.29545C25.2791 1.05682 24.8331 0.9375 24.3047 0.9375C23.9183 0.9375 23.5803 1 23.2905 1.125C23.0036 1.25 22.7791 1.42188 22.6172 1.64062C22.4581 1.85938 22.3786 2.10795 22.3786 2.38636C22.3786 2.61932 22.4339 2.8196 22.5447 2.98722C22.6584 3.15199 22.8033 3.28977 22.9794 3.40057C23.1555 3.50852 23.3402 3.59801 23.5334 3.66903C23.7266 3.73722 23.9041 3.79261 24.0661 3.83523L24.9524 4.07386C25.1797 4.13352 25.4325 4.21591 25.7109 4.32102C25.9922 4.42614 26.2607 4.5696 26.5163 4.75142C26.7749 4.9304 26.9879 5.16051 27.1555 5.44176C27.3232 5.72301 27.407 6.06818 27.407 6.47727C27.407 6.94886 27.2834 7.375 27.0362 7.75568C26.7919 8.13636 26.4339 8.43892 25.9624 8.66335C25.4936 8.88778 24.924 9 24.2536 9C23.6286 9 23.0874 8.89915 22.63 8.69744C22.1754 8.49574 21.8175 8.21449 21.5561 7.85369C21.2976 7.4929 21.1513 7.07386 21.1172 6.59659H22.2081C22.2365 6.92614 22.3473 7.19886 22.5405 7.41477C22.7365 7.62784 22.9837 7.78693 23.282 7.89205C23.5831 7.99432 23.907 8.04545 24.2536 8.04545C24.657 8.04545 25.0192 7.98011 25.3402 7.84943C25.6612 7.71591 25.9155 7.53125 26.103 7.29545C26.2905 7.05682 26.3842 6.77841 26.3842 6.46023C26.3842 6.17045 26.3033 5.93466 26.1413 5.75284C25.9794 5.57102 25.7663 5.4233 25.5021 5.30966C25.2379 5.19602 24.9524 5.09659 24.6456 5.01136L23.5717 4.70455C22.8899 4.50852 22.3501 4.22869 21.9524 3.86506C21.5547 3.50142 21.3558 3.02557 21.3558 2.4375C21.3558 1.94886 21.4879 1.52273 21.7521 1.15909C22.0192 0.792614 22.3771 0.508523 22.826 0.306818C23.2777 0.102273 23.782 0 24.3388 0C24.9013 0 25.4013 0.100852 25.8388 0.302557C26.2763 0.50142 26.6229 0.774148 26.8786 1.12074C27.1371 1.46733 27.2734 1.8608 27.2876 2.30114H26.2649Z"/>
+    <path class="letter-i opacity-0 pointer-events-none" d="M30.2013 0.119318V8.84659H29.1445V0.119318H30.2013Z"/>
+    <path class="letter-u" d="M38.0476 0.119318H39.1044V5.89773C39.1044 6.49432 38.9638 7.02699 38.6825 7.49574C38.4041 7.96165 38.0107 8.32955 37.5021 8.59943C36.9936 8.86648 36.397 9 35.7124 9C35.0277 9 34.4311 8.86648 33.9226 8.59943C33.4141 8.32955 33.0192 7.96165 32.7379 7.49574C32.4595 7.02699 32.3203 6.49432 32.3203 5.89773V0.119318H33.3771V5.8125C33.3771 6.23864 33.4709 6.6179 33.6584 6.95028C33.8459 7.27983 34.1129 7.53977 34.4595 7.73011C34.809 7.91761 35.2266 8.01136 35.7124 8.01136C36.1982 8.01136 36.6158 7.91761 36.9652 7.73011C37.3146 7.53977 37.5817 7.27983 37.7663 6.95028C37.9538 6.6179 38.0476 6.23864 38.0476 5.8125V0.119318Z"/>
+    <path class="letter-m" d="M41.2148 0.119318H42.4762L45.4421 7.36364H45.5444L48.5103 0.119318H49.7717V8.84659H48.783V2.21591H48.6978L45.9705 8.84659H45.016L42.2887 2.21591H42.2035V8.84659H41.2148V0.119318Z"/>
+  `;
 
-    <!-- 100vh Sticky Viewport Stage pinned by ScrollTrigger -->
-    <div class="elysium-contact-pin-inner" id="elysium-contact-sticky">
+  // Function to create a rear cta-item layer with geometric SVG silhouette masking
+  const createRearCtaItem = (layerIndex) => `
+    <div class="text-[#434343] origin-bottom absolute w-full cta-item cta-item-rear" data-layer="${layerIndex}">
+      <svg width="100%" class="z-10 relative block" viewBox="0 0 50 9" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <!-- 1. Geometric Silhouette Mask Group: matches exact letter contours, negative space remains 100% transparent -->
+        <g class="svg-letter-mask" fill="#ececec" stroke="#ececec" stroke-width="0.2" stroke-linejoin="round" stroke-linecap="round">
+          ${elysiumLetterPaths}
+        </g>
+        <!-- 2. Solid Color Letter Group: all 7 letters visible including rear 'I' -->
+        <g class="svg-letter-front" fill="#434343">
+          ${elysiumLetterPaths}
+        </g>
+      </svg>
+    </div>
+  `;
 
-      <!-- Minimal Top Bar: Contact | Year -->
-      <div class="elysium-contact-topbar">
+  const sectionSpotlight = `
+  <section class="w-screen px-6 md:px-12 pt-8 md:pt-16 pb-52 md:pb-64 flex flex-col items-center home-cta relative z-10 bg-[#ececec]" id="spotlight-section">
+    <!-- Top Meta Row -->
+    <div class="w-full relative flex flex-col gap-2 z-10">
+      <div class="w-full flex flex-row justify-between text-[#434343] tracking-tight text-sm md:text-base font-sans font-medium">
         <span>Contact</span>
-        <span>${new Date().getFullYear()}</span>
+        <span class="tracking-[-0.08em]">2026</span>
+      </div>
+      <div class="block w-full h-px bg-black/20"></div>
+    </div>
+
+    <!-- Master Stacked Wordmark Container (Pensatori Irrazionali Architecture) -->
+    <div class="relative w-full cta-wrapper z-1 mt-4 md:mt-9" id="cta-wrapper">
+      
+      <!-- 6 Rear Stepped Stack Layers (Layers 0, 1, 2, 3, 4, 5) — dense, continuous 3D architectural extrusion -->
+      ${createRearCtaItem(0)}
+      ${createRearCtaItem(1)}
+      ${createRearCtaItem(2)}
+      ${createRearCtaItem(3)}
+      ${createRearCtaItem(4)}
+      ${createRearCtaItem(5)}
+
+      <!-- Foreground Layer: Contains the Interactive Letter 'I' / Contact Button (.testos) -->
+      <div class="text-[#434343] origin-bottom absolute w-full cta-item last-text-wrapper" data-layer="front">
+        <div class="last-i relative">
+          <a aria-label="Contact us" class="group/button absolute z-20 testos bg-[#434343] text-white flex items-center justify-center transition-[background-color,color,box-shadow] duration-300 ease-[cubic-bezier(0.2,0,0,1)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#434343]/30" href="/contact" id="spotlight-contact-btn">
+            <span class="-rotate-90 block whitespace-nowrap testos-text transition-transform duration-300 ease-[cubic-bezier(0.2,0,0,1)] group-active/button:scale-[0.96]">CONTACT US</span>
+          </a>
+        </div>
+        <svg width="100%" class="z-10 relative block" viewBox="0 0 50 9" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <!-- 1. Geometric Silhouette Mask Group -->
+          <g class="svg-letter-mask" fill="#ececec" stroke="#ececec" stroke-width="0.2" stroke-linejoin="round" stroke-linecap="round">
+            ${elysiumLetterPaths}
+          </g>
+          <!-- 2. Foreground Letter Paths (letter-i is opacity-0; .testos button serves as interactive 'I') -->
+          <g class="svg-letter-front" fill="#434343">
+            ${elysiumForegroundFrontPaths}
+          </g>
+        </svg>
       </div>
 
-      <!-- Center SVG Spotlight Stage -->
-      <div class="svg-spotlight-stage" id="svg-spotlight-stage">
-        
-        <!-- 6 Identical Stacked SVG Layers Pinned Exactly Over Each Other -->
-        <div class="svg-stack" id="elysium-svg-stack">
-          
-          <!-- Layer 1 (Bottom Back) -->
-          <svg class="elysium-svg-layer layer-1" viewBox="0 0 1100 200" preserveAspectRatio="xMidYMid meet" aria-hidden="true">
-            <g class="elysium-glyph-group">
-              <path d="${E_path}" transform="translate(117, 0)" />
-              <path d="${L_path}" transform="translate(253, 0)" />
-              <path d="${Y_path}" transform="translate(373, 0)" />
-              <path class="bg-layer-s" d="${S_path}" transform="translate(513, 0)" />
-              <path d="${I_path}" transform="translate(653, 0)" />
-              <path d="${U_path}" transform="translate(729, 0)" />
-              <path d="${M_path}" transform="translate(869, 0)" />
-            </g>
-          </svg>
-
-          <!-- Layer 2 -->
-          <svg class="elysium-svg-layer layer-2" viewBox="0 0 1100 200" preserveAspectRatio="xMidYMid meet" aria-hidden="true">
-            <g class="elysium-glyph-group">
-              <path d="${E_path}" transform="translate(117, 0)" />
-              <path d="${L_path}" transform="translate(253, 0)" />
-              <path d="${Y_path}" transform="translate(373, 0)" />
-              <path class="bg-layer-s" d="${S_path}" transform="translate(513, 0)" />
-              <path d="${I_path}" transform="translate(653, 0)" />
-              <path d="${U_path}" transform="translate(729, 0)" />
-              <path d="${M_path}" transform="translate(869, 0)" />
-            </g>
-          </svg>
-
-          <!-- Layer 3 -->
-          <svg class="elysium-svg-layer layer-3" viewBox="0 0 1100 200" preserveAspectRatio="xMidYMid meet" aria-hidden="true">
-            <g class="elysium-glyph-group">
-              <path d="${E_path}" transform="translate(117, 0)" />
-              <path d="${L_path}" transform="translate(253, 0)" />
-              <path d="${Y_path}" transform="translate(373, 0)" />
-              <path class="bg-layer-s" d="${S_path}" transform="translate(513, 0)" />
-              <path d="${I_path}" transform="translate(653, 0)" />
-              <path d="${U_path}" transform="translate(729, 0)" />
-              <path d="${M_path}" transform="translate(869, 0)" />
-            </g>
-          </svg>
-
-          <!-- Layer 4 -->
-          <svg class="elysium-svg-layer layer-4" viewBox="0 0 1100 200" preserveAspectRatio="xMidYMid meet" aria-hidden="true">
-            <g class="elysium-glyph-group">
-              <path d="${E_path}" transform="translate(117, 0)" />
-              <path d="${L_path}" transform="translate(253, 0)" />
-              <path d="${Y_path}" transform="translate(373, 0)" />
-              <path class="bg-layer-s" d="${S_path}" transform="translate(513, 0)" />
-              <path d="${I_path}" transform="translate(653, 0)" />
-              <path d="${U_path}" transform="translate(729, 0)" />
-              <path d="${M_path}" transform="translate(869, 0)" />
-            </g>
-          </svg>
-
-          <!-- Layer 5 -->
-          <svg class="elysium-svg-layer layer-5" viewBox="0 0 1100 200" preserveAspectRatio="xMidYMid meet" aria-hidden="true">
-            <g class="elysium-glyph-group">
-              <path d="${E_path}" transform="translate(117, 0)" />
-              <path d="${L_path}" transform="translate(253, 0)" />
-              <path d="${Y_path}" transform="translate(373, 0)" />
-              <path class="bg-layer-s" d="${S_path}" transform="translate(513, 0)" />
-              <path d="${I_path}" transform="translate(653, 0)" />
-              <path d="${U_path}" transform="translate(729, 0)" />
-              <path d="${M_path}" transform="translate(869, 0)" />
-            </g>
-          </svg>
-
-          <!-- Layer 6 (Frontmost Primary Layer with Isolated S Group in identical position) -->
-          <svg class="elysium-svg-layer layer-6 layer-front" id="elysium-front-svg" viewBox="0 0 1100 200" preserveAspectRatio="xMidYMid meet">
-            <!-- Background base letters remaining in place: E, L, Y, I, U, M -->
-            <g class="svg-static-letters" id="svg-static-letters">
-              <path class="let-e" d="${E_path}" transform="translate(117, 0)" />
-              <path class="let-l" d="${L_path}" transform="translate(253, 0)" />
-              <path class="let-y" d="${Y_path}" transform="translate(373, 0)" />
-              <path class="let-i" d="${I_path}" transform="translate(653, 0)" />
-              <path class="let-u" d="${U_path}" transform="translate(729, 0)" />
-              <path class="let-m" d="${M_path}" transform="translate(869, 0)" />
-            </g>
-
-            <!-- Isolated Letter S Group (Identically positioned at translate(513, 0)) -->
-            <g class="isolated-s-group" id="isolated-s-group" transform="translate(513, 0)">
-              <path class="svg-hero-s" id="svg-hero-s" d="${S_path}" />
-            </g>
-          </svg>
-
-          <!-- The Morphing Scramble CTA Button (Coordinates dynamically anchored to S) -->
-          <a href="/contact" 
-             class="elysium-cta-box" 
-             id="elysium-cta-box" 
-             aria-label="Start a conversation with us">
-            <span class="cta-phrase-wrap" id="cta-phrase-wrap">
-              <span class="cta-leading-s" id="cta-leading-s">S</span><span class="cta-remainder" id="cta-remainder">TART A CONVERSATION WITH US</span>
-            </span>
-          </a>
-
-        </div><!-- /svg-stack -->
-
-      </div><!-- /svg-spotlight-stage -->
-
-    </div><!-- /elysium-contact-sticky -->
-
-  </section><!-- /section-elysium-contact -->`;
+      <!-- Natural Height Spacer SVG (opacity-0 pointer-events-none) -->
+      <svg width="100%" class="opacity-0 pointer-events-none block" viewBox="0 0 50 9" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <g fill="#434343">
+          ${elysiumLetterPaths}
+        </g>
+      </svg>
+    </div>
+  </section>`;
 
   // Render combined page with breathtaking 100vh interactive body sections between Hero and Footer
   res.send(renderPage({
     title: 'Elysium | Artisan Minimalist Home Decor, Handcrafted in India',
     description: BRAND.heroStatement,
     path: '/',
-    content: heroSection + sectionManifestoAndExpedition + sectionLivingSanctuary + sectionLineArtScroll + sectionFeaturedPieces + sectionTrustVoice + sectionElysiumContact,
+    content: heroSection + sectionManifestoAndExpedition + sectionLivingSanctuary + sectionLineArtScroll + sectionFeaturedPieces + sectionTrustVoice + sectionSpotlight,
     isHeroPage: true,
   }));
 });

@@ -1,37 +1,7 @@
-/* ELYSIUM GEIST TYPOGRAPHY SYSTEM */
-@font-face {
-  font-family: 'Geist-Light';
-  src: url('/fonts/Geist-Light.ttf') format('truetype');
-  font-weight: 300;
-  font-style: normal;
-  font-display: swap;
-}
-
-@font-face {
-  font-family: 'Geist-Medium';
-  src: url('/fonts/Geist-Medium.ttf') format('truetype');
-  font-weight: 500;
-  font-style: normal;
-  font-display: swap;
-}
-
-@font-face {
-  font-family: 'Geist';
-  src: url('/fonts/Geist-Light.ttf') format('truetype');
-  font-weight: 300;
-  font-style: normal;
-  font-display: swap;
-}
-
-@font-face {
-  font-family: 'Geist';
-  src: url('/fonts/Geist-Medium.ttf') format('truetype');
-  font-weight: 500;
-  font-style: normal;
-  font-display: swap;
-}
-
-/* ELYSIUM GEIST TYPOGRAPHY SYSTEM */
+/* ELYSIUM GEIST TYPOGRAPHY SYSTEM — Two fonts only:
+   Geist-Light (weight 300) → all body / content
+   Geist-Medium (weight 500) → all headings / labels / eyebrows
+*/
 @font-face {
   font-family: 'Geist-Light';
   src: url('/fonts/Geist-Light.ttf') format('truetype');
@@ -91,7 +61,10 @@
   /* TYPOGRAPHY SCALE TOKENS */
   --font-content: 'Geist-Light', 'Geist', sans-serif;
   --font-heading: 'Geist-Medium', 'Geist', sans-serif;
-  
+  /* Alias tokens — always resolve to the same two Geist files */
+  --font-mono: 'Geist-Medium', 'Geist', sans-serif;
+  --font-sans: 'Geist-Light', 'Geist', sans-serif;
+
   --text-h1: clamp(2.75rem, 6.5vw, 5.5rem);
   --text-h2: clamp(1.85rem, 4vw, 3.25rem);
   --text-h3: clamp(1.2rem, 1.8vw, 1.6rem);
@@ -682,7 +655,7 @@ video,
   border: 1px solid #27272a;
   padding: 0.6rem 1.2rem;
   border-radius: var(--radius-btn, 10px) !important;
-  font-family: var(--font-mono);
+  font-family: var(--font-heading);
   font-size: 0.75rem;
   text-transform: uppercase;
   letter-spacing: 0.15em;
@@ -1023,7 +996,7 @@ select {
   position: absolute;
   top: -15px;
   left: 20px;
-  font-family: serif;
+  font-family: var(--font-heading);
   font-size: 5rem;
   color: rgba(212, 175, 55, 0.18);
   line-height: 1;
@@ -2483,15 +2456,17 @@ select {
 
 .Horizontal__text {
   display: flex;
-  align-items: baseline;
+  align-items: center;
   width: max-content;
   white-space: nowrap;
-  gap: 1.25rem;
-  padding-left: 100vw;
-  padding-right: 25vw;
-  font-family: var(--font-heading, 'Geist', -apple-system, sans-serif);
+  gap: 0;
+  padding-left: 88vw;
+  padding-right: 30vw;
+  font-family: var(--font-heading, 'Geist-Medium', sans-serif);
+  font-size: clamp(3.25rem, 9vw, 9.5rem);
+  line-height: 1.05;
   font-weight: 300;
-  letter-spacing: -0.015em;
+  letter-spacing: -0.025em;
   will-change: transform;
 }
 
@@ -2506,11 +2481,76 @@ select {
 .Horizontal__text .word {
   display: inline-flex;
   white-space: nowrap;
+  margin-right: 0.28em;
 }
 
 .Horizontal__text .char {
   display: inline-block;
   will-change: transform, opacity;
+}
+
+.stream-img-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  vertical-align: middle;
+  width: clamp(6.5rem, 14vw, 13.5rem);
+  height: clamp(6.5rem, 14vw, 13.5rem);
+  margin: 0 clamp(0.15rem, 0.4vw, 0.6rem);
+  position: relative;
+  flex-shrink: 0;
+  will-change: transform, opacity;
+  transform-origin: center center;
+  transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.stream-img-badge:hover {
+  transform: scale(1.08) rotate(2deg);
+}
+
+.stream-img-badge img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  filter: drop-shadow(0 14px 28px rgba(0, 0, 0, 0.15));
+  pointer-events: none;
+  user-select: none;
+}
+
+/* Wide Showroom House: Proportional frame + generous side margin to prevent text overlap */
+.stream-badge-showroom {
+  width: clamp(10rem, 21vw, 20rem);
+  height: clamp(7.5rem, 16vw, 15rem);
+  margin: 0 clamp(1rem, 2.2vw, 2.5rem);
+}
+
+.stream-badge-showroom img {
+  transform: scale(1.04);
+  transform-origin: center center;
+}
+
+/* Tree Decor: Significantly taller & bigger */
+.stream-badge-tree {
+  width: clamp(8.5rem, 18vw, 18rem);
+  height: clamp(8.5rem, 18vw, 18rem);
+  margin: 0 clamp(0.2rem, 0.5vw, 0.75rem);
+}
+
+.stream-badge-tree img {
+  transform: scale(1.52);
+  transform-origin: center center;
+}
+
+/* Globe Badge: Match tree dimensions */
+.stream-badge-globe {
+  width: clamp(8.5rem, 18vw, 18rem);
+  height: clamp(8.5rem, 18vw, 18rem);
+  margin: 0 clamp(0.2rem, 0.5vw, 0.75rem);
+}
+
+.stream-badge-globe img {
+  transform: scale(1.52);
+  transform-origin: center center;
 }
 
 /* =========================================================================
@@ -3122,7 +3162,7 @@ img {
   align-items: center;
   justify-content: center;
   z-index: 30;
-  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.9);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.5);
   transition: border-color 0.4s cubic-bezier(0.16, 1, 0.3, 1), 
               background-color 0.4s cubic-bezier(0.16, 1, 0.3, 1), 
               transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1), 
@@ -3130,7 +3170,7 @@ img {
 }
 
 .sanctuary-waypoint-badge .waypoint-num {
-  font-family: 'Geist-Light', 'Geist', monospace;
+  font-family: var(--font-heading);
   font-size: 11px;
   color: #777777;
   letter-spacing: 0.05em;
@@ -3142,7 +3182,7 @@ img {
   border-color: #ffffff;
   background: #181818;
   transform: scale(1.15);
-  box-shadow: 0 0 24px rgba(255, 255, 255, 0.6), 0 0 8px rgba(245, 158, 11, 0.4), 0 4px 16px rgba(0, 0, 0, 0.9);
+  box-shadow: 0 0 12px rgba(255, 255, 255, 0.3), 0 2px 8px rgba(0, 0, 0, 0.6);
 }
 
 .sanctuary-waypoint-badge.is-active .waypoint-num {
@@ -3169,7 +3209,7 @@ img {
 .sanctuary-card-frame:hover {
   transform: translateY(-3px);
   border-color: rgba(255, 255, 255, 0.45);
-  box-shadow: 0 24px 48px -12px rgba(0, 0, 0, 0.95), 0 0 24px rgba(255, 255, 255, 0.06);
+  box-shadow: 0 12px 32px -8px rgba(0, 0, 0, 0.5);
 }
 
 /* ==========================================================================
@@ -3277,7 +3317,7 @@ img {
   will-change: transform, width, height, top, left, border-radius;
   z-index: 10;
   border: 1px solid rgba(255, 255, 255, 0.14);
-  box-shadow: 0 35px 90px -15px rgba(0, 0, 0, 0.95), 0 0 50px rgba(255, 255, 255, 0.06), inset 0 0 0 1px rgba(255, 255, 255, 0.05);
+  box-shadow: 0 16px 48px -8px rgba(0, 0, 0, 0.6), inset 0 0 0 1px rgba(255, 255, 255, 0.05);
   background-color: #0c0a09;
 }
 
@@ -3447,15 +3487,21 @@ img {
 .lusion-reel-stage {
   height: 100vh;
   height: 100dvh;
-  padding: clamp(60px, 8vh, 85px) var(--reel-side-margin) 5vh var(--reel-side-margin);
+  padding: 0 var(--reel-side-margin);
   box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
 }
 
 /* 1. Typography & Narrative Blocks */
 .lusion-reel-intro {
-  padding: clamp(60px, 8vh, 85px) var(--reel-side-margin) 5vh var(--reel-side-margin);
+  padding: 0 var(--reel-side-margin);
   box-sizing: border-box;
   z-index: 25;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
 }
 
 .lusion-reel-eyebrow {
@@ -3496,8 +3542,8 @@ img {
   align-self: flex-end;
   width: 100%;
   max-width: 44vw;
-  margin-top: auto;
-  margin-bottom: 2vh;
+  margin-top: clamp(2rem, 5vh, 4rem);
+  margin-bottom: 0;
   text-align: left;
 }
 
@@ -3626,9 +3672,9 @@ img {
 }
 
 .lusion-reg-plus {
-  font-family: monospace;
+  font-family: var(--font-content);
   font-size: 16px;
-  font-weight: 400;
+  font-weight: 300;
   color: #000000;
   opacity: 0.6;
   transform-origin: center;
@@ -3668,7 +3714,7 @@ img {
     pointer-events: none;
     display: flex;
     flex-direction: column;
-    justify-content: space-between;
+    justify-content: center;
     box-sizing: border-box;
   }
 
@@ -3908,21 +3954,32 @@ img {
 }
 
 /* ==========================================================================
-   SCULPTURAL ATELIER TESTIMONIAL CARD & LAUREL EMBLEM
+   SCULPTURAL ATELIER TESTIMONIAL CARD & LAUREL EMBLEM (2-COLUMN HORIZONTAL)
    ========================================================================== */
-.testimonial-card {
-  background-color: #ffffff !important;
+.section-testimonial-stage {
+  background-color: #ececec !important;
+  border-top: 1px solid rgba(0, 0, 0, 0.08) !important;
+}
+
+.testimonial-card,
+#elysium-testimonial-card {
+  background-color: transparent !important;
+  background: transparent !important;
   color: #111111 !important;
-  border: 1px solid rgba(0, 0, 0, 0.08) !important;
-  box-shadow: 0 30px 70px -15px rgba(0, 0, 0, 0.35), 0 4px 16px rgba(0, 0, 0, 0.06) !important;
+  border: none !important;
+  box-shadow: none !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
 }
 
 .testimonial-headline {
   color: #111111 !important;
+  font-family: var(--font-heading, 'Geist-Medium', sans-serif);
 }
 
 .testimonial-quote {
   color: #444444 !important;
+  font-family: var(--font-body, 'Geist-Light', sans-serif);
 }
 
 .testimonial-attribution strong {
@@ -3930,26 +3987,28 @@ img {
 }
 
 .testimonial-wreath-wrap {
-  width: 220px;
-  height: 220px;
-  margin: 0 auto 1.5rem auto;
+  width: clamp(180px, 20vw, 260px);
+  height: clamp(180px, 20vw, 260px);
+  margin: 0;
+  flex-shrink: 0;
 }
 
 @media (max-width: 767px) {
   .testimonial-wreath-wrap {
-    width: 160px;
-    height: 160px;
-    margin: 0 auto 1rem auto;
+    width: 150px;
+    height: 150px;
+    margin: 0 auto 1.25rem auto;
   }
   .testimonial-card {
-    padding: 1.75rem 1.25rem !important;
+    padding: 2rem 1.25rem !important;
+    text-align: center !important;
   }
   .testimonial-headline {
-    font-size: 1.65rem !important;
+    font-size: 1.85rem !important;
   }
   .testimonial-quote {
-    font-size: 0.88rem !important;
-    line-height: 1.5 !important;
+    font-size: 0.95rem !important;
+    line-height: 1.6 !important;
   }
 }
 
@@ -3963,18 +4022,18 @@ img {
 }
 
 .elysium-stack-title {
-  font-family: var(--font-sans, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif);
+  font-family: var(--font-heading);
   font-size: clamp(1.85rem, 2.4vw, 2.35rem);
-  font-weight: 700;
+  font-weight: 500;
   line-height: 1.15;
   margin: 0 0 1.25rem 0;
   letter-spacing: -0.015em;
 }
 
 .elysium-stack-desc {
-  font-family: var(--font-sans, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif);
+  font-family: var(--font-content);
   font-size: clamp(0.95rem, 1.05vw, 1.05rem);
-  font-weight: 400;
+  font-weight: 300;
   line-height: 1.62;
   margin: 0;
   max-width: 440px;
@@ -4203,9 +4262,10 @@ p, span, li, a, label {
 
 .testimonial-card,
 #elysium-testimonial-card {
-  background-color: #ffffff !important;
-  border: 1px solid rgba(0, 0, 0, 0.10) !important;
-  box-shadow: 0 20px 50px -15px rgba(0, 0, 0, 0.12) !important;
+  background-color: transparent !important;
+  background: transparent !important;
+  border: none !important;
+  box-shadow: none !important;
   color: #111111 !important;
 }
 
@@ -4711,8 +4771,22 @@ input, textarea, select {
 
   .Horizontal__text {
     white-space: normal !important;
-    font-size: clamp(1.4rem, 6vw, 2.25rem) !important;
-    line-height: 1.3 !important;
+    font-size: clamp(2rem, 7.5vw, 3.25rem) !important;
+    line-height: 1.25 !important;
+  }
+
+  .stream-img-badge,
+  .stream-badge-globe,
+  .stream-badge-tree {
+    width: clamp(3.6rem, 13vw, 5.4rem) !important;
+    height: clamp(3.6rem, 13vw, 5.4rem) !important;
+    margin: 0 0.15rem !important;
+  }
+
+  .stream-badge-showroom {
+    width: clamp(4.5rem, 16vw, 6.5rem) !important;
+    height: clamp(3.5rem, 12vw, 5rem) !important;
+    margin: 0 0.75rem !important;
   }
 
   .testimonial-card,
@@ -4793,9 +4867,9 @@ input, textarea, select {
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  gap: clamp(1.5rem, 3.5vh, 3.25rem);
-  padding: 1.5rem 1rem;
-  overflow: hidden;
+  gap: clamp(0.4rem, 0.8vh, 0.75rem);
+  padding: 1rem 1rem;
+  overflow: visible;
   box-sizing: border-box;
   z-index: 1;
 }
@@ -4803,14 +4877,14 @@ input, textarea, select {
 @media (min-width: 640px) {
   .featured-pin-inner,
   .pin-inner {
-    padding: 2.25rem 2rem;
+    padding: 1.25rem 1.5rem;
   }
 }
 
 @media (min-width: 1024px) {
   .featured-pin-inner,
   .pin-inner {
-    padding: 2.5rem 3.5rem;
+    padding: 1.5rem 2.5rem;
   }
 }
 
@@ -4828,7 +4902,7 @@ input, textarea, select {
 .featured-eyebrow,
 .featured-pin header .eyebrow,
 .featured-header .eyebrow {
-  font-family: 'Geist Mono', monospace;
+  font-family: var(--font-heading);
   font-size: clamp(8.5px, 0.8vw, 10.5px);
   letter-spacing: 0.32em;
   text-transform: uppercase;
@@ -4841,9 +4915,9 @@ input, textarea, select {
 .featured-title,
 .featured-pin header h2,
 .featured-header h2 {
-  font-family: 'STIX Two Text', 'Playfair Display', Georgia, serif;
+  font-family: var(--font-heading);
   font-size: clamp(2rem, 4.4vw, 3.25rem);
-  font-weight: 400;
+  font-weight: 500;
   letter-spacing: -0.04em;
   color: #111111;
   line-height: 1.05;
@@ -4865,7 +4939,7 @@ input, textarea, select {
   position: relative;
   width: 100%;
   max-width: 1066px;
-  margin: auto;
+  margin: 0 auto;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -4906,41 +4980,33 @@ input, textarea, select {
   will-change: transform, border-radius;
   width: 334px;
   height: 464px;
-  max-width: 32vw;
-  max-height: min(60vh, 480px);
+  max-width: 29vw;
+  max-height: min(56vh, 464px);
   box-sizing: border-box;
   cursor: pointer;
 }
 
-/* INITIAL JOINED 1-PIECE STATE:
-   Card 1: outer-left rounded (14px), right square (0px)
-   Card 2: perfectly square (0px on all corners)
-   Card 3: left square (0px), outer-right rounded (14px) */
+/* INITIAL JOINED STATE — all edges flat/square.
+   GSAP animates to fully rounded when the split begins. */
 #featured-card-1,
 #featured-card-1 .card-inner,
 #featured-card-1 .card-front,
 #featured-card-1 .card-front img {
-  border-top-left-radius: 14px;
-  border-bottom-left-radius: 14px;
-  border-top-right-radius: 0px !important;
-  border-bottom-right-radius: 0px !important;
+  border-radius: 0px;
 }
 
 #featured-card-2,
 #featured-card-2 .card-inner,
 #featured-card-2 .card-front,
 #featured-card-2 .card-front img {
-  border-radius: 0px !important;
+  border-radius: 0px;
 }
 
 #featured-card-3,
 #featured-card-3 .card-inner,
 #featured-card-3 .card-front,
 #featured-card-3 .card-front img {
-  border-top-right-radius: 14px;
-  border-bottom-right-radius: 14px;
-  border-top-left-radius: 0px !important;
-  border-bottom-left-radius: 0px !important;
+  border-radius: 0px;
 }
 
 @media (max-width: 639px) {
@@ -5005,7 +5071,7 @@ input, textarea, select {
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  padding: clamp(1rem, 1.8vw, 1.75rem);
+  padding: clamp(0.75rem, 1.4vw, 1.25rem);
   box-sizing: border-box;
   user-select: none;
   position: relative;
@@ -5208,13 +5274,13 @@ input, textarea, select {
 }
 
 .card-back-badge {
-  font-family: monospace;
+  font-family: var(--font-heading);
   font-size: clamp(7px, 0.72vw, 8.5px);
   letter-spacing: 0.18em;
   text-transform: uppercase;
   border-radius: 4px;
   padding: 3px 8px;
-  font-weight: 600;
+  font-weight: 500;
 }
 
 @media (max-width: 639px) {
@@ -5231,12 +5297,12 @@ input, textarea, select {
 }
 
 .card-back-title {
-  font-family: 'STIX Two Text', 'Geist', sans-serif;
-  font-size: clamp(1.35rem, 1.8vw, 1.85rem);
-  font-weight: 400;
+  font-family: var(--font-heading);
+  font-size: clamp(1.1rem, 1.5vw, 1.5rem);
+  font-weight: 500;
   letter-spacing: -0.035em;
   line-height: 1.08;
-  margin: 0 0 0.5rem 0;
+  margin: 0 0 0.35rem 0;
 }
 
 @media (max-width: 639px) {
@@ -5248,12 +5314,12 @@ input, textarea, select {
 }
 
 .card-back-copy {
-  font-family: 'Geist', -apple-system, BlinkMacSystemFont, sans-serif;
-  font-size: clamp(0.78rem, 0.85vw, 0.9rem);
-  line-height: 1.35;
+  font-family: var(--font-content);
+  font-size: clamp(0.72rem, 0.78vw, 0.82rem);
+  line-height: 1.3;
   margin: 0;
   display: -webkit-box;
-  -webkit-line-clamp: 3;
+  -webkit-line-clamp: 2;
   -webkit-box-orient: vertical;
   overflow: hidden;
 }
@@ -5269,7 +5335,7 @@ input, textarea, select {
 .card-back-bottom {
   display: flex;
   flex-direction: column;
-  gap: 0.65rem;
+  gap: 0.45rem;
   width: 100%;
   position: relative;
   z-index: 2;
@@ -5285,7 +5351,7 @@ input, textarea, select {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding-bottom: 0.45rem;
+  padding-bottom: 0.3rem;
 }
 
 @media (max-width: 639px) {
@@ -5295,7 +5361,7 @@ input, textarea, select {
 }
 
 .card-back-spec {
-  font-family: monospace;
+  font-family: var(--font-heading);
   font-size: clamp(7.5px, 0.72vw, 9px);
   letter-spacing: 0.12em;
   text-transform: uppercase;
@@ -5308,9 +5374,9 @@ input, textarea, select {
 }
 
 .card-back-price {
-  font-family: monospace;
+  font-family: var(--font-heading);
   font-size: clamp(11px, 1.1vw, 13.5px);
-  font-weight: 600;
+  font-weight: 500;
   letter-spacing: 0.04em;
 }
 
@@ -5325,11 +5391,11 @@ input, textarea, select {
   align-items: center;
   justify-content: space-between;
   width: 100%;
-  padding: clamp(0.45rem, 0.75vw, 0.65rem) 0.85rem;
+  padding: clamp(0.35rem, 0.6vw, 0.55rem) 0.75rem;
   border-radius: 6px;
-  font-family: monospace;
+  font-family: var(--font-heading);
   font-size: clamp(8px, 0.8vw, 10px);
-  font-weight: 600;
+  font-weight: 500;
   letter-spacing: 0.15em;
   text-transform: uppercase;
   text-decoration: none;
@@ -5396,7 +5462,7 @@ input, textarea, select {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  font-family: -apple-system, BlinkMacSystemFont, 'Geist', 'Inter', sans-serif;
+  font-family: var(--font-content);
   font-size: 13px;
   color: #737373;
   letter-spacing: 0.02em;
@@ -5492,9 +5558,9 @@ input, textarea, select {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  font-family: -apple-system, BlinkMacSystemFont, 'Geist', 'Inter', sans-serif;
+  font-family: var(--font-heading);
   font-size: clamp(11px, 0.9vw, 13px);
-  font-weight: 600;
+  font-weight: 500;
   letter-spacing: 0.16em;
   text-transform: uppercase;
   color: #ffffff;
@@ -5552,7 +5618,7 @@ input, textarea, select {
 .story-page-wrapper {
   background-color: #ececec;
   color: #111111;
-  font-family: 'Geist', 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  font-family: var(--font-content);
   position: relative;
   overflow-x: hidden;
   width: 100%;
@@ -5594,9 +5660,9 @@ input, textarea, select {
 }
 
 .story-eyebrow {
-  font-family: 'Geist Mono', 'SFMono-Regular', Consolas, monospace;
+  font-family: var(--font-heading);
   font-size: 0.75rem;
-  font-weight: 600;
+  font-weight: 500;
   text-transform: uppercase;
   letter-spacing: 0.18em;
   color: #78716c;
@@ -5807,9 +5873,9 @@ input, textarea, select {
   border: 1px solid rgba(17, 17, 17, 0.25);
   border-radius: 9999px;
   padding: 0.75rem 1.6rem;
-  font-family: 'Geist Mono', monospace;
+  font-family: var(--font-heading);
   font-size: 0.75rem;
-  font-weight: 600;
+  font-weight: 500;
   letter-spacing: 0.18em;
   text-transform: uppercase;
   color: #111111;
@@ -5844,5 +5910,275 @@ input, textarea, select {
     max-width: 100%;
     margin-top: 0.5rem;
   }
+}
+
+/* ==========================================================================
+   SPOTLIGHT 10-LAYER WORDMARK CASCADE & CONTACT DOCK
+   Aesthetic inspired by Pensatori Irrazionali:
+   - Off-white seamless background (#ececec)
+   - Deep charcoal monolithic typography (#202020)
+   - 3D perspective accordion echo layers & falling 'I' dock button
+   ========================================================================== */
+section.spotlight {
+  position: relative;
+  width: 100%;
+  height: 100svh;
+  min-height: 100svh;
+  overflow: hidden;
+  background-color: #ececec;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.spotlight-stage {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.spotlight-header {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: min(94vw, 1500px);
+  padding: 0 clamp(0.75rem, 2vw, 2.5rem);
+  background-color: transparent;
+  transform-origin: 50% 85%;
+  will-change: transform;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  pointer-events: none;
+}
+
+.spotlight-header svg {
+  width: 100%;
+  height: auto;
+  max-height: 70vh;
+  object-fit: contain;
+  overflow: visible;
+  display: block;
+  color: #202020;
+}
+
+.spotlight-header svg path {
+  fill: currentColor;
+}
+
+.spotlight-header .i-link-text {
+  fill: #ffffff;
+  text-anchor: middle;
+  dominant-baseline: central;
+  text-transform: uppercase;
+  font-family: 'Geist-Medium', 'Neue Haas Grotesk', -apple-system, BlinkMacSystemFont, sans-serif;
+  font-weight: 500;
+  font-size: 0.68px;
+  letter-spacing: 0.04px;
+  cursor: pointer;
+  pointer-events: auto;
+  user-select: none;
+}
+
+.front-header {
+  z-index: 25;
+}
+
+.spotlight-layer,
+.spotlight-layer-clone {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: min(94vw, 1500px);
+  padding: 0 clamp(0.75rem, 2vw, 2.5rem);
+  background-color: transparent;
+  will-change: transform;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  pointer-events: none;
+}
+
+.spotlight-layer svg,
+.spotlight-layer-clone svg {
+  width: 100%;
+  height: auto;
+  max-height: 70vh;
+  object-fit: contain;
+  overflow: visible;
+  display: block;
+}
+
+.spotlight-layer svg path,
+.spotlight-layer-clone svg path {
+  fill: currentColor;
+}
+
+/* Contact Button Dock at bottom center of pinned viewport */
+.spotlight-cta-dock {
+  position: absolute;
+  bottom: clamp(2rem, 9vh, 5.5rem);
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 40;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  pointer-events: auto;
+}
+
+.spotlight-contact-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #242424;
+  color: #ffffff;
+  font-family: 'Geist-Medium', 'Neue Haas Grotesk', -apple-system, BlinkMacSystemFont, sans-serif;
+  font-size: clamp(0.72rem, 1vw, 0.85rem);
+  font-weight: 500;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  padding: clamp(0.8rem, 1.4vh, 1rem) clamp(2rem, 3.2vw, 2.75rem);
+  border-radius: 2px;
+  border: 1px solid rgba(0, 0, 0, 0.25);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.12);
+  text-decoration: none;
+  cursor: pointer;
+  opacity: 0;
+  pointer-events: none;
+  transform: scale(0.85);
+  transition: background-color 0.25s ease, transform 0.2s ease, box-shadow 0.25s ease;
+}
+
+.spotlight-contact-btn:hover {
+  background-color: #111111;
+  transform: scale(1.04);
+  box-shadow: 0 6px 24px rgba(0, 0, 0, 0.18);
+}
+
+/* ==========================================================================
+   PENSATORI IRRAZIONALI HOME-CTA ARCHITECTURAL EXTRUSION & CONTACT DOCK
+   ========================================================================== */
+.home-cta {
+  background-color: #ececec;
+  min-height: 100svh;
+  position: relative;
+  z-index: 10;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-between;
+  overflow: hidden;
+  box-sizing: border-box;
+}
+
+.cta-wrapper {
+  position: relative;
+  width: 100%;
+  max-width: min(90vw, 1380px);
+  margin-inline: auto;
+  transform-style: flat;
+  transform-origin: center center;
+  will-change: transform;
+}
+
+.cta-item {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  transform-origin: bottom center;
+  color: #434343;
+  will-change: transform;
+}
+
+.cta-item.origin-bottom {
+  transform-origin: bottom center;
+}
+
+/* Layer stacking orders (DOM order: Rear layers 0–5 -> Front layer) */
+.cta-item[data-layer="0"] { z-index: 10; }
+.cta-item[data-layer="1"] { z-index: 11; }
+.cta-item[data-layer="2"] { z-index: 12; }
+.cta-item[data-layer="3"] { z-index: 13; }
+.cta-item[data-layer="4"] { z-index: 14; }
+.cta-item[data-layer="5"] { z-index: 15; }
+.cta-item.last-text-wrapper { z-index: 20; }
+
+.cta-item svg {
+  display: block;
+  width: 100%;
+  height: auto;
+  position: relative;
+  overflow: visible;
+}
+
+/* Native Geometric SVG Masking: Exact letter silhouette in page background color */
+.cta-item svg .svg-letter-mask path {
+  fill: #ececec;
+  stroke: #ececec;
+  stroke-width: 0.2;
+  stroke-linejoin: round;
+  stroke-linecap: round;
+}
+
+/* Front letter paths in solid #434343 */
+.cta-item svg .svg-letter-front path {
+  fill: #434343;
+}
+
+/* Interactive Letter 'I' / Testos Contact Button inside front layer */
+.last-i {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 30;
+}
+
+.testos {
+  position: absolute;
+  left: 58.289%;
+  top: 1.326%;
+  width: 2.114%;
+  height: 96.97%;
+  background-color: #434343;
+  color: #ffffff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  text-decoration: none;
+  cursor: pointer;
+  pointer-events: none;
+  transform-origin: center center;
+  will-change: transform, width, height, border-radius, background-color, left, top;
+  box-sizing: border-box;
+  font-family: var(--font-mono, monospace);
+  border-radius: 1px;
+}
+
+.testos:hover {
+  background-color: #222222;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.22);
+}
+
+.testos-text {
+  display: block;
+  white-space: nowrap;
+  font-size: clamp(10px, 1.1vw, 15px);
+  letter-spacing: 0.14em;
+  font-weight: 600;
+  color: #ffffff;
+  pointer-events: none;
+  user-select: none;
 }
 
