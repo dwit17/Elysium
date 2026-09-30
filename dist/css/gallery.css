@@ -1,0 +1,817 @@
+/* ==========================================================================
+   ELYSIUM GALLERY STYLESHEET
+   Scroll-Driven Pinned Horizontal Exhibition System
+   Inspired by Luxury Editorial Showrooms (vvisual.biz/models)
+   ========================================================================== */
+
+/* -------------------------------------------------------------
+ * 1. Root & Page Wrapper
+ * ------------------------------------------------------------- */
+.gallery-page-root {
+  position: relative;
+  width: 100%;
+  background: #ececec;
+  color: #111111;
+  overflow-x: clip;
+}
+
+/* -------------------------------------------------------------
+ * 2. Editorial Gallery Hero
+ * ------------------------------------------------------------- */
+.gallery-hero-section {
+  position: relative;
+  width: 100%;
+  min-height: 54vh;
+  min-height: 54svh;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  padding: 6.5rem 1.5rem 2.5rem 1.5rem;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.08);
+  background: #ececec;
+  z-index: 10;
+}
+
+@media (min-width: 768px) {
+  .gallery-hero-section {
+    padding: 7.5rem 3rem 3rem 3rem;
+    min-height: 58vh;
+  }
+}
+
+@media (min-width: 1024px) {
+  .gallery-hero-section {
+    padding: 8.5rem 5rem 3.5rem 5rem;
+    min-height: 60vh;
+  }
+}
+
+.gallery-hero-eyebrow {
+  display: inline-block;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.35em;
+  color: #78716c;
+  margin-bottom: 1rem;
+}
+
+.gallery-hero-title-wrap {
+  overflow: hidden;
+  margin-bottom: 1rem;
+}
+
+.gallery-hero-title {
+  font-family: inherit;
+  font-weight: 500;
+  font-size: clamp(3.25rem, 9.5vw, 8.5rem);
+  line-height: 0.92;
+  letter-spacing: -0.03em;
+  text-transform: uppercase;
+  color: #111111;
+  margin: 0;
+  padding: 0;
+}
+
+.gallery-hero-description {
+  font-size: clamp(0.95rem, 1.4vw, 1.2rem);
+  font-weight: 300;
+  line-height: 1.5;
+  color: #44403c;
+  max-width: 44rem;
+  letter-spacing: -0.01em;
+}
+
+/* Category Quick-Jump Navigation Bar (Hero) */
+.gallery-quick-nav {
+  margin-top: 2rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid rgba(0, 0, 0, 0.08);
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.65rem 0.85rem;
+}
+
+.gallery-quick-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.14em;
+  color: #1c1917;
+  padding: 0.6rem 1.05rem;
+  border-radius: 9999px;
+  background: #ffffff;
+  border: 1px solid rgba(0, 0, 0, 0.14);
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.04);
+  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+  text-decoration: none;
+  cursor: pointer;
+  white-space: nowrap;
+  opacity: 1 !important;
+}
+
+.gallery-quick-link:hover {
+  color: #ffffff;
+  background: #111111;
+  border-color: #111111;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.12);
+}
+
+.gallery-quick-link:hover .link-num {
+  color: #d6d3d1;
+}
+
+.gallery-quick-link.is-active {
+  color: #ffffff;
+  background: #111111;
+  border-color: #111111;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.18);
+}
+
+.gallery-quick-link.is-active .link-num {
+  color: #a8a29e;
+}
+
+.gallery-quick-link .link-num {
+  color: #78716c;
+  font-weight: 700;
+  font-size: 10px;
+}
+
+/* -------------------------------------------------------------
+ * 3. Category Horizontal Pinned Section (Desktop & Tablet)
+ * ------------------------------------------------------------- */
+.gallery-category-section {
+  position: relative;
+  width: 100%;
+  background: #ececec;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.08);
+  box-sizing: border-box;
+}
+
+.gallery-sticky-stage {
+  position: relative;
+  width: 100%;
+  height: 100vh;
+  height: 100svh;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: 5.5rem 0 2rem 0;
+  overflow: hidden;
+  box-sizing: border-box;
+}
+
+@media (min-width: 1024px) {
+  .gallery-sticky-stage {
+    padding: 6.5rem 0 2.5rem 0;
+  }
+}
+
+/* Category Header Bar inside Pinned Viewport */
+.gallery-category-header {
+  position: relative;
+  width: 100%;
+  padding: 0 1.5rem;
+  margin-bottom: clamp(0.75rem, 2vh, 1.75rem);
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  z-index: 10;
+  flex-shrink: 0;
+}
+
+@media (min-width: 768px) {
+  .gallery-category-header {
+    padding: 0 3rem;
+    flex-direction: row;
+    align-items: flex-end;
+    justify-content: space-between;
+  }
+}
+
+@media (min-width: 1024px) {
+  .gallery-category-header {
+    padding: 0 5rem;
+  }
+}
+
+.gallery-header-left {
+  max-width: 42rem;
+}
+
+.gallery-cat-eyebrow {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.28em;
+  color: #78716c;
+  margin-bottom: 0.35rem;
+}
+
+.gallery-cat-eyebrow .eyebrow-line {
+  display: inline-block;
+  width: 2rem;
+  height: 1px;
+  background: currentColor;
+  opacity: 0.4;
+}
+
+.gallery-cat-title {
+  font-family: inherit;
+  font-weight: 500;
+  font-size: clamp(1.85rem, 3.8vw, 3.25rem);
+  line-height: 1;
+  letter-spacing: -0.02em;
+  text-transform: uppercase;
+  color: #111111;
+  margin: 0;
+}
+
+.gallery-cat-desc {
+  font-size: clamp(0.82rem, 1vw, 0.92rem);
+  font-weight: 300;
+  line-height: 1.45;
+  color: #57534e;
+  margin-top: 0.35rem;
+}
+
+.gallery-header-right {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.5rem;
+}
+
+@media (min-width: 768px) {
+  .gallery-header-right {
+    align-items: flex-end;
+  }
+}
+
+.gallery-header-tools {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.gallery-count-badge {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.2em;
+  color: #111111;
+  background: #ffffff;
+  padding: 0.35rem 0.8rem;
+  border-radius: 9999px;
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.03);
+}
+
+.gallery-nav-arrows {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+}
+
+.gallery-track-prev-btn,
+.gallery-track-next-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2rem;
+  height: 2rem;
+  border-radius: 50%;
+  background: #ffffff;
+  border: 1px solid rgba(0, 0, 0, 0.12);
+  color: #111111;
+  font-size: 13px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.03);
+}
+
+.gallery-track-prev-btn:hover,
+.gallery-track-next-btn:hover {
+  background: #111111;
+  color: #ffffff;
+  border-color: #111111;
+}
+
+.gallery-category-progress-track {
+  width: 8rem;
+  height: 2px;
+  background: rgba(0, 0, 0, 0.12);
+  border-radius: 9999px;
+  overflow: hidden;
+}
+
+.gallery-category-progress-fill {
+  width: 0%;
+  height: 100%;
+  background: #111111;
+  transition: width 0.1s linear;
+}
+
+.gallery-next-cat-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  font-size: 10px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.15em;
+  color: #57534e;
+  background: rgba(255, 255, 255, 0.75);
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  padding: 0.3rem 0.75rem;
+  border-radius: 9999px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.gallery-next-cat-btn:hover {
+  color: #111111;
+  background: #ffffff;
+  border-color: rgba(0, 0, 0, 0.2);
+  transform: translateY(-1px);
+}
+
+.gallery-next-cat-btn .arrow-down {
+  font-size: 11px;
+}
+
+/* -------------------------------------------------------------
+ * 4. Horizontal Product Track & Cards (Editorial vvisual.biz style)
+ * ------------------------------------------------------------- */
+.gallery-track-viewport {
+  position: relative;
+  width: 100%;
+  flex-grow: 1;
+  display: flex;
+  align-items: center;
+  overflow: hidden;
+  user-select: none;
+  padding: 1rem 0 0.5rem 0;
+}
+
+.gallery-track {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: clamp(2.5rem, 5vw, 6rem);
+  padding-left: clamp(1.5rem, 4vw, 5rem);
+  padding-right: clamp(1.5rem, 4vw, 5rem);
+  will-change: transform;
+  transform: translate3d(0, 0, 0);
+}
+
+/* Individual Product Card in Horizontal Flow */
+.gallery-card {
+  position: relative;
+  flex-shrink: 0;
+  width: auto;
+  display: flex;
+  flex-direction: column;
+  text-decoration: none;
+  color: inherit;
+}
+
+/* Unified Card Media Container */
+.gallery-card-media {
+  position: relative;
+  height: clamp(220px, 38vh, 440px);
+  width: auto;
+  display: flex;
+  align-items: stretch;
+  justify-content: flex-start;
+}
+
+/* Media Frame — Unified Border, Clip & Velocity Distortion Layer */
+.gallery-card-media-frame {
+  position: relative;
+  height: 100%;
+  width: auto;
+  aspect-ratio: 4 / 5;
+  border-radius: 1.25rem;
+  overflow: hidden;
+  background: #dedbd6;
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.035);
+  will-change: transform;
+  transform-origin: 50% 50%;
+  transform: skewX(0deg) scaleX(1);
+  transition: border-color 0.4s ease, box-shadow 0.4s ease;
+  contain: paint layout;
+}
+
+/* 1-to-1 Skeleton Shimmer Loader */
+.gallery-card-media-frame::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    90deg,
+    rgba(222, 219, 214, 0.5) 0%,
+    rgba(255, 255, 255, 0.7) 50%,
+    rgba(222, 219, 214, 0.5) 100%
+  );
+  background-size: 200% 100%;
+  animation: gallerySkeletonShimmer 1.6s infinite linear;
+  z-index: 1;
+  pointer-events: none;
+  opacity: 1;
+  transition: opacity 0.45s ease;
+}
+
+.gallery-card-media-frame.is-loaded::before {
+  opacity: 0;
+  animation: none;
+}
+
+@keyframes gallerySkeletonShimmer {
+  0% {
+    background-position: -200% 0;
+  }
+  100% {
+    background-position: 200% 0;
+  }
+}
+
+/* Editorial Rhythmic Aspect-Ratio Variation (Preserving native proportions) */
+.gallery-card:nth-child(4n+1) .gallery-card-media-frame {
+  aspect-ratio: 4 / 5;
+}
+
+.gallery-card:nth-child(4n+2) .gallery-card-media-frame {
+  aspect-ratio: 1 / 1;
+}
+
+.gallery-card:nth-child(4n+3) .gallery-card-media-frame {
+  aspect-ratio: 3 / 4;
+}
+
+.gallery-card:nth-child(4n+4) .gallery-card-media-frame {
+  aspect-ratio: 4 / 3;
+}
+
+.gallery-card:hover .gallery-card-media-frame {
+  border-color: rgba(0, 0, 0, 0.2);
+  box-shadow: 0 24px 48px rgba(0, 0, 0, 0.08);
+}
+
+.gallery-category-gl-canvas {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  display: block;
+  pointer-events: none;
+  z-index: 2;
+  will-change: transform;
+  transform: translateZ(0);
+}
+
+.gallery-card-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+  display: block;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+  will-change: opacity;
+}
+
+.gallery-card-img.is-loaded {
+  opacity: 1;
+}
+
+.gallery-category-section.has-gl-active .gallery-card-img {
+  opacity: 0;
+}
+
+/* Number Tag floating inside media unit */
+.gallery-card-num-tag {
+  position: absolute;
+  top: 1rem;
+  left: 1rem;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.18em;
+  color: #111111;
+  background: rgba(255, 255, 255, 0.88);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  padding: 0.3rem 0.65rem;
+  border-radius: 9999px;
+  border: 1px solid rgba(0, 0, 0, 0.06);
+  z-index: 3;
+  pointer-events: none;
+}
+
+/* Card Meta Content — Geometrically Stable beneath media */
+.gallery-card-meta {
+  padding-top: 1.25rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  width: 100%;
+  max-width: 100%;
+  box-sizing: border-box;
+}
+
+.gallery-card-category {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  font-size: 10px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.22em;
+  color: #78716c;
+}
+
+.gallery-card-title {
+  font-family: inherit;
+  font-weight: 500;
+  font-size: clamp(1.05rem, 1.3vw, 1.25rem);
+  line-height: 1.2;
+  text-transform: uppercase;
+  letter-spacing: -0.01em;
+  color: #111111;
+  margin: 0;
+  transition: color 0.3s ease;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.gallery-card:hover .gallery-card-title {
+  color: #57534e;
+}
+
+.gallery-card-desc {
+  font-size: 0.8rem;
+  font-weight: 300;
+  line-height: 1.45;
+  color: #666;
+  margin-top: 0.25rem;
+  max-width: 22rem;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.gallery-card-action {
+  margin-top: 0.75rem;
+  padding-top: 0.75rem;
+  border-top: 1px solid rgba(0, 0, 0, 0.06);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.18em;
+  color: #111111;
+}
+
+.gallery-card-action .card-arrow {
+  transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.gallery-card:hover .gallery-card-action .card-arrow {
+  transform: translateX(4px);
+}
+
+/* End-of-track Atelier Enquire Card */
+.gallery-card-end-cap {
+  position: relative;
+  flex-shrink: 0;
+  width: clamp(240px, 24vw, 320px);
+  height: clamp(280px, 46vh, 500px);
+  border-radius: 1.25rem;
+  background: #181816;
+  color: #ffffff;
+  padding: 2.5rem 2rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.15);
+  text-decoration: none;
+  transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.gallery-card-end-cap:hover {
+  transform: translateY(-4px);
+  background: #0f0f0e;
+  border-color: rgba(255, 255, 255, 0.25);
+}
+
+.gallery-end-cap-top {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  font-size: 10px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.25em;
+  color: #a8a29e;
+}
+
+.gallery-end-cap-mid h4 {
+  font-size: 1.35rem;
+  font-weight: 400;
+  line-height: 1.2;
+  text-transform: uppercase;
+  letter-spacing: -0.02em;
+  margin-bottom: 0.75rem;
+}
+
+.gallery-end-cap-mid p {
+  font-size: 0.8rem;
+  font-weight: 300;
+  color: #a8a29e;
+  line-height: 1.5;
+}
+
+.gallery-end-cap-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.2em;
+  color: #ffffff;
+  padding-top: 1rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.15);
+}
+
+/* -------------------------------------------------------------
+ * 5. Editorial Breathing Room / Transition Sections
+ * ------------------------------------------------------------- */
+.gallery-transition-zone {
+  position: relative;
+  width: 100%;
+  padding: 5rem 1.5rem;
+  background: #ececec;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-sizing: border-box;
+}
+
+@media (min-width: 768px) {
+  .gallery-transition-zone {
+    padding: 7rem 3rem;
+  }
+}
+
+@media (min-width: 1024px) {
+  .gallery-transition-zone {
+    padding: 8rem 5rem;
+  }
+}
+
+.gallery-transition-inner {
+  max-width: 48rem;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1.25rem;
+}
+
+.gallery-transition-divider {
+  width: 3rem;
+  height: 1px;
+  background: rgba(0, 0, 0, 0.2);
+}
+
+.gallery-transition-quote {
+  font-family: inherit;
+  font-size: clamp(1.25rem, 2.4vw, 1.85rem);
+  font-weight: 300;
+  line-height: 1.4;
+  letter-spacing: -0.01em;
+  color: #44403c;
+  margin: 0;
+  font-style: italic;
+}
+
+.gallery-transition-provenance {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  font-size: 10px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.3em;
+  color: #78716c;
+}
+
+/* -------------------------------------------------------------
+ * 6. Gallery Outro / Custom Commission Callout
+ * ------------------------------------------------------------- */
+.gallery-outro-section {
+  position: relative;
+  width: 100%;
+  background: #ececec;
+  border-top: 1px solid rgba(0, 0, 0, 0.08);
+  padding: 6rem 1.5rem 8rem 1.5rem;
+  box-sizing: border-box;
+}
+
+@media (min-width: 768px) {
+  .gallery-outro-section {
+    padding: 8rem 3rem 10rem 3rem;
+  }
+}
+
+@media (min-width: 1024px) {
+  .gallery-outro-section {
+    padding: 10rem 5rem 12rem 5rem;
+  }
+}
+
+.gallery-outro-card {
+  max-width: 72rem;
+  margin: 0 auto;
+  background: #ffffff;
+  border-radius: 2rem;
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  padding: 3rem 2rem;
+  box-shadow: 0 16px 48px rgba(0, 0, 0, 0.04);
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+}
+
+@media (min-width: 1024px) {
+  .gallery-outro-card {
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    padding: 4.5rem 4rem;
+  }
+}
+
+.gallery-outro-left {
+  max-width: 38rem;
+}
+
+.gallery-outro-eyebrow {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.35em;
+  color: #78716c;
+  display: block;
+  margin-bottom: 0.75rem;
+}
+
+.gallery-outro-title {
+  font-size: clamp(2rem, 3.8vw, 3.25rem);
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: -0.02em;
+  color: #111111;
+  line-height: 1.1;
+  margin: 0 0 1rem 0;
+}
+
+.gallery-outro-desc {
+  font-size: 1rem;
+  font-weight: 300;
+  color: #57534e;
+  line-height: 1.6;
+}
+
+.gallery-outro-right {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  flex-shrink: 0;
+}
+
+@media (min-width: 640px) {
+  .gallery-outro-right {
+    flex-direction: row;
+  }
+}

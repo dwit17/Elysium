@@ -418,7 +418,7 @@ textarea:focus-visible,
   outline-offset: 3px !important;
 }
 
-/* FIXED STICKY HEADER (TASK 2) */
+/* FIXED STICKY HEADER WITH LUXURY SLIDE HIDE/SHOW ON SCROLL */
 .site-header {
   position: fixed !important;
   top: 0 !important;
@@ -434,10 +434,21 @@ textarea:focus-visible,
   display: flex !important;
   align-items: center !important;
   pointer-events: auto !important;
-  transform: none !important;
+  transform: translateY(0);
   filter: none !important;
   contain: none !important;
-  transition: background-color 0.3s ease, border-color 0.3s ease;
+  transition: transform 0.44s cubic-bezier(0.16, 1, 0.3, 1), background-color 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease !important;
+  will-change: transform;
+}
+
+.site-header.header-hidden {
+  transform: translateY(-100%) !important;
+  pointer-events: none !important;
+}
+
+.site-header.header-visible {
+  transform: translateY(0) !important;
+  pointer-events: auto !important;
 }
 
 .site-header nav a {
@@ -1116,17 +1127,17 @@ select {
   height: 100%;
   background:
     radial-gradient(
-      ellipse 460px 280px at var(--lamp-pos-x, 50%) var(--lamp-pos-y, 160px),
-      rgba(255, 240, 190, 0.55) 0%,
-      rgba(255, 225, 160, 0.20) 25%,
-      rgba(255, 210, 140, 0.06) 45%,
-      transparent 70%
+      ellipse 680px 480px at var(--lamp-pos-x, 50%) var(--lamp-pos-y, 145px),
+      rgba(255, 245, 215, 0.48) 0%,
+      rgba(255, 235, 185, 0.22) 28%,
+      rgba(255, 222, 160, 0.08) 55%,
+      transparent 78%
     ),
     radial-gradient(
-      ellipse 95% 75% at var(--lamp-pos-x, 50%) calc(var(--lamp-pos-y, 160px) + 70px),
-      rgba(255, 248, 230, 0.25) 0%,
-      rgba(245, 232, 200, 0.10) 35%,
-      transparent 70%
+      ellipse 95% 85% at var(--lamp-pos-x, 50%) var(--lamp-pos-y, 145px),
+      rgba(255, 250, 235, 0.20) 0%,
+      rgba(245, 235, 210, 0.08) 45%,
+      transparent 80%
     );
   pointer-events: none;
   opacity: 1;
@@ -1178,12 +1189,12 @@ select {
   color: #181816;
 }
 
-#footer-grid-border,
-#footer-bottom-strip {
-  border-color: rgba(24, 24, 22, 0.12) !important;
+#footer-grid-border {
+  border: none !important;
 }
 
 #footer-bottom-strip {
+  border-color: rgba(24, 24, 22, 0.12) !important;
   color: #686660;
 }
 

@@ -12,11 +12,11 @@
 
   const RAYS_COLOR = '#F5E8C8';      // Warm architectural incandescent ivory/amber
   const RAYS_SPEED = 0.75;          // Slow, dignified organic pace
-  const LIGHT_SPREAD = 0.62;        // Broad downward cone
-  const RAY_LENGTH = 3.2;           // Depth of light projection
-  const FADE_DISTANCE = 1.35;       // Soft falloff
-  const NOISE_AMOUNT = 0.04;        // Subtle fluid dispersion (0.03 - 0.08)
-  const DISTORTION = 0.07;          // Atmospheric watery refraction (0.05 - 0.12)
+  const LIGHT_SPREAD = 0.72;        // Broad, natural downward cone illuminating the space
+  const RAY_LENGTH = 3.6;           // Depth of light projection across full footer
+  const FADE_DISTANCE = 1.55;       // Soft seamless falloff
+  const NOISE_AMOUNT = 0.035;       // Subtle fluid dispersion (0.03 - 0.08)
+  const DISTORTION = 0.06;          // Atmospheric watery refraction (0.05 - 0.12)
   const MOUSE_INFLUENCE = 0.04;     // Gentle atmospheric cursor response (0.03 - 0.06)
   const PULSATING = true;           // Subtle organic breathing
 
@@ -274,10 +274,10 @@
       if (lRect && cRect) {
         // Exact horizontal center of the physical lamp
         sourceX = (lRect.left + lRect.width * 0.5) - cRect.left;
-        // The bottom opening/aperture where light physically emerges (approx 74% of lamp container height)
-        sourceY = (lRect.top + lRect.height * 0.74) - cRect.top;
+        // The bottom opening/aperture where light physically emerges (approx 70% of lamp container height)
+        sourceY = (lRect.top + lRect.height * 0.70) - cRect.top;
         rimRadius = lRect.width * 0.44;
-        rimSag = lRect.height * 0.085;
+        rimSag = lRect.height * 0.07;
       }
 
       // Update CSS variables for the light pool and atmospheric gradients

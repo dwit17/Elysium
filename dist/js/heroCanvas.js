@@ -325,8 +325,6 @@
     startLoading();
   }
 
-  window.initElysiumHero = initHero;
-
   if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', initHero);
   } else {

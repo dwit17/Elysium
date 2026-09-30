@@ -2004,17 +2004,6 @@
     }
   }
 
-  window.initElysiumHomeAnimations = initAllAnimations;
-  window.destroyElysiumHomeAnimations = function () {
-    isInitialized = false;
-    if (typeof ScrollTrigger !== 'undefined') {
-      ScrollTrigger.getAll().forEach((st) => st.kill());
-    }
-    if (typeof gsap !== 'undefined') {
-      gsap.killTweensOf('*');
-    }
-  };
-
   if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', initAllAnimations);
   } else {

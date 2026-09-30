@@ -306,6 +306,567 @@ const MARQUEE_IMAGES = [
   },
 ];
 
+const SHOWCASE_CATEGORIES = [
+  {
+    id: 'clocks',
+    index: '01',
+    name: 'Clocks',
+    title: 'Clocks & Horology',
+    artisan: 'Matteo Ghiberti',
+    materials: 'Raw Slate & Brushed Brass',
+    description: 'Sculptural wall and mantel timepieces hand-carved from metamorphic dark slate and fitted with brushed brass pointers.',
+    image: '/images/categories/clocks.jpg',
+    link: '/gallery#cat-clocks',
+  },
+  {
+    id: 'arts',
+    index: '02',
+    name: 'Arts',
+    title: 'Arts & Bas-Reliefs',
+    artisan: 'Elysium Collective',
+    materials: 'Lime Plaster & Volcanic Ash',
+    description: 'Monochromatic textured wall reliefs capturing the shifting interplay of ambient daylight and deep tactile shadow.',
+    image: '/images/categories/arts.jpg',
+    link: '/gallery#cat-wall-decor',
+  },
+  {
+    id: 'statues',
+    index: '03',
+    name: 'Statues',
+    title: 'Statues & Totems',
+    artisan: 'Sandro Moretti',
+    materials: 'Porous Travertine Stone',
+    description: 'Monolithic organic abstract totems chiseled from geological limestone blocks with exposed mineral fissures.',
+    image: '/images/categories/statues.jpg',
+    link: '/gallery#cat-statues',
+  },
+  {
+    id: 'chairs',
+    index: '04',
+    name: 'Chairs',
+    title: 'Chairs & Seating',
+    artisan: 'Kenji Yoshino',
+    materials: 'Solid White Oak & Natural Linen',
+    description: 'Low-slung brutalist lounge chairs carved from seasoned white oak with organic beeswax burnish and oatmeal linen.',
+    image: '/images/categories/chairs.jpg',
+    link: '/gallery#cat-furniture',
+  },
+  {
+    id: 'bulbs',
+    index: '05',
+    name: 'Bulbs',
+    title: 'Bulbs & Lighting',
+    artisan: 'Eleni Kora',
+    materials: 'Lime Plaster & Warm Filaments',
+    description: 'Minimalist dome pendants and exposed filament bulbs emitting warm incandescent downlight across textured rooms.',
+    image: '/images/categories/bulbs.jpg',
+    link: '/gallery#cat-lamps',
+  },
+  {
+    id: 'vessels',
+    index: '06',
+    name: 'Vessels',
+    title: 'Vessels & Ceramics',
+    artisan: 'Dimitris Vance',
+    materials: 'Unglazed Organic Stoneware Clay',
+    description: 'Hand-turned riverbed stoneware amphoras pit-fired at low temperatures for natural smoke and mineral speckle.',
+    image: '/images/categories/vessels.jpg',
+    link: '/gallery#cat-vessels',
+  }
+];
+
+// Structured Product Categories Dataset for the Scroll-Driven /gallery Exhibition Page
+const GALLERY_CATEGORIES = [
+  {
+    id: 'clocks',
+    number: '01',
+    name: 'Clocks',
+    title: 'Timeless Forms',
+    subtitle: 'Sculptural Horology',
+    description: 'A collection of statement clocks hand-carved from metamorphic dark slate, volcanic ash reliefs, and patinated brass to bring character and balance to contemporary interiors.',
+    products: [
+      {
+        id: 'solarium-horologe',
+        number: '01',
+        name: 'Solarium Horologe',
+        category: 'Limestone & Raw Brass',
+        artisan: 'Matteo Ghiberti',
+        price: '₹36,500',
+        image: '/images/curated_clock_slice_1.jpg',
+        description: 'Hand-chiseled limestone and raw patinated brass capturing the eternal geometry of light and architectural time.',
+        link: '/artisan-pieces'
+      },
+      {
+        id: 'aethelgard-monolith',
+        number: '02',
+        name: 'Aethelgard Monolith',
+        category: 'Travertine & Patinated Copper',
+        artisan: 'Sandro Moretti',
+        price: '₹54,000',
+        image: '/images/curated_clock_slice_2.jpg',
+        description: 'Free-standing column of Tuscan travertine with exposed floating deadbeat pendulum escapement.',
+        link: '/artisan-pieces'
+      },
+      {
+        id: 'celestial-artifice',
+        number: '03',
+        name: 'Celestial Artifice',
+        category: 'Volcanic Clay & Gold Leaf',
+        artisan: 'Elysium Collective',
+        price: '₹42,000',
+        image: '/images/curated_clock_slice_3.jpg',
+        description: 'Double-sided volcanic stoneware with twin celestial dials and 24-karat gold leaf accents.',
+        link: '/artisan-pieces'
+      },
+      {
+        id: 'metamorphic-slate-horologe',
+        number: '04',
+        name: 'Metamorphic Slate Clock',
+        category: 'Raw Slate & Brushed Brass',
+        artisan: 'Matteo Ghiberti',
+        price: '₹28,500',
+        image: '/images/categories/clocks.jpg',
+        description: 'Wall clock sculpted from a single slab of dark mountain slate with brushed brass hour pointers.',
+        link: '/artisan-pieces'
+      },
+      {
+        id: 'volterra-wall-chronometer',
+        number: '05',
+        name: 'Volterra Wall Chronometer',
+        category: 'Porous Travertine & Steel',
+        artisan: 'Sandro Moretti',
+        price: '₹34,000',
+        image: '/images/category_clocks.jpg',
+        description: 'Circular travertine wall piece with silent sweep German quartz movement.',
+        link: '/artisan-pieces'
+      },
+      {
+        id: 'curated-panorama-clock',
+        number: '06',
+        name: 'Atelier Horizon Clock',
+        category: 'Chiseled Stone & Bronze',
+        artisan: 'Matteo Ghiberti',
+        price: '₹48,000',
+        image: '/images/curated_clock_panorama.jpg',
+        description: 'Long-format horizontal stone mantle horologe hand-finished with burnished bronze pointers.',
+        link: '/artisan-pieces'
+      }
+    ]
+  },
+  {
+    id: 'statues',
+    number: '02',
+    name: 'Statues',
+    title: 'Sculptural Presence',
+    subtitle: 'Monolithic Forms',
+    description: 'Monolithic organic abstract totems and architectural silhouettes chiseled from geological travertine blocks with exposed natural mineral fissures.',
+    products: [
+      {
+        id: 'caelum-totem',
+        number: '01',
+        name: 'Caelum Travertine Totem',
+        category: 'Porous Travertine Stone',
+        artisan: 'Sandro Moretti',
+        price: '₹45,000',
+        image: '/images/categories/statues.jpg',
+        description: 'Hand-chiseled from monolithic Italian limestone, retaining natural geomorphic pores and stratified veins.',
+        link: '/artisan-pieces'
+      },
+      {
+        id: 'archaic-sentinel',
+        number: '02',
+        name: 'Archaic Sentinel',
+        category: 'Volcanic Limestone',
+        artisan: 'Sandro Moretti',
+        price: '₹58,000',
+        image: '/images/category_statues.jpg',
+        description: 'Vertical architectural sculpture celebrating quiet wabi-sabi balance and brutalist proportion.',
+        link: '/artisan-pieces'
+      },
+      {
+        id: 'biomorphic-spire',
+        number: '03',
+        name: 'Biomorphic Spire',
+        category: 'Raw Travertine & Ironwood',
+        artisan: 'Kenji Yoshino',
+        price: '₹39,000',
+        image: '/images/story/carousel_chiseling.jpg',
+        description: 'Curved stone plinth celebrating the patient rhythm of the master mason’s hand chisel.',
+        link: '/artisan-pieces'
+      },
+      {
+        id: 'quarry-monolith',
+        number: '04',
+        name: 'Quarry Monolith No. 3',
+        category: 'Unrefined Limestone',
+        artisan: 'Sandro Moretti',
+        price: '₹62,000',
+        image: '/images/story/carousel_quarry.jpg',
+        description: 'Excavated from raw quarry strata with untouched geological edges and mineral deposits.',
+        link: '/artisan-pieces'
+      },
+      {
+        id: 'ceramic-sculptural-figure',
+        number: '05',
+        name: 'Ceramic Sculptural Figure',
+        category: 'Iron-Dense Clay & Ash',
+        artisan: 'Matteo Ghiberti',
+        price: '₹31,000',
+        image: '/images-marquee/pexels-artbovich-6758245.webp',
+        description: 'Hand-sculpted clay torso pit-fired with organic botanical ash for delicate smoky patina.',
+        link: '/artisan-pieces'
+      },
+      {
+        id: 'stone-masonry-plinth',
+        number: '06',
+        name: 'Atelier Masonry Form',
+        category: 'Solid Travertine Stone',
+        artisan: 'Sandro Moretti',
+        price: '₹48,500',
+        image: '/images-marquee/pexels-cottonbro-4503266.webp',
+        description: 'Carved stone plinth anchoring high-ceiling living sanctuaries with solemn quietude.',
+        link: '/artisan-pieces'
+      }
+    ]
+  },
+  {
+    id: 'vessels',
+    number: '03',
+    name: 'Vases & Vessels',
+    title: 'Form & Tactility',
+    subtitle: 'Earth-Bound Ceramics',
+    description: 'Decorative vases and sculptural vessels formed on manual kickwheels from iron-dense silicate clay, unglazed to preserve pure tactile mineral resonance.',
+    products: [
+      {
+        id: 'caelum-vessel',
+        number: '01',
+        name: 'Caelum Vessel',
+        category: 'Organic Stoneware Clay',
+        artisan: 'Matteo Ghiberti',
+        price: '₹18,500',
+        image: '/images/story_clay_vessel.jpg',
+        description: 'A hand-turned vessel formed from raw iron-dense clay, unglazed to preserve earthy tactility.',
+        link: '/artisan-pieces/caelum-vessel'
+      },
+      {
+        id: 'chronos-storage-jar',
+        number: '02',
+        name: 'Chronos Storage Jar',
+        category: 'Unglazed Organic Clay',
+        artisan: 'Dimitris Vance',
+        price: '₹16,500',
+        image: '/images/chapter_decor_accents.jpg',
+        description: 'Tall storage vessel with raw tactile exterior and hand-fitted ceramic stopper.',
+        link: '/artisan-pieces/chronos-storage-jar'
+      },
+      {
+        id: 'amphora-vessel',
+        number: '03',
+        name: 'Atelier Amphora',
+        category: 'Riverbed Stoneware',
+        artisan: 'Dimitris Vance',
+        price: '₹21,000',
+        image: '/images/categories/vessels.jpg',
+        description: 'Hand-turned riverbed stoneware amphora pit-fired at low temperatures for natural smoke marbling.',
+        link: '/artisan-pieces'
+      },
+      {
+        id: 'terra-patina-vessel',
+        number: '04',
+        name: 'Terra Mineral Urn',
+        category: 'Iron Oxide Stoneware',
+        artisan: 'Dimitris Vance',
+        price: '₹19,500',
+        image: '/images-marquee/pexels-efnanyll-16052116.webp',
+        description: 'Rich terra silhouette washed in natural mineral pigments and fired in reduction atmospheres.',
+        link: '/artisan-pieces'
+      },
+      {
+        id: 'studio-stoneware-vase',
+        number: '05',
+        name: 'Studio Stoneware Vase',
+        category: 'Unglazed Volcanic Clay',
+        artisan: 'Matteo Ghiberti',
+        price: '₹22,500',
+        image: '/images-marquee/pexels-karola-g-5978722.webp',
+        description: 'Organic asymmetric mouth and ribbing shaped directly by the artisan’s thumbs on the wheel.',
+        link: '/artisan-pieces'
+      },
+      {
+        id: 'organic-clay-silhouette',
+        number: '06',
+        name: 'Kuro Raw Clay Vessel',
+        category: 'Smoked Earthenware',
+        artisan: 'Dimitris Vance',
+        price: '₹17,800',
+        image: '/images-marquee/pexels-yusramizgingunay-15948887.webp',
+        description: 'Minimalist low-belly vessel projecting gentle shadow gradients in quiet corners.',
+        link: '/artisan-pieces'
+      }
+    ]
+  },
+  {
+    id: 'lamps',
+    number: '04',
+    name: 'Lamps & Lighting',
+    title: 'Luminescent Architecture',
+    subtitle: 'Diffused Illumination',
+    description: 'Minimalist dome pendants and sculpted luminescent pieces hand-troweled in pulverized pumice and lime plaster, diffusing ambient room lighting with soft warmth.',
+    products: [
+      {
+        id: 'estia-pendant-light',
+        number: '01',
+        name: 'Estia Pendant Light',
+        category: 'Textured Lime Plaster Finish',
+        artisan: 'Eleni Kora',
+        price: '₹22,000',
+        image: '/images/chapter_lighting.jpg',
+        description: 'Minimalist dome pendant emitting a warm downlight through hand-troweled lime plaster.',
+        link: '/artisan-pieces/estia-pendant-light'
+      },
+      {
+        id: 'lumina-dome-bulb',
+        number: '02',
+        name: 'Lumina Plaster Bulb',
+        category: 'Lime Plaster & Filaments',
+        artisan: 'Eleni Kora',
+        price: '₹14,500',
+        image: '/images/categories/bulbs.jpg',
+        description: 'Dome pendant housing a warm incandescent filament surrounded by pulverized pumice plaster.',
+        link: '/artisan-pieces'
+      },
+      {
+        id: 'solis-ambient-sconce',
+        number: '03',
+        name: 'Solis Travertine Sconce',
+        category: 'Translucent Travertine',
+        artisan: 'Eleni Kora',
+        price: '₹26,000',
+        image: '/images/category_bulbs.jpg',
+        description: 'Wall sconce back-lighting an ultra-thin slab of natural Italian travertine.',
+        link: '/artisan-pieces'
+      },
+      {
+        id: 'pumice-curing-lamp',
+        number: '04',
+        name: 'Pumice Atelier Lamp',
+        category: 'Hand-Layered Mineral Plaster',
+        artisan: 'Eleni Kora',
+        price: '₹19,000',
+        image: '/images/story/carousel_curing.jpg',
+        description: 'Molded organically around an internal armature and slowly air-cured in the Rajkot atelier.',
+        link: '/artisan-pieces'
+      },
+      {
+        id: 'estia-pedestal-light',
+        number: '05',
+        name: 'Estia Pedestal Lamp',
+        category: 'Lime Plaster & Raw Oak',
+        artisan: 'Eleni Kora',
+        price: '₹28,000',
+        image: '/images/photo-1507473885765-e6ed057f782c',
+        description: 'Table lamp combining a velvety plaster dome with a seasoned white oak cylindrical plinth.',
+        link: '/artisan-pieces'
+      }
+    ]
+  },
+  {
+    id: 'wall-decor',
+    number: '05',
+    name: 'Wall Decor & Arts',
+    title: 'Mineral Reliefs',
+    subtitle: 'Tactile Shadow Planes',
+    description: 'Monochromatic textured plaster bas-reliefs and sculptural wall panels capturing the shifting interplay of natural daylight and deep architectural shadow.',
+    products: [
+      {
+        id: 'terra-plaster-relief',
+        number: '01',
+        name: 'Terra Plaster Relief',
+        category: 'Mineral Plaster & Ash',
+        artisan: 'Elysium Collective',
+        price: '₹32,000',
+        image: '/images/story_plaster_relief.jpg',
+        description: 'Monochromatic wall sculpture exploring light, depth, and shadow through natural plaster planes.',
+        link: '/artisan-pieces/terra-plaster-relief'
+      },
+      {
+        id: 'stratum-bas-relief',
+        number: '02',
+        name: 'Stratum Bas-Relief',
+        category: 'Volcanic Ash & Lime',
+        artisan: 'Elysium Collective',
+        price: '₹36,000',
+        image: '/images/categories/arts.jpg',
+        description: 'Multi-tiered wave relief hand-troweled in successive strata of volcanic pumice.',
+        link: '/artisan-pieces'
+      },
+      {
+        id: 'mineral-horizon-panel',
+        number: '03',
+        name: 'Mineral Horizon Panel',
+        category: 'Hydraulic Plaster & Clay',
+        artisan: 'Elysium Collective',
+        price: '₹41,000',
+        image: '/images/category_arts.jpg',
+        description: 'Large-scale horizontal art panel bringing organic serenity to dining rooms and living spaces.',
+        link: '/artisan-pieces'
+      },
+      {
+        id: 'troweled-plaster-art',
+        number: '04',
+        name: 'Atelier Trowel Study',
+        category: 'Textured Mineral Plaster',
+        artisan: 'Elysium Collective',
+        price: '₹29,000',
+        image: '/images/story/carousel_plaster.jpg',
+        description: 'Expressive hand-troweled texture capturing the raw velocity of the plaster blade.',
+        link: '/artisan-pieces'
+      },
+      {
+        id: 'volcanic-ash-triptych',
+        number: '05',
+        name: 'Volcanic Ash Triptych',
+        category: 'Volcanic Ash & Plaster',
+        artisan: 'Elysium Collective',
+        price: '₹52,000',
+        image: '/images-marquee/pexels-thevisionaryvows-33331303.webp',
+        description: 'Three-panel series of stratified mineral planes reflecting changing daylight.',
+        link: '/artisan-pieces'
+      }
+    ]
+  },
+  {
+    id: 'furniture',
+    number: '06',
+    name: 'Chairs & Furniture',
+    title: 'Monolithic Seating',
+    subtitle: 'Seasoned Timber & Stone',
+    description: 'Low-slung brutalist lounge chairs and architectural consoles carved from slow-grown white oak and unsealed Italian travertine with blind mortise joinery.',
+    products: [
+      {
+        id: 'monolith-lounge-chair',
+        number: '01',
+        name: 'Monolith Lounge Chair',
+        category: 'Sculptural White Oak',
+        artisan: 'Kenji Yoshino',
+        price: '₹48,000',
+        image: '/images/chapter_bedroom.jpg',
+        description: 'Low-slung, solid timber chair carved from slow-grown northern white oak and beeswax burnished.',
+        link: '/artisan-pieces/monolith-lounge-chair'
+      },
+      {
+        id: 'solis-travertine-console',
+        number: '02',
+        name: 'Solis Travertine Console',
+        category: 'Super Fine Travertine',
+        artisan: 'Sandro Moretti',
+        price: '₹64,000',
+        image: '/images/chapter_living_room.jpg',
+        description: 'Architectural console carved from solid Italian travertine slabs with natural geomorphic veining.',
+        link: '/artisan-pieces/solis-travertine-console'
+      },
+      {
+        id: 'nidus-block-stool',
+        number: '03',
+        name: 'Nidus Block Stool',
+        category: 'Sculptural White Oak',
+        artisan: 'Stefan Meyer',
+        price: '₹26,000',
+        image: '/images/chapter_dining.jpg',
+        description: 'Solid timber block carved with subtle concave seat ergonomics and Shou Sugi Ban charring.',
+        link: '/artisan-pieces/nidus-block-stool'
+      },
+      {
+        id: 'brutalist-oak-chair',
+        number: '04',
+        name: 'Atelier Brutalist Chair',
+        category: 'White Oak & Natural Linen',
+        artisan: 'Kenji Yoshino',
+        price: '₹51,000',
+        image: '/images/categories/chairs.jpg',
+        description: 'Brutalist silhouette with hand-fitted oatmeal linen cushion and organic wax polish.',
+        link: '/artisan-pieces'
+      },
+      {
+        id: 'kanso-lounge-seater',
+        number: '05',
+        name: 'Kanso Lounge Seater',
+        category: 'Seasoned Oak Timber',
+        artisan: 'Kenji Yoshino',
+        price: '₹44,000',
+        image: '/images/category_chairs.jpg',
+        description: 'Low minimalist proportions inspired by Japanese monastic furniture and wabi-sabi joinery.',
+        link: '/artisan-pieces'
+      }
+    ]
+  },
+  {
+    id: 'accessories',
+    number: '07',
+    name: 'Decorative Accessories',
+    title: 'Curated Accents',
+    subtitle: 'Raw Earth Elements',
+    description: 'Tactile alabaster bowls, hand-carved stone plinths, and raw mineral objects shaped by master craftsmen to bring organic serenity to living spaces.',
+    products: [
+      {
+        id: 'aura-alabaster-bowl',
+        number: '01',
+        name: 'Aura Alabaster Bowl',
+        category: 'Translucent Travertine Stone',
+        artisan: 'Lorenzo Vane',
+        price: '₹14,000',
+        image: '/images/atelier_materials.jpg',
+        description: 'Shallow stone bowl hollowed by hand from select dense travertine with natural geomorphic voids.',
+        link: '/artisan-pieces/aura-alabaster-bowl'
+      },
+      {
+        id: 'chiseled-slate-tray',
+        number: '02',
+        name: 'Chiseled Slate Plinth',
+        category: 'Mountain Slate & Brass',
+        artisan: 'Matteo Ghiberti',
+        price: '₹12,500',
+        image: '/images-marquee/pexels-stephen-leonardi-587681991-37923286.webp',
+        description: 'Flat display plinth for candles, incense, and curated objets d’art with raw fractured perimeter.',
+        link: '/artisan-pieces'
+      },
+      {
+        id: 'travertine-mineral-bookends',
+        number: '03',
+        name: 'Travertine Bookends Pair',
+        category: 'Unsealed Travertine Stone',
+        artisan: 'Sandro Moretti',
+        price: '₹16,000',
+        image: '/images-marquee/pexels-icaro-breno-53443986-31858862.webp',
+        description: 'Geometric pair of heavy stone monoliths anchoring literature with natural porous beauty.',
+        link: '/artisan-pieces'
+      },
+      {
+        id: 'ceramic-accent-plate',
+        number: '04',
+        name: 'Ceramic Accent Dish',
+        category: 'Riverbed Earthenware',
+        artisan: 'Dimitris Vance',
+        price: '₹9,500',
+        image: '/images-marquee/pexels-karola-g-7193706.webp',
+        description: 'Footed ceramic dish with natural wood-ash glaze and earth crackle detailing.',
+        link: '/artisan-pieces'
+      },
+      {
+        id: 'artisan-craft-toolset',
+        number: '05',
+        name: 'Atelier Sculpture Stand',
+        category: 'Seasoned Oak & Iron',
+        artisan: 'Stefan Meyer',
+        price: '₹15,000',
+        image: '/images/maker_tools.jpg',
+        description: 'Solid wooden display block crafted to elevate smaller sculptures and ceramic vessels.',
+        link: '/artisan-pieces'
+      }
+    ]
+  }
+];
+
 function renderProductImage({ src, alt, href = '', className = '', imgClassName = '', id = '', aspect = 'aspect-w-3 aspect-h-4' }) {
   const idAttr = id ? `id="${id}"` : '';
   const content = `
@@ -402,6 +963,8 @@ function renderPage({ title, description, path, content, isHeroPage = false }) {
       <!-- Desktop Navigation Bar -->
       <nav class="header-nav-wrap hidden lg:flex items-center space-x-8 text-[13px] font-medium tracking-[0.14em] uppercase text-stone-800">
         <a href="/philosophy" class="hover:text-black transition-colors ${path === '/philosophy' ? 'text-black font-semibold' : ''}">Philosophy</a>
+        <a href="/gallery" class="hover:text-black transition-colors ${path === '/gallery' ? 'text-black font-semibold' : ''}">Gallery</a>
+        <a href="/categories" class="hover:text-black transition-colors ${path === '/categories' ? 'text-black font-semibold' : ''}">Categories</a>
         <a href="/artisan-pieces" class="hover:text-black transition-colors ${path === '/artisan-pieces' ? 'text-black font-semibold' : ''}">Artisan Pieces</a>
         <a href="/materiality" class="hover:text-black transition-colors ${path === '/materiality' ? 'text-black font-semibold' : ''}">Materiality</a>
         <a href="/our-story" class="hover:text-black transition-colors ${path === '/our-story' ? 'text-black font-semibold' : ''}">Our Story</a>
@@ -432,11 +995,13 @@ function renderPage({ title, description, path, content, isHeroPage = false }) {
     </div>
 
     <nav class="flex flex-col py-6 space-y-3 font-light uppercase tracking-[0.18em]">
-      <a href="/philosophy" class="mobile-nav-link text-stone-900 active:text-stone-500 min-h-[52px] flex items-center text-2xl border-b border-black/[0.04] transition-colors">Philosophy</a>
-      <a href="/artisan-pieces" class="mobile-nav-link text-stone-900 active:text-stone-500 min-h-[52px] flex items-center text-2xl border-b border-black/[0.04] transition-colors">Artisan Pieces</a>
-      <a href="/materiality" class="mobile-nav-link text-stone-900 active:text-stone-500 min-h-[52px] flex items-center text-2xl border-b border-black/[0.04] transition-colors">Materiality</a>
-      <a href="/our-story" class="mobile-nav-link text-stone-900 active:text-stone-500 min-h-[52px] flex items-center text-2xl border-b border-black/[0.04] transition-colors">Our Story</a>
-      <a href="/contact" class="mobile-nav-link text-stone-900 active:text-stone-500 min-h-[52px] flex items-center text-2xl border-b border-black/[0.04] transition-colors">Contact</a>
+      <a href="/philosophy" class="mobile-nav-link text-stone-900 active:text-stone-500 min-h-[52px] flex items-center text-2xl border-b border-black/[0.04] transition-colors ${path === '/philosophy' ? 'font-semibold' : ''}">Philosophy</a>
+      <a href="/gallery" class="mobile-nav-link text-stone-900 active:text-stone-500 min-h-[52px] flex items-center text-2xl border-b border-black/[0.04] transition-colors ${path === '/gallery' ? 'font-semibold' : ''}">Gallery</a>
+      <a href="/categories" class="mobile-nav-link text-stone-900 active:text-stone-500 min-h-[52px] flex items-center text-2xl border-b border-black/[0.04] transition-colors ${path === '/categories' ? 'font-semibold' : ''}">Categories</a>
+      <a href="/artisan-pieces" class="mobile-nav-link text-stone-900 active:text-stone-500 min-h-[52px] flex items-center text-2xl border-b border-black/[0.04] transition-colors ${path === '/artisan-pieces' ? 'font-semibold' : ''}">Artisan Pieces</a>
+      <a href="/materiality" class="mobile-nav-link text-stone-900 active:text-stone-500 min-h-[52px] flex items-center text-2xl border-b border-black/[0.04] transition-colors ${path === '/materiality' ? 'font-semibold' : ''}">Materiality</a>
+      <a href="/our-story" class="mobile-nav-link text-stone-900 active:text-stone-500 min-h-[52px] flex items-center text-2xl border-b border-black/[0.04] transition-colors ${path === '/our-story' ? 'font-semibold' : ''}">Our Story</a>
+      <a href="/contact" class="mobile-nav-link text-stone-900 active:text-stone-500 min-h-[52px] flex items-center text-2xl border-b border-black/[0.04] transition-colors ${path === '/contact' ? 'font-semibold' : ''}">Contact</a>
     </nav>
 
     <div class="pt-6 border-t border-black/[0.08] space-y-4">
@@ -490,17 +1055,9 @@ function renderPage({ title, description, path, content, isHeroPage = false }) {
         </div>
       </div>
 
-      <!-- Light Control Indicator Banner -->
-      <div class="relative z-20 flex items-center justify-between pb-4">
-        <div id="footer-status-badge" class="inline-flex items-center gap-2 px-3.5 py-1.5 bg-black/10 backdrop-blur-md rounded-full text-[11px] font-mono uppercase tracking-[0.2em] text-[#181816] border border-black/10 shadow-sm transition-colors duration-500">
-          <span id="footer-status-dot" class="w-2 h-2 rounded-full bg-amber-500 animate-ping"></span>
-          <span id="footer-status-text">Studio No. 029 • Atelier Illuminated</span>
-        </div>
-      </div>
-
-      <!-- Content Overlay: Clean Vertical Stack on Mobile, 3 Columns on Desktop -->
-      <div class="relative z-20 space-y-8 lg:space-y-8 my-auto w-full">
-        <div class="flex flex-col lg:flex-row lg:items-end justify-between gap-6 pb-8 border-t transition-colors duration-500" id="footer-grid-border">
+      <!-- Content Overlay: Unified Harmonious Layout Illuminated Directly by Hanging Lamp -->
+      <div class="relative z-20 space-y-8 lg:space-y-10 my-auto w-full pt-16 sm:pt-20 md:pt-24">
+        <div class="flex flex-col lg:flex-row lg:items-end justify-between gap-6 pb-6 transition-colors duration-500" id="footer-grid-border">
           <div class="w-full lg:max-w-2xl space-y-3 text-center lg:text-left">
             <span id="footer-brand-title" class="text-[11px] font-mono uppercase tracking-[0.3em] block font-semibold transition-colors duration-500">${BRAND.fullName}</span>
             <h2 id="footer-hero-head" class="text-[clamp(1.6rem,6.5vw,2.75rem)] font-light tracking-tight leading-[1.15] transition-colors duration-500 max-w-xl mx-auto lg:mx-0">
@@ -536,6 +1093,8 @@ function renderPage({ title, description, path, content, isHeroPage = false }) {
             <span class="footer-lbl text-xs uppercase tracking-[0.25em] font-mono block font-semibold text-stone-500">Navigate</span>
             <ul class="space-y-3 md:space-y-2 text-xs font-medium">
               <li><a href="/philosophy" class="hover:underline transition-colors py-1 inline-block active:opacity-75">Philosophy</a></li>
+              <li><a href="/gallery" class="hover:underline transition-colors py-1 inline-block active:opacity-75">Gallery</a></li>
+              <li><a href="/categories" class="hover:underline transition-colors py-1 inline-block active:opacity-75">Categories</a></li>
               <li><a href="/artisan-pieces" class="hover:underline transition-colors py-1 inline-block active:opacity-75">Artisan Pieces</a></li>
               <li><a href="/materiality" class="hover:underline transition-colors py-1 inline-block active:opacity-75">Materiality</a></li>
               <li><a href="/our-story" class="hover:underline transition-colors py-1 inline-block active:opacity-75">Our Story</a></li>
@@ -588,19 +1147,12 @@ function renderPage({ title, description, path, content, isHeroPage = false }) {
           window.setFooterLightRaysActive(isLit);
         }
 
-        var badge = document.getElementById('footer-status-badge');
         if (isLit) {
-          if(container) container.classList.remove('footer-night-mode');
-          if(beam) beam.style.opacity = '1';
-          if(statusTxt) statusTxt.innerText = 'Studio No. 029 • Atelier Illuminated';
-          if(statusDot) statusDot.className = 'w-2 h-2 rounded-full bg-amber-500 animate-ping';
-          if(badge) badge.className = 'inline-flex items-center gap-2 px-3.5 py-1.5 bg-black/10 backdrop-blur-md rounded-full text-[11px] font-mono uppercase tracking-[0.2em] text-[#181816] border border-black/10 shadow-sm transition-colors duration-500';
+          if (container) container.classList.remove('footer-night-mode');
+          if (beam) beam.style.opacity = '1';
         } else {
-          if(container) container.classList.add('footer-night-mode');
-          if(beam) beam.style.opacity = '0';
-          if(statusTxt) statusTxt.innerText = 'Studio No. 029 • Night Mode (Dimmed)';
-          if(statusDot) statusDot.className = 'w-2 h-2 rounded-full bg-stone-700';
-          if(badge) badge.className = 'inline-flex items-center gap-2 px-3.5 py-1.5 bg-black/40 backdrop-blur-md rounded-full text-[11px] font-mono uppercase tracking-[0.2em] text-white border border-white/20 shadow-md transition-colors duration-500';
+          if (container) container.classList.add('footer-night-mode');
+          if (beam) beam.style.opacity = '0';
         }
       }
 
@@ -632,6 +1184,297 @@ function renderPage({ title, description, path, content, isHeroPage = false }) {
   <script src="/js/homeAnimations.js?v=6.0"></script>
 </body>
 </html>`;
+}
+
+// Master Categories Showcase Page Generator (Wrapped with Master Site Header & Footer)
+function renderCategoriesPage() {
+  const whatsappUrl = createWhatsAppLink();
+  const content = `
+    <link rel="stylesheet" href="/css/categories.css?v=3.0">
+    
+    <div class="categories-page-wrapper">
+      <!-- Full-Viewport Showcase Stage -->
+      <section class="showcase-hero" id="showcase-hero" aria-label="Elysium Categories Showcase">
+        
+        <!-- 1. Bottom Layer: Full-Bleed Media Slides -->
+        <div class="showcase-media-container" id="showcase-media-container">
+          ${SHOWCASE_CATEGORIES.map((cat, idx) => `
+            <div class="showcase-slide ${idx === 0 ? 'is-active' : ''}" data-index="${idx}">
+              <div class="showcase-slide-inner">
+                <img src="${cat.image}" alt="${cat.title} — Elysium" class="showcase-img" loading="${idx === 0 ? 'eager' : 'lazy'}" />
+              </div>
+            </div>
+          `).join('')}
+        </div>
+
+        <!-- 2. Middle Layer: Zero-Gravity Physics Letters Container ("ELYSIUM") -->
+        <div class="physics-letters-layer" id="physics-letters-layer" aria-hidden="true">
+          <!-- DOM letter elements will be mounted here and animated via Matter.js -->
+        </div>
+
+        <!-- 3. Top Layer: Minimalist Category Title & Specs Overlay -->
+        <div class="showcase-ui-layer">
+          <div class="ui-bottom-left" id="ui-bottom-meta">
+            <div class="ui-category-title-wrap">
+              <h1 class="ui-category-title" id="ui-category-title">
+                <span class="title-text">${SHOWCASE_CATEGORIES[0].title}</span>
+              </h1>
+            </div>
+            <div class="ui-artisan-details" id="ui-artisan-details">
+              ${SHOWCASE_CATEGORIES[0].artisan} &bull; ${SHOWCASE_CATEGORIES[0].materials}
+            </div>
+            <div class="ui-action-row pt-4">
+              <a href="${SHOWCASE_CATEGORIES[0].link}" id="ui-explore-link" class="btn-primary">
+                <span>Explore Collection</span>
+                <span class="btn-arrow ml-2">&rarr;</span>
+              </a>
+            </div>
+          </div>
+        </div>
+
+      </section>
+    </div>
+
+    <!-- Categories Data for Client Controller -->
+    <script>
+      window.SHOWCASE_DATA = ${JSON.stringify(SHOWCASE_CATEGORIES)};
+    </script>
+
+    <!-- Vendor Libraries & Showcase Engine -->
+    <script src="/js/vendor/decomp.min.js"></script>
+    <script src="/js/vendor/pathseg.js"></script>
+    <script src="/js/vendor/matter.min.js"></script>
+    <script src="/js/vendor/gsap.min.js"></script>
+    <script src="/js/categoriesPage.js?v=3.0"></script>
+  `;
+
+  return renderPage({
+    title: 'Categories | Artisan Minimalist Home Decor — Elysium',
+    description: 'Explore Elysium’s curated artisan categories — Clocks, Arts, Statues, Chairs, Bulbs, and Vessels.',
+    path: '/categories',
+    content,
+  });
+}
+
+// Master /gallery Page Generator (Scroll-Driven Pinned Horizontal Exhibition System)
+function renderGalleryPage() {
+  const whatsappUrl = createWhatsAppLink();
+
+  const transitionQuotes = [
+    {
+      quote: "“Formed slowly from raw limestone strata and living oak, untouched by hurried hands.”",
+      provenance: "ATELIER MEMORANDUM • VOLUME I"
+    },
+    {
+      quote: "“In the reduction pit, fire and earthen clay negotiate their own unrepeatable language.”",
+      provenance: "CERAMIC PHILOSOPHY • RAJKOT"
+    },
+    {
+      quote: "“Lighting is not merely illumination—it is the sculpting of silence and ambient shadow.”",
+      provenance: "PUMICE & LIME STUDY • ARCHIVE"
+    },
+    {
+      quote: "“Monolithic proportions that anchor a sanctuary with solemn, enduring dignity.”",
+      provenance: "ARCHITECTURAL PROPORTION • 2026"
+    },
+    {
+      quote: "“The beauty of restraint: allowing every geomorphic crevice to speak for itself.”",
+      provenance: "MINERAL MATERIALITY • PROVENANCE"
+    },
+    {
+      quote: "“Objects crafted with patient reverence, designed to outlive trends and generations.”",
+      provenance: "ELYSIUM ATELIER • RAJKOT"
+    },
+    {
+      quote: "“Every creation begins as geological earth and transitions into quiet sanctuary.”",
+      provenance: "THE LIVING SPACE • PERSPECTIVE"
+    }
+  ];
+
+  const content = `
+    <link rel="stylesheet" href="/css/gallery.css?v=1.1">
+
+    <div class="gallery-page-root">
+      
+      <!-- 1. GALLERY EDITORIAL HERO -->
+      <section class="gallery-hero-section" id="gallery-hero" aria-label="Gallery Introduction">
+        <div class="max-w-7xl mx-auto w-full">
+          <span class="gallery-hero-eyebrow">Atelier Archive &bull; Curated Exhibition</span>
+          
+          <div class="gallery-hero-title-wrap">
+            <h1 class="gallery-hero-title">Gallery</h1>
+          </div>
+          
+          <p class="gallery-hero-description">
+            Explore our collection of objects, accents and timeless pieces designed to elevate every space. Handcrafted stone, unglazed clay, sculpted oak and textured lime plaster.
+          </p>
+
+          <!-- Category Quick-Jump Navigation Bar (Hero) -->
+          <nav class="gallery-quick-nav" aria-label="Exhibition Categories Index">
+            ${GALLERY_CATEGORIES.map((cat, idx) => `
+              <a href="#cat-${cat.id}" class="gallery-quick-link ${idx === 0 ? 'is-active' : ''}" data-target-cat="${cat.id}" title="Explore ${cat.name}">
+                <span class="link-num">${cat.number}</span>
+                <span class="link-label">${cat.name}</span>
+              </a>
+            `).join('')}
+          </nav>
+        </div>
+      </section>
+
+      <!-- 2. PINNED HORIZONTAL PRODUCT GALLERIES (vvisual.biz/models interaction) -->
+      ${GALLERY_CATEGORIES.map((cat, catIdx) => {
+        const transition = transitionQuotes[catIdx % transitionQuotes.length];
+        const nextCat = GALLERY_CATEGORIES[(catIdx + 1) % GALLERY_CATEGORIES.length];
+        const prevCat = GALLERY_CATEGORIES[(catIdx - 1 + GALLERY_CATEGORIES.length) % GALLERY_CATEGORIES.length];
+        
+        return `
+          <!-- Category Section: ${cat.number} — ${cat.name} -->
+          <section class="gallery-category-section" id="cat-${cat.id}" data-category-id="${cat.id}" data-category-idx="${catIdx}" aria-label="${cat.number} — ${cat.name}">
+            <div class="gallery-sticky-stage">
+              
+              <!-- Pinned Category Top Header Bar -->
+              <header class="gallery-category-header">
+                <div class="gallery-header-left">
+                  <span class="gallery-cat-eyebrow">
+                    <span class="eyebrow-line" aria-hidden="true"></span>
+                    ${cat.number} &mdash; ${cat.name}
+                  </span>
+                  <h2 class="gallery-cat-title">${cat.title}</h2>
+                  <p class="gallery-cat-desc">${cat.description}</p>
+                </div>
+                
+                <div class="gallery-header-right">
+                  <div class="gallery-header-tools">
+                    <span class="gallery-count-badge">${cat.products.length.toString().padStart(2, '0')} Pieces</span>
+                    <div class="gallery-nav-arrows">
+                      <button type="button" class="gallery-track-prev-btn" aria-label="Previous pieces in ${cat.name}">&larr;</button>
+                      <button type="button" class="gallery-track-next-btn" aria-label="Next pieces in ${cat.name}">&rarr;</button>
+                    </div>
+                  </div>
+                  
+                  <div class="gallery-category-progress-track" aria-hidden="true">
+                    <div class="gallery-category-progress-fill"></div>
+                  </div>
+
+                  ${catIdx < GALLERY_CATEGORIES.length - 1 ? `
+                    <button type="button" class="gallery-next-cat-btn" data-target-cat="${nextCat.id}">
+                      <span>Next: ${nextCat.number} ${nextCat.name}</span>
+                      <span class="arrow-down">&darr;</span>
+                    </button>
+                  ` : `
+                    <button type="button" class="gallery-next-cat-btn" data-target-cat="${GALLERY_CATEGORIES[0].id}">
+                      <span>Back to Top (01 ${GALLERY_CATEGORIES[0].name})</span>
+                      <span class="arrow-down">&uarr;</span>
+                    </button>
+                  `}
+                </div>
+              </header>
+
+              <!-- Horizontal Scroll Track Viewport -->
+              <div class="gallery-track-viewport">
+                <div class="gallery-track">
+                  ${cat.products.map(prod => `
+                    <article class="gallery-card group" data-product-id="${prod.id}">
+                      <div class="gallery-card-media">
+                        <div class="gallery-card-media-frame" data-img-src="${prod.image}">
+                          <img
+                            src="${prod.image}"
+                            alt="${prod.name} &mdash; Elysium"
+                            class="gallery-card-img"
+                            loading="eager"
+                            draggable="false"
+                          />
+                        </div>
+                        <span class="gallery-card-num-tag">${prod.number}</span>
+                      </div>
+                      
+                      <div class="gallery-card-meta">
+                        <span class="gallery-card-category">${prod.category} &bull; ${prod.artisan}</span>
+                        <h3 class="gallery-card-title">${prod.name}</h3>
+                        <p class="gallery-card-desc">${prod.description}</p>
+                        
+                        <div class="gallery-card-action">
+                          <a href="${prod.link || '/artisan-pieces'}" class="hover:underline flex items-center gap-1">
+                            <span>Explore Piece</span>
+                            <span class="card-arrow">&rarr;</span>
+                          </a>
+                          <a href="${createWhatsAppLink(prod.name)}" target="_blank" rel="noopener noreferrer" class="text-stone-500 hover:text-stone-900 transition-colors" title="Quick WhatsApp Enquiry">
+                            <span>Enquire</span>
+                          </a>
+                        </div>
+                      </div>
+                    </article>
+                  `).join('')}
+
+                  <!-- End-of-track Atelier Enquire Card -->
+                  <a href="${whatsappUrl}" target="_blank" rel="noopener noreferrer" class="gallery-card-end-cap group">
+                    <div class="gallery-end-cap-top">
+                      <span>${cat.number} &bull; ${cat.name}</span>
+                    </div>
+                    <div class="gallery-end-cap-mid">
+                      <h4>Custom ${cat.name} Commissions</h4>
+                      <p>Inquire directly with our Rajkot atelier team for bespoke dimensions and architectural specifications.</p>
+                    </div>
+                    <div class="gallery-end-cap-btn">
+                      <span>WhatsApp Atelier</span>
+                      <span class="transform group-hover:translate-x-1 transition-transform">&rarr;</span>
+                    </div>
+                  </a>
+
+                </div>
+              </div>
+
+            </div>
+          </section>
+
+          <!-- Editorial Breathing Room / Transition Section -->
+          <div class="gallery-transition-zone" aria-hidden="true">
+            <div class="gallery-transition-inner">
+              <div class="gallery-transition-divider"></div>
+              <p class="gallery-transition-quote">${transition.quote}</p>
+              <span class="gallery-transition-provenance">${transition.provenance}</span>
+            </div>
+          </div>
+        `;
+      }).join('')}
+
+      <!-- 3. GALLERY OUTRO & BESPOKE INQUIRY CALLOUT -->
+      <section class="gallery-outro-section">
+        <div class="gallery-outro-card">
+          <div class="gallery-outro-left">
+            <span class="gallery-outro-eyebrow">Bespoke Atelier Commission</span>
+            <h3 class="gallery-outro-title">Architectural Spaces &amp; Curated Editions</h3>
+            <p class="gallery-outro-desc">
+              Looking for custom dimensions, monolithic travertine slabs, or site-specific plaster installations for residential and hospitality projects? Our master craftsmen collaborate directly with architects and interior curators.
+            </p>
+          </div>
+          <div class="gallery-outro-right">
+            <a href="${whatsappUrl}" target="_blank" rel="noopener noreferrer" class="btn-primary px-8 py-4 text-xs font-semibold uppercase tracking-[0.2em] rounded-full shadow-lg inline-flex items-center justify-center gap-2">
+              <span>WhatsApp Atelier Direct</span>
+              <span class="btn-arrow">&rarr;</span>
+            </a>
+            <a href="/contact" class="btn-primary px-8 py-4 text-xs font-semibold uppercase tracking-[0.2em] rounded-full inline-flex items-center justify-center">
+              <span>Submit Inquiry</span>
+            </a>
+          </div>
+        </div>
+      </section>
+
+    </div>
+
+    <!-- Vendor Libraries & Gallery Controller -->
+    <script src="/js/vendor/gsap.min.js"></script>
+    <script src="/js/vendor/ScrollTrigger.min.js"></script>
+    <script src="/js/vendor/lenis.min.js"></script>
+    <script src="/js/galleryPage.js?v=1.1"></script>
+  `;
+
+  return renderPage({
+    title: 'Gallery | Luxury Home Decor & Artisan Catalog — Elysium',
+    description: 'Explore our collection of objects, accents and timeless pieces designed to elevate every space. Handcrafted stone, unglazed clay, and aged oak.',
+    path: '/gallery',
+    content,
+  });
 }
 
 // 1. Home Page Route with 5 Core Interactive Sections
@@ -1466,6 +2309,16 @@ app.get('/', (req, res) => {
   }));
 });
 
+// Gallery Exhibition Route (Scroll-Driven Pinned Horizontal Exhibition System)
+app.get('/gallery', (req, res) => {
+  res.send(renderGalleryPage());
+});
+
+// Categories Showcase Route (Near 1:1 Inspired by Studio This Editorial Showcase with Matter.js ELYSIUM Physics & Parallax)
+app.get('/categories', (req, res) => {
+  res.send(renderCategoriesPage());
+});
+
 // 2. Philosophy Page Route
 app.get('/philosophy', (req, res) => {
   const content = `
@@ -2114,7 +2967,7 @@ app.get('/terms', (req, res) => {
 // SEO & Deliverable Static Files
 app.get('/sitemap.xml', (req, res) => {
   res.header('Content-Type', 'application/xml');
-  const urls = ['/', '/philosophy', '/artisan-pieces', '/materiality', '/our-story', '/contact', ...PRODUCTS.map(p => `/artisan-pieces/${p.slug}`)];
+  const urls = ['/', '/philosophy', '/categories', '/artisan-pieces', '/materiality', '/our-story', '/contact', ...PRODUCTS.map(p => `/artisan-pieces/${p.slug}`)];
   const xml = `<?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   ${urls.map(u => `<url><loc>${BRAND.domain}${u}</loc><changefreq>weekly</changefreq><priority>0.8</priority></url>`).join('\n')}

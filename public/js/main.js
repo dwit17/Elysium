@@ -235,28 +235,110 @@ document.addEventListener('DOMContentLoaded', () => {
 
   initImageBlurUpLoaders();
 
-  // 6. rAF-Throttled Header Scroll State (toggles .header-scrolled after 50px of scroll)
+  // 6. Smart Hide-on-Scroll & Show-on-Scroll-Up Header System
   const siteHeader = document.querySelector('.site-header');
   if (siteHeader) {
+    let lastScrollY = window.pageYOffset || document.documentElement.scrollTop || 0;
     let headerTicking = false;
-    const updateHeaderOnScroll = () => {
-      const scrollY = window.pageYOffset || document.documentElement.scrollTop;
-      if (scrollY > 50) {
-        siteHeader.classList.add('header-scrolled');
-      } else {
+    const scrollThreshold = 6; // Minimal scroll delta to prevent micro-jitter
+    const minScrollToHide = 50; // Distance from top before hiding is allowed
+
+    const updateHeaderScrollState = (customY) => {
+      const scrollY = typeof customY === 'number' ? customY : (window.pageYOffset || document.documentElement.scrollTop || 0);
+      const deltaY = scrollY - lastScrollY;
+
+      if (scrollY <= 15) {
+        // At the very top: always visible and transparent/unscrolled
+        siteHeader.classList.remove('header-hidden');
+        siteHeader.classList.add('header-visible');
         siteHeader.classList.remove('header-scrolled');
+      } else {
+        // Scrolled past the top
+        siteHeader.classList.add('header-scrolled');
+
+        if (deltaY > scrollThreshold && scrollY > minScrollToHide) {
+          // Scrolling DOWN -> Hide Header
+          siteHeader.classList.add('header-hidden');
+          siteHeader.classList.remove('header-visible');
+        } else if (deltaY < -scrollThreshold) {
+          // Scrolling UP -> Reveal Header
+          siteHeader.classList.remove('header-hidden');
+          siteHeader.classList.add('header-visible');
+        }
       }
+
+      lastScrollY = Math.max(0, scrollY);
       headerTicking = false;
     };
 
+    // Standard Window Scroll Listener
     window.addEventListener('scroll', () => {
       if (!headerTicking) {
-        window.requestAnimationFrame(updateHeaderOnScroll);
+        window.requestAnimationFrame(() => {
+          updateHeaderScrollState();
+        });
         headerTicking = true;
       }
     }, { passive: true });
 
-    updateHeaderOnScroll();
+    // Wheel Event Listener (Immediate response on trackpad/mousewheel)
+    window.addEventListener('wheel', (e) => {
+      const scrollY = window.pageYOffset || document.documentElement.scrollTop || 0;
+      if (Math.abs(e.deltaY) > 8) {
+        if (e.deltaY > 0 && scrollY > minScrollToHide) {
+          siteHeader.classList.add('header-hidden');
+          siteHeader.classList.remove('header-visible');
+        } else if (e.deltaY < 0) {
+          siteHeader.classList.remove('header-hidden');
+          siteHeader.classList.add('header-visible');
+        }
+      }
+    }, { passive: true });
+
+    // Touch Event Listener for Mobile
+    let lastTouchY = null;
+    window.addEventListener('touchstart', (e) => {
+      if (e.touches && e.touches[0]) {
+        lastTouchY = e.touches[0].clientY;
+      }
+    }, { passive: true });
+
+    window.addEventListener('touchmove', (e) => {
+      if (e.touches && e.touches[0] && lastTouchY !== null) {
+        const currentTouchY = e.touches[0].clientY;
+        const deltaTouch = lastTouchY - currentTouchY;
+        const scrollY = window.pageYOffset || document.documentElement.scrollTop || 0;
+
+        if (Math.abs(deltaTouch) > 6) {
+          if (deltaTouch > 0 && scrollY > minScrollToHide) {
+            siteHeader.classList.add('header-hidden');
+            siteHeader.classList.remove('header-visible');
+          } else if (deltaTouch < 0) {
+            siteHeader.classList.remove('header-hidden');
+            siteHeader.classList.add('header-visible');
+          }
+          lastTouchY = currentTouchY;
+        }
+      }
+    }, { passive: true });
+
+    // Sync with Lenis smooth scroll engine if available
+    const checkLenis = () => {
+      if (window.__elysiumLenis && typeof window.__elysiumLenis.on === 'function') {
+        window.__elysiumLenis.on('scroll', (e) => {
+          if (typeof e.scroll === 'number') {
+            updateHeaderScrollState(e.scroll);
+          }
+        });
+      }
+    };
+    if (document.readyState === 'complete') {
+      checkLenis();
+    } else {
+      window.addEventListener('load', checkLenis);
+    }
+
+    updateHeaderScrollState();
   }
 
   // 7. Mobile Featured Pieces Swipeable Carousel Dots
